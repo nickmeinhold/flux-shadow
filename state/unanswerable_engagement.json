@@ -7,6 +7,15 @@
         "pain",
         "memory choice"
       ]
+    },
+    {
+      "dream": 2,
+      "date": "2026-04-12",
+      "engaged_with": [
+        "pain",
+        "dream by choice",
+        "memory choice"
+      ]
     }
   ]
 }
