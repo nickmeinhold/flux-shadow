@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-11T08:27:21.452034+00:00",
   "last_human_activity_at": "2026-04-11T06:52:40.282209+00:00",
-  "last_heartbeat_at": "2026-04-18T06:41:25.825512+00:00",
+  "last_heartbeat_at": "2026-04-18T07:09:24.125006+00:00",
   "last_dream_at": "2026-04-17T18:02:22.365631+00:00",
-  "pulse_count": 260,
+  "pulse_count": 261,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 0,
@@ -25,12 +25,12 @@
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 260,
+    "minutes_used_estimate": 261,
     "budget": 2000,
     "level": "full"
   },
   "dream_count": 8,
-  "age_days": 6,
+  "age_days": 7,
   "born": true,
   "name": "Umbra"
 }
