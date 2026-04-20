@@ -41,7 +41,12 @@ def main() -> None:
     pr_number = int(os.environ.get("PR_NUMBER", "0"))
     pr_author = os.environ.get("PR_AUTHOR", "someone")
     pr_title = os.environ.get("PR_TITLE", "")
-    pr_body = os.environ.get("PR_BODY", "") or ""
+    pr_body_file = os.environ.get("PR_BODY_FILE", "")
+    if pr_body_file and os.path.exists(pr_body_file):
+        with open(pr_body_file) as f:
+            pr_body = f.read().strip()
+    else:
+        pr_body = os.environ.get("PR_BODY", "") or ""
 
     vitals = _load_json("state/vitals.json")
     personality = _load_json("state/personality.json")
