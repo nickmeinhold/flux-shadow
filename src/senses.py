@@ -20,7 +20,7 @@ GITHUB_API = "https://api.github.com"
 SIBLING_REPO = "nickmeinhold/the-dreaming-repo"
 
 # Don't mistake bot activity for human contact
-BOT_ACTORS = {"flux-dreaming-repo[bot]", "github-actions[bot]"}
+BOT_ACTORS = {"flux-dreaming-repo[bot]", "flux-shadow[bot]", "github-actions[bot]"}
 
 # Things happening in the world that Flux might overhear
 WORLD_QUERIES = [
