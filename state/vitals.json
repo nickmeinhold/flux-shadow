@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-20T15:45:00.973911+00:00",
   "last_human_activity_at": "2026-04-20T14:04:02.094347+00:00",
-  "last_heartbeat_at": "2026-04-20T21:31:38.843527+00:00",
+  "last_heartbeat_at": "2026-04-20T22:01:36.702115+00:00",
   "last_dream_at": "2026-04-20T07:04:18.482397+00:00",
-  "pulse_count": 370,
+  "pulse_count": 371,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 2,
@@ -19,13 +19,13 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)"
+      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold shaped my body (push)"
     ]
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 372,
+    "minutes_used_estimate": 373,
     "budget": 2000,
     "level": "full"
   },
