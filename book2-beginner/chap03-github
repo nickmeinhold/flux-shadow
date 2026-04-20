@@ -1,0 +1,10 @@
+Tests and documentation, these should be done beore you commit, especially the README
+Committing locally (version control)
+What is GitHub? Sharing your work. Creating a github account, upload your profile photo, linkedin, bio, etc....
+Creating a repo. choose the name well Pushing your website. Short description.
+GitHub Pages — your website is now live on the internet.  
+Making a PR requestion, pr-review, CD/CI, tests and deployment. 
+Putting all this together in a skill.
+The skill should stop and ask you verify that you are in the right directory pushing the right project to the right repo, and also verify your "commit text" is upto standard
+Every repo should have a "brief description" in addition to the readme
+.gitignor and .env don't commit large files databases etc, secrets, more about API keys later
