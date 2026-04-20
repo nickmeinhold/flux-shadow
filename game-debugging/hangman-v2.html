@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hangman!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fef9e7;
+    --sky: #87ceeb;
+    --grass: #7ec850;
+    --text: #3d3226;
+    --correct: #4caf50;
+    --wrong: #e74c3c;
+    --accent: #ff9800;
+    --accent2: #9c27b0;
+    --key-bg: #fff;
+    --key-border: #ddd;
+    --shadow: rgba(0,0,0,0.1);
+  }
+
+  body {
+    font-family: 'Fredoka', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    background-image:
+      linear-gradient(180deg, var(--sky) 0%, #b5e4f7 35%, var(--bg) 35.5%);
+  }
+
+  /* clouds */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    top: 40px;
+    width: 120px;
+    height: 50px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50px;
+    box-shadow:
+      30px -15px 0 10px rgba(255,255,255,0.7),
+      -20px -8px 0 5px rgba(255,255,255,0.7);
+    animation: cloudDrift 25s linear infinite;
+    z-index: 0;
+  }
+  body::before { left: -150px; top: 60px; animation-delay: 0s; }
+  body::after { left: -300px; top: 30px; animation-delay: 12s; width: 90px; height: 40px; }
+
+  @keyframes cloudDrift {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 300px)); }
+  }
+
+  /* -- Title -- */
+  h1#title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 3px 3px 0 #e65100, 0 0 0 transparent;
+    margin-top: 10px;
+    margin-bottom: 0;
+    letter-spacing: 0.05em;
+    z-index: 1;
+    animation: titleBounce 0.6s ease;
+  }
+
+  @keyframes titleBounce {
+    0%   { transform: scale(0) rotate(-10deg); }
+    50%  { transform: scale(1.15) rotate(3deg); }
+    70%  { transform: scale(0.95) rotate(-1deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  #subtitle {
+    font-size: 0.8rem;
+    color: #8d6e63;
+    margin-bottom: 2px;
+    z-index: 1;
+  }
+
+  /* -- Difficulty Picker -- */
+  #difficulty-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2px;
+    z-index: 1;
+  }
+
+  .diff-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 18px;
+    border: 2.5px solid var(--key-border);
+    border-radius: 20px;
+    background: var(--key-bg);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .diff-btn:hover { transform: translateY(-2px); box-shadow: 0 3px 8px var(--shadow); }
+  .diff-btn.active-easy   { background: #4caf50; color: #fff; border-color: #388e3c; }
+  .diff-btn.active-medium { background: #ff9800; color: #fff; border-color: #e65100; }
+  .diff-btn.active-hard   { background: #e74c3c; color: #fff; border-color: #b71c1c; }
+
+  /* -- Game Container -- */
+  #game-container {
+    width: 94vw;
+    max-width: 700px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    z-index: 1;
+  }
+
+  /* -- Board -- */
+  #board {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #left-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* -- SVG Hangman -- */
+  #hangman-svg {
+    width: clamp(120px, 20vh, 200px);
+    height: clamp(144px, 24vh, 240px);
+  }
+
+  .gallows {
+    stroke: #8d6e63;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  .hangman-part {
+    stroke: var(--text);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hangman-part.visible {
+    opacity: 1;
+    animation: partPop 0.4s ease;
+  }
+
+  @keyframes partPop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    60%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* head fill for cartoon look */
+  #part-head-fill {
+    fill: #ffe0b2;
+    stroke: var(--text);
+    stroke-width: 3.5;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #part-head-fill.visible {
+    opacity: 1;
+    animation: partPop 0.4s ease;
+  }
+
+  /* -- Guess Dots -- */
+  #guesses-remaining {
+    display: flex;
+    gap: 5px;
+  }
+
+  .guess-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--correct);
+    transition: all 0.4s ease;
+    box-shadow: 0 2px 4px var(--shadow);
+  }
+
+  .guess-dot.used {
+    background: var(--wrong);
+    transform: scale(0.5);
+    opacity: 0.35;
+  }
+
+  /* -- Wrong Letters -- */
+  #wrong-letters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    max-width: 180px;
+    min-height: 22px;
+  }
+
+  .wrong-letter {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--wrong);
+    text-transform: uppercase;
+    animation: wrongPop 0.4s ease;
+  }
+
+  @keyframes wrongPop {
+    0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+    50%  { transform: scale(1.3) rotate(5deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  /* -- Right Panel: Word -- */
+  #right-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #word-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .letter-slot {
+    font-size: 2.2rem;
+    font-weight: 700;
+    width: 2.4rem;
+    text-align: center;
+    padding-bottom: 4px;
+    text-transform: uppercase;
+    color: transparent;
+    border-bottom: 4px solid #bcaaa4;
+    border-radius: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .letter-slot.revealed {
+    color: var(--text);
+    border-color: var(--correct);
+    animation: letterBounce 0.5s ease;
+  }
+
+  @keyframes letterBounce {
+    0%   { transform: translateY(20px) scale(0); opacity: 0; }
+    50%  { transform: translateY(-8px) scale(1.1); }
+    70%  { transform: translateY(3px); }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .letter-slot.lose-reveal {
+    color: var(--wrong);
+    border-color: var(--wrong);
+    animation: letterBounce 0.35s ease;
+  }
+
+  /* -- Keyboard -- */
+  #keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .kb-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+  }
+
+  .kb-key {
+    width: 40px;
+    height: 40px;
+    border: 2.5px solid var(--key-border);
+    border-radius: 10px;
+    background: var(--key-bg);
+    color: var(--text);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
+    box-shadow: 0 3px 0 #ccc, 0 4px 6px var(--shadow);
+  }
+
+  .kb-key:hover:not(.used) {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 0 #ccc, 0 6px 10px var(--shadow);
+    background: #fff8e1;
+  }
+
+  .kb-key:active:not(.used) {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #ccc, 0 2px 3px var(--shadow);
+    transition-duration: 0.05s;
+  }
+
+  .kb-key.correct {
+    background: var(--correct);
+    border-color: #388e3c;
+    color: #fff;
+    box-shadow: 0 3px 0 #2e7d32, 0 4px 6px var(--shadow);
+    pointer-events: none;
+  }
+
+  .kb-key.wrong {
+    background: #eee;
+    border-color: #ddd;
+    color: #ccc;
+    box-shadow: 0 1px 0 #bbb;
+    pointer-events: none;
+  }
+
+  .kb-key.used { cursor: default; }
+
+  /* -- Overlay -- */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  #overlay.active { display: flex; }
+
+  #overlay.win {
+    background: rgba(200, 240, 200, 0.92);
+  }
+  #overlay.lose {
+    background: rgba(240, 210, 210, 0.92);
+  }
+
+  #overlay h1 {
+    font-size: 3.4rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    animation: overlayPop 0.5s ease;
+  }
+
+  #overlay.win h1 { color: var(--correct); }
+  #overlay.lose h1 { color: var(--wrong); }
+
+  @keyframes overlayPop {
+    0%   { transform: scale(0) rotate(-15deg); }
+    60%  { transform: scale(1.15) rotate(5deg); }
+    80%  { transform: scale(0.95) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  #overlay .sub {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.2s forwards;
+  }
+
+  @keyframes fadeUp {
+    0%   { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  #play-again-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 36px;
+    border: 3px solid #388e3c;
+    border-radius: 30px;
+    background: var(--correct);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.05em;
+    outline: none;
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.35s forwards;
+    box-shadow: 0 4px 0 #2e7d32, 0 6px 10px var(--shadow);
+  }
+
+  #play-again-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 0 #2e7d32, 0 8px 14px var(--shadow);
+  }
+
+  #play-again-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 #2e7d32;
+  }
+
+  /* -- Confetti -- */
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    animation: confettiFall 1.5s ease-out forwards;
+    z-index: 101;
+  }
+
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.3); }
+  }
+
+  /* -- Sad drops -- */
+  .sad-drop {
+    position: fixed;
+    width: 6px;
+    height: 10px;
+    background: var(--wrong);
+    border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+    pointer-events: none;
+    animation: sadFall 1.2s ease-in forwards;
+    z-index: 101;
+  }
+
+  @keyframes sadFall {
+    0%   { opacity: 0.8; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(var(--dy)); }
+  }
+
+  /* -- Grass -- */
+  #grass {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: var(--grass);
+    border-radius: 100% 100% 0 0 / 60% 60% 0 0;
+    z-index: 0;
+  }
+
+  /* -- Bouncy face on win -- */
+  #happy-face {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #happy-face.visible {
+    opacity: 1;
+    animation: partPop 0.4s ease;
+  }
+
+  /* -- Sad face on lose -- */
+  #sad-face {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #sad-face.visible {
+    opacity: 1;
+  }
+
+  /* -- Screen wobble -- */
+  @keyframes wobble {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-2deg); }
+    40% { transform: rotate(2deg); }
+    60% { transform: rotate(-1deg); }
+    80% { transform: rotate(1deg); }
+  }
+
+  .wobble { animation: wobble 0.4s ease; }
+
+  /* -- Reduced motion -- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* -- Responsive -- */
+  @media (max-width: 600px) {
+    h1#title { font-size: 1.8rem; }
+    #board { flex-direction: column; gap: 8px; }
+    #hangman-svg { width: 130px; height: 156px; }
+    .letter-slot { font-size: 1.6rem; width: 1.6rem; }
+    #word-display { gap: 7px; }
+    .kb-key { width: 30px; height: 36px; font-size: 0.8rem; border-radius: 7px; }
+    #keyboard { gap: 4px; }
+    .kb-row { gap: 3px; }
+    #overlay h1 { font-size: 2.4rem; }
+    .diff-btn { padding: 5px 12px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="grass"></div>
+
+<h1 id="title">Hangman!</h1>
+<div id="subtitle">Can you guess the word?</div>
+
+<div id="difficulty-bar">
+  <button class="diff-btn active-easy" data-diff="easy" onclick="setDifficulty('easy')">Easy</button>
+  <button class="diff-btn" data-diff="medium" onclick="setDifficulty('medium')">Medium</button>
+  <button class="diff-btn" data-diff="hard" onclick="setDifficulty('hard')">Hard</button>
+</div>
+
+<div id="game-container">
+  <div id="board">
+    <div id="left-panel">
+      <svg id="hangman-svg" viewBox="0 0 200 240">
+        <!-- Gallows: wooden style -->
+        <line class="gallows" x1="20" y1="230" x2="100" y2="230" stroke-width="6"/>
+        <line class="gallows" x1="60" y1="230" x2="60" y2="18"/>
+        <line class="gallows" x1="60" y1="18" x2="140" y2="18"/>
+        <line class="gallows" x1="140" y1="18" x2="140" y2="44"/>
+        <line class="gallows" x1="60" y1="50" x2="88" y2="18" stroke-width="3"/>
+
+        <!-- Part 1: Head (circle + fill for cartoon) -->
+        <circle id="part-head-fill" cx="140" cy="62" r="18"/>
+        <circle id="part-1" class="hangman-part" cx="140" cy="62" r="18" fill="none"/>
+
+        <!-- Part 2: Body -->
+        <line id="part-2" class="hangman-part" x1="140" y1="80" x2="140" y2="145"/>
+
+        <!-- Part 3: Left arm -->
+        <line id="part-3" class="hangman-part" x1="140" y1="95" x2="112" y2="125"/>
+
+        <!-- Part 4: Right arm -->
+        <line id="part-4" class="hangman-part" x1="140" y1="95" x2="168" y2="125"/>
+
+        <!-- Part 5: Left leg -->
+        <line id="part-5" class="hangman-part" x1="140" y1="145" x2="115" y2="190"/>
+
+        <!-- Part 6: Right leg -->
+        <line id="part-6" class="hangman-part" x1="140" y1="145" x2="165" y2="190"/>
+
+        <!-- Part 7: Left foot -->
+        <line id="part-7" class="hangman-part" x1="115" y1="190" x2="105" y2="188"/>
+
+        <!-- Part 8: Right foot -->
+        <line id="part-8" class="hangman-part" x1="165" y1="190" x2="175" y2="188"/>
+
+        <!-- Part 9: Face (final wrong guess) -->
+        <g id="part-9" class="hangman-part">
+          <circle cx="134" cy="58" r="2" fill="var(--text)" stroke="none"/>
+          <circle cx="146" cy="58" r="2" fill="var(--text)" stroke="none"/>
+        </g>
+
+        <!-- Happy face (shown on win) -->
+        <g id="happy-face">
+          <circle cx="134" cy="58" r="2.5" fill="var(--text)" stroke="none"/>
+          <circle cx="146" cy="58" r="2.5" fill="var(--text)" stroke="none"/>
+          <path d="M 133,68 Q 140,75 147,68" stroke="var(--text)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- Sad face (shown on lose) -->
+        <g id="sad-face">
+          <line x1="131" y1="56" x2="137" y2="61" stroke="var(--wrong)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="137" y1="56" x2="131" y2="61" stroke="var(--wrong)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="143" y1="56" x2="149" y2="61" stroke="var(--wrong)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="149" y1="56" x2="143" y2="61" stroke="var(--wrong)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M 133,72 Q 140,66 147,72" stroke="var(--wrong)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+
+      <div id="guesses-remaining"></div>
+      <div id="wrong-letters"></div>
+    </div>
+
+    <div id="right-panel">
+      <div id="word-display"></div>
+    </div>
+  </div>
+
+  <div id="keyboard"></div>
+</div>
+
+<div id="overlay">
+  <h1 id="overlay-title"></h1>
+  <div class="sub" id="overlay-word"></div>
+  <button id="play-again-btn">Play Again!</button>
+</div>
+
+<script>
+// ── Word list (mixed categories) ──
+const WORDS = [
+  "cat","dog","frog","bear","lion","tiger","horse","whale","eagle","shark",
+  "bunny","panda","koala","zebra","otter","puppy","mouse","duck","owl","fox",
+  "dolphin","penguin","giraffe","monkey","parrot","turtle","kitten","elephant",
+  "cake","pie","rice","soup","taco","bread","candy","grape","lemon","mango",
+  "apple","pizza","pasta","salad","toast","berry","peach","melon","donut",
+  "cookie","banana","cherry","potato","carrot","waffle","pretzel","pancake",
+  "sun","sky","sea","leaf","rain","snow","tree","wind","star","moon",
+  "lake","hill","wave","rock","cloud","river","storm","beach","bloom",
+  "ocean","garden","forest","flower","island","meadow","stream","rainbow",
+  "mars","comet","orbit","pluto","solar","venus","earth",
+  "rocket","galaxy","nebula","meteor","saturn","cosmos","jupiter","neptune",
+  "red","blue","gold","pink","coral","green","brown",
+  "orange","purple","violet","indigo","scarlet","crimson","emerald"
+];
+
+const DIFFICULTY = {
+  easy:   { maxWrong: 9, maxLen: 5,  label: "Easy"   },
+  medium: { maxWrong: 7, maxLen: 7,  label: "Medium" },
+  hard:   { maxWrong: 5, maxLen: 99, label: "Hard"   }
+};
+
+const KB_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+
+let difficulty = "easy";
+let word, guessedLetters, wrongCount, gameOver, maxWrong;
+
+// ── DOM refs ──
+const wordDisplay   = document.getElementById("word-display");
+const wrongLettersEl= document.getElementById("wrong-letters");
+const overlay       = document.getElementById("overlay");
+const overlayTitle  = document.getElementById("overlay-title");
+const overlayWord   = document.getElementById("overlay-word");
+const playAgainBtn  = document.getElementById("play-again-btn");
+const gameContainer = document.getElementById("game-container");
+const guessDots     = document.getElementById("guesses-remaining");
+const happyFace     = document.getElementById("happy-face");
+const sadFace       = document.getElementById("sad-face");
+const headFill      = document.getElementById("part-head-fill");
+
+// ── Sound via Web Audio API ──
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  const now = audioCtx.currentTime;
+
+  if (type === "correct") {
+    // cheerful rising blip
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.linearRampToValueAtTime(780, now + 0.12);
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.2);
+  }
+  else if (type === "wrong") {
+    // low buzz
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  }
+  else if (type === "part") {
+    // thud when body part appears
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(80, now);
+    osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.2);
+  }
+  else if (type === "win") {
+    // victory fanfare — 3 ascending notes
+    [0, 0.12, 0.24].forEach((delay, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime([523, 659, 784][i], now + delay);
+      gain.gain.setValueAtTime(0.15, now + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.3);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(now + delay);
+      osc.stop(now + delay + 0.3);
+    });
+  }
+  else if (type === "lose") {
+    // descending sad trombone
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(350, now);
+    osc.frequency.linearRampToValueAtTime(120, now + 0.7);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.linearRampToValueAtTime(0.08, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.8);
+  }
+}
+
+function resumeAudio() {
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+
+// ── Difficulty ──
+function setDifficulty(diff) {
+  difficulty = diff;
+  document.querySelectorAll(".diff-btn").forEach(btn => {
+    btn.className = "diff-btn" + (btn.dataset.diff === diff ? " active-" + diff : "");
+  });
+  init();
+}
+
+// ── Keyboard ──
+function buildKeyboard() {
+  const kb = document.getElementById("keyboard");
+  kb.innerHTML = "";
+  KB_ROWS.forEach(row => {
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "kb-row";
+    for (const ch of row) {
+      const btn = document.createElement("button");
+      btn.className = "kb-key";
+      btn.textContent = ch;
+      btn.dataset.letter = ch;
+      btn.addEventListener("click", () => { resumeAudio(); handleGuess(ch); });
+      rowDiv.appendChild(btn);
+    }
+    kb.appendChild(rowDiv);
+  });
+}
+
+function buildGuessDots() {
+  guessDots.innerHTML = "";
+  for (let i = 0; i < maxWrong; i++) {
+    const dot = document.createElement("div");
+    dot.className = "guess-dot";
+    guessDots.appendChild(dot);
+  }
+}
+
+// ── Pick a word ──
+function pickWord() {
+  const maxLen = DIFFICULTY[difficulty].maxLen;
+  const pool = WORDS.filter(w => w.length <= maxLen);
+  const list = pool.length > 0 ? pool : WORDS;
+  return list[Math.floor(Math.random() * list.length)].toUpperCase();
+}
+
+// ── Init ──
+function init() {
+  const diff = DIFFICULTY[difficulty];
+  maxWrong = diff.maxWrong;
+  word = pickWord();
+  guessedLetters = new Set();
+  wrongCount = 0;
+  gameOver = false;
+
+  // Reset hangman parts
+  for (let i = 1; i <= 9; i++) {
+    const el = document.getElementById("part-" + i);
+    if (el) el.classList.remove("visible");
+  }
+  headFill.classList.remove("visible");
+  happyFace.classList.remove("visible");
+  sadFace.classList.remove("visible");
+
+  wrongLettersEl.innerHTML = "";
+  overlay.className = "";
+
+  buildKeyboard();
+  buildGuessDots();
+  renderWord();
+}
+
+function renderWord() {
+  wordDisplay.innerHTML = "";
+  for (const ch of word) {
+    const span = document.createElement("span");
+    span.className = "letter-slot";
+    if (guessedLetters.has(ch)) {
+      span.textContent = ch;
+      span.classList.add("revealed");
+    } else {
+      span.textContent = "\u00A0";
+    }
+    wordDisplay.appendChild(span);
+  }
+}
+
+// ── Guess logic ──
+function handleGuess(letter) {
+  if (gameOver) return;
+  letter = letter.toUpperCase();
+  if (!/^[A-Z]$/.test(letter)) return;
+  if (guessedLetters.has(letter)) return;
+
+  guessedLetters.add(letter);
+  const key = document.querySelector('.kb-key[data-letter="' + letter + '"]');
+
+  if (word.includes(letter)) {
+    if (key) key.classList.add("correct", "used");
+    playSound("correct");
+    renderWord();
+    checkWin();
+  } else {
+    wrongCount++;
+    if (key) key.classList.add("wrong", "used");
+
+    // Reveal hangman part
+    const partNum = wrongCount;
+    if (partNum === 1) {
+      headFill.classList.add("visible");
+    }
+    const part = document.getElementById("part-" + partNum);
+    if (part) part.classList.add("visible");
+
+    playSound("wrong");
+    setTimeout(() => playSound("part"), 100);
+
+    // Update dots
+    const dots = guessDots.querySelectorAll(".guess-dot");
+    if (dots[wrongCount - 1]) dots[wrongCount - 1].classList.add("used");
+
+    // Wrong letter display
+    const span = document.createElement("span");
+    span.className = "wrong-letter";
+    span.textContent = letter;
+    wrongLettersEl.appendChild(span);
+
+    // Wobble
+    gameContainer.classList.remove("wobble");
+    void gameContainer.offsetWidth;
+    gameContainer.classList.add("wobble");
+
+    if (wrongCount >= maxWrong) endGame(false);
+  }
+}
+
+function checkWin() {
+  for (const ch of word) {
+    if (!guessedLetters.has(ch)) return;
+  }
+  endGame(true);
+}
+
+function endGame(won) {
+  gameOver = true;
+
+  if (won) {
+    happyFace.classList.add("visible");
+    playSound("win");
+  } else {
+    // Show remaining letters
+    sadFace.classList.add("visible");
+    const slots = wordDisplay.querySelectorAll(".letter-slot");
+    for (let i = 0; i < word.length; i++) {
+      if (!guessedLetters.has(word[i])) {
+        slots[i].textContent = word[i];
+        slots[i].classList.add("lose-reveal");
+      }
+    }
+    playSound("lose");
+  }
+
+  setTimeout(() => {
+    if (won) spawnConfetti(); else spawnSadDrops();
+    overlay.classList.add("active", won ? "win" : "lose");
+    overlayTitle.textContent = won ? "You Win!" : "Oh No!";
+    overlayWord.textContent = word;
+    playAgainBtn.focus();
+  }, 600);
+}
+
+// ── Confetti ──
+function spawnConfetti() {
+  const colors = ["#ff9800","#4caf50","#9c27b0","#2196f3","#e74c3c","#ffeb3b"];
+  for (let i = 0; i < 50; i++) {
+    const el = document.createElement("div");
+    el.className = "confetti";
+    const x = Math.random() * window.innerWidth;
+    const angle = -Math.PI/2 + (Math.random() - 0.5) * 1.5;
+    const dist = 150 + Math.random() * 350;
+    const size = 6 + Math.random() * 10;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const shapes = ["50%", "2px", "0"];
+    const radius = shapes[Math.floor(Math.random() * shapes.length)];
+    el.style.cssText =
+      "left:" + x + "px;top:" + (window.innerHeight * 0.35) + "px;" +
+      "width:" + size + "px;height:" + size + "px;" +
+      "background:" + color + ";" +
+      "border-radius:" + radius + ";" +
+      "--dx:" + (Math.cos(angle) * dist) + "px;" +
+      "--dy:" + (Math.sin(angle) * dist) + "px;" +
+      "--rot:" + (Math.random() * 720 - 360) + "deg;" +
+      "animation-delay:" + (Math.random() * 0.2) + "s;";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
+}
+
+function spawnSadDrops() {
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement("div");
+    el.className = "sad-drop";
+    el.style.cssText =
+      "left:" + (Math.random() * window.innerWidth) + "px;" +
+      "top:" + (Math.random() * window.innerHeight * 0.3) + "px;" +
+      "--dy:" + (200 + Math.random() * 300) + "px;" +
+      "animation-delay:" + (Math.random() * 0.5) + "s;";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
+}
+
+// ── Keyboard input ──
+document.addEventListener("keydown", (e) => {
+  resumeAudio();
+  if (gameOver) {
+    if (e.key === "Enter") init();
+    return;
+  }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (/^[a-zA-Z]$/.test(e.key)) {
+    e.preventDefault();
+    handleGuess(e.key);
+  }
+});
+
+playAgainBtn.addEventListener("click", () => { resumeAudio(); init(); });
+
+init();
+</script>
+</body>
+</html>

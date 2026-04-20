@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Card Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0e1a;
+  --card-back: #7f1d1d;
+  --card-back-alt: #991b1b;
+  --card-back-accent: #dc2626;
+  --card-face: #f0f0f0;
+  --blue-electric: #60a5fa;
+  --blue-bright: #3b82f6;
+  --blue-deep: #1a2744;
+  --teal: #2dd4bf;
+  --text-primary: #e2e8f0;
+  --text-secondary: #64748b;
+  --red-suit: #ef4444;
+  --black-suit: #1e293b;
+  --ghost: rgba(255,255,255,0.06);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Welcome Screen ── */
+#welcome {
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+#welcome h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 4px;
+}
+#welcome .subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+}
+.suit-deco { color: var(--red-suit); margin: 0 4px; }
+.suit-deco-black { color: var(--text-secondary); margin: 0 4px; }
+
+.btn {
+  background: linear-gradient(to bottom, #5b9df5, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #2563eb, 0 6px 12px rgba(0,0,0,0.4);
+  transition: all 0.1s;
+  position: relative;
+  top: 0;
+}
+.btn:active {
+  top: 3px;
+  box-shadow: 0 1px 0 #2563eb, 0 2px 4px rgba(0,0,0,0.4);
+  background: linear-gradient(to bottom, #3b82f6, #2563eb);
+}
+.btn:hover { background: linear-gradient(to bottom, #6daaff, #5b9df5); }
+
+.btn-group { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+.btn-group .btn { min-width: 60px; }
+.btn-group .btn.selected {
+  background: linear-gradient(to bottom, var(--blue-electric), var(--blue-bright));
+  box-shadow: 0 4px 0 #2563eb, 0 0 16px rgba(96,165,250,0.4);
+}
+
+.name-inputs { margin: 24px auto; max-width: 300px; }
+.name-input-row { margin: 12px 0; display: flex; align-items: center; gap: 12px; }
+.name-input-row label { font-size: 14px; color: var(--text-secondary); min-width: 70px; text-align: right; }
+.name-input-row input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--text-secondary);
+  color: var(--text-primary);
+  font-size: 16px;
+  padding: 6px 4px;
+  outline: none;
+  flex: 1;
+  transition: border-color 0.3s;
+}
+.name-input-row input:focus { border-bottom-color: var(--blue-electric); }
+
+/* ── Game Screen ── */
+#game { display: none; width: 100vw; height: 100vh; position: relative; }
+
+#grid-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(13, 50px);
+  grid-template-rows: repeat(4, 72px);
+  gap: 4px;
+}
+
+/* ── Card ── */
+.card-slot {
+  width: 50px;
+  height: 72px;
+  perspective: 600px;
+  cursor: pointer;
+}
+.card-slot.empty { cursor: default; }
+.card-slot.empty .card-inner { visibility: hidden; }
+.card-slot.ghost {
+  border: 1px solid var(--ghost);
+  border-radius: 8px;
+  cursor: default;
+}
+.card-slot.ghost .card-inner { visibility: hidden; }
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+.card-slot.flipped .card-inner { transform: rotateY(180deg); }
+.card-slot.pressing .card-inner {
+  transform: scale(0.93);
+  transition: transform 0.1s ease;
+}
+.card-slot.matched .card-inner {
+  animation: matchBounce 0.4s ease;
+}
+@keyframes matchBounce {
+  0% { transform: rotateY(180deg) scale(1); }
+  50% { transform: rotateY(180deg) scale(1.15); filter: brightness(1.3); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+.card-face, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 8px;
+}
+
+.card-back {
+  background: var(--card-back);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.card-back svg { width: 100%; height: 100%; }
+
+.card-face {
+  background: var(--card-face);
+  transform: rotateY(180deg);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.card-face .corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.card-face .corner-tl { top: 4px; left: 5px; }
+.card-face .corner-br { bottom: 4px; right: 5px; transform: rotate(180deg); }
+.card-face .corner .rank { font-size: 9px; font-weight: 700; }
+.card-face .corner .suit-icon { width: 8px; height: 8px; margin-top: 1px; }
+.card-face .center-suit { width: 20px; height: 20px; }
+
+.card-face.red .rank, .card-face.red .center-suit, .card-face.red .suit-icon { color: var(--red-suit); fill: var(--red-suit); }
+.card-face.black .rank, .card-face.black .center-suit, .card-face.black .suit-icon { color: var(--black-suit); fill: var(--black-suit); }
+
+/* ── Player areas ── */
+.player-area {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+.player-area.active .player-name { color: var(--blue-electric); }
+.player-area.active {
+  filter: drop-shadow(0 0 12px rgba(96,165,250,0.5));
+}
+.player-info { text-align: center; }
+.player-name { font-size: 16px; font-weight: 700; transition: color 0.3s; }
+.player-pairs { font-size: 14px; color: var(--text-secondary); }
+
+.player-hand {
+  position: relative;
+  min-width: 40px;
+  min-height: 30px;
+}
+.player-hand .mini-card {
+  position: absolute;
+  width: 36px;
+  height: 52px;
+  background: var(--card-face);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 2px 3px;
+  line-height: 1;
+  animation: cardLand 0.3s ease;
+}
+@keyframes cardLand {
+  0% { transform: scale(0.5) translateY(-20px); opacity: 0; }
+  70% { transform: scale(1.05) translateY(2px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.mini-card .mini-rank { font-size: 9px; font-weight: 700; }
+.mini-card .mini-suit { width: 8px; height: 8px; }
+.mini-card.red .mini-rank { color: var(--red-suit); }
+.mini-card.red .mini-suit { fill: var(--red-suit); }
+.mini-card.black .mini-rank { color: var(--black-suit); }
+.mini-card.black .mini-suit { fill: var(--black-suit); }
+
+/* Player positions */
+.player-top { top: 20px; left: 50%; transform: translateX(-50%); flex-direction: column; }
+.player-bottom { bottom: 20px; left: 50%; transform: translateX(-50%); flex-direction: column; }
+.player-left { left: 20px; top: 50%; transform: translateY(-50%); flex-direction: column; }
+.player-right { right: 20px; top: 50%; transform: translateY(-50%); flex-direction: column; }
+
+.player-top .player-hand, .player-bottom .player-hand { display: flex; flex-direction: row; }
+.player-left .player-hand, .player-right .player-hand { display: flex; flex-direction: column; }
+
+.player-top .mini-card, .player-bottom .mini-card { position: relative; margin-left: -16px; }
+.player-top .mini-card:first-child, .player-bottom .mini-card:first-child { margin-left: 0; }
+.player-left .mini-card, .player-right .mini-card { position: relative; margin-top: -32px; }
+.player-left .mini-card:first-child, .player-right .mini-card:first-child { margin-top: 0; }
+
+/* ── End Screen ── */
+#endscreen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#endscreen.visible { display: flex; animation: fadeIn 0.5s ease; }
+
+#endscreen h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+#endscreen .winner-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+#endscreen .winner-score {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+#endscreen .leaderboard {
+  margin-bottom: 32px;
+  font-size: 16px;
+}
+#endscreen .leaderboard div {
+  padding: 6px 24px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  min-width: 280px;
+}
+#endscreen .leaderboard .pos { color: var(--text-secondary); min-width: 36px; text-align: right; }
+#endscreen .leaderboard .lb-name { flex: 1; text-align: left; }
+#endscreen .leaderboard .lb-score { color: var(--text-secondary); }
+
+/* ── Confetti ── */
+.confetti {
+  position: fixed;
+  top: -30px;
+  font-size: 20px;
+  z-index: 101;
+  pointer-events: none;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Welcome Screen ── -->
+<div id="welcome">
+  <h1><span class="suit-deco-black">♠</span> MEMORY <span class="suit-deco">♥</span></h1>
+  <div class="subtitle"><span class="suit-deco">♦</span> card game <span class="suit-deco-black">♣</span></div>
+
+  <div>How many players?</div>
+  <div class="btn-group" id="countBtns">
+    <button class="btn" data-count="2">2</button>
+    <button class="btn" data-count="3">3</button>
+    <button class="btn" data-count="4">4</button>
+  </div>
+
+  <div class="name-inputs" id="nameInputs"></div>
+
+  <button class="btn" id="startBtn" style="display:none; margin-top: 20px;">▶ Start Game</button>
+</div>
+
+<!-- ── Game Screen ── -->
+<div id="game">
+  <div id="grid-container"></div>
+</div>
+
+<!-- ── End Screen ── -->
+<div id="endscreen">
+  <h1><span class="suit-deco-black">♠</span> <span class="suit-deco">♥</span> <span id="endTitle">WINNER</span> <span class="suit-deco">♦</span> <span class="suit-deco-black">♣</span></h1>
+  <div class="winner-name" id="winnerName"></div>
+  <div class="winner-score" id="winnerScore"></div>
+  <div class="leaderboard" id="leaderboard"></div>
+  <button class="btn" id="playAgainBtn">▶ Play Again</button>
+</div>
+
+<!-- SVG suit definitions -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="suit-spade" viewBox="0 0 100 100">
+      <path d="M50 5 C50 5 5 45 5 62 C5 80 25 85 50 65 C75 85 95 80 95 62 C95 45 50 5 50 5Z M42 70 Q50 95 58 70Z"/>
+    </symbol>
+    <symbol id="suit-heart" viewBox="0 0 100 100">
+      <path d="M50 90 C50 90 5 55 5 30 C5 10 25 5 50 30 C75 5 95 10 95 30 C95 55 50 90 50 90Z"/>
+    </symbol>
+    <symbol id="suit-diamond" viewBox="0 0 100 100">
+      <path d="M50 5 L90 50 L50 95 L10 50 Z"/>
+    </symbol>
+    <symbol id="suit-club" viewBox="0 0 100 100">
+      <path d="M50 20 C35 5 10 15 15 35 C20 50 40 45 45 50 Q38 80 30 85 L70 85 Q62 80 55 50 C60 45 80 50 85 35 C90 15 65 5 50 20Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<script>
+// ── Audio (Web Audio API) ──
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function ensureAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+
+function playFlip() {
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'sine'; o.frequency.value = 1800;
+  g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + 0.08);
+}
+
+function playMatch() {
+  ensureAudio();
+  [523, 659].forEach((f, i) => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    const t = audioCtx.currentTime + i * 0.12;
+    g.gain.setValueAtTime(0.15, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + 0.25);
+  });
+}
+
+function playNoMatch() {
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'triangle'; o.frequency.value = 180;
+  g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + 0.2);
+}
+
+function playVictory() {
+  ensureAudio();
+  const notes = [523, 659, 784, 1047];
+  notes.forEach((f, i) => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'square'; o.frequency.value = f;
+    const t = audioCtx.currentTime + i * 0.18;
+    g.gain.setValueAtTime(0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + 0.4);
+  });
+}
+
+// ── Card data ──
+const SUITS = ['spade', 'heart', 'diamond', 'club'];
+const SUIT_CHARS = { spade: '♠', heart: '♥', diamond: '♦', club: '♣' };
+const SUIT_COLOR = { spade: 'black', heart: 'red', diamond: 'red', club: 'black' };
+const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+function makeDeck() {
+  const d = [];
+  for (const s of SUITS) for (const r of RANKS) d.push({ suit: s, rank: r });
+  return d;
+}
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i+1) | 0; [a[i],a[j]] = [a[j],a[i]]; } return a; }
+
+// ── Tessellated triangle SVG for card backs ──
+let triId = 0;
+function trianglePattern() {
+  const id = `tri${triId++}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="72" viewBox="0 0 50 72">
+    <rect width="50" height="72" fill="#7f1d1d" rx="8"/>
+    <pattern id="${id}" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <polygon points="0,10 5,0 10,10" fill="#991b1b" stroke="#dc2626" stroke-width="0.4"/>
+      <polygon points="0,0 10,0 5,10" fill="#7f1d1d" stroke="#dc2626" stroke-width="0.4"/>
+    </pattern>
+    <rect x="4" y="4" width="42" height="64" rx="4" fill="url(#${id})"/>
+    <rect x="4" y="4" width="42" height="64" rx="4" fill="none" stroke="#dc2626" stroke-width="0.8"/>
+  </svg>`;
+}
+
+function suitSVG(suit, cls) {
+  return `<svg class="${cls}" viewBox="0 0 100 100"><use href="#suit-${suit}"/></svg>`;
+}
+
+// ── Game State ──
+let players = [];
+let currentPlayer = 0;
+let deck = [];
+let flippedCards = [];
+let matchedCount = 0;
+let lockBoard = false;
+
+// ── Welcome Screen Logic ──
+const welcomeEl = document.getElementById('welcome');
+const gameEl = document.getElementById('game');
+const nameInputsEl = document.getElementById('nameInputs');
+const startBtn = document.getElementById('startBtn');
+const countBtns = document.querySelectorAll('#countBtns .btn');
+
+let selectedCount = 0;
+
+countBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    countBtns.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedCount = parseInt(btn.dataset.count);
+    renderNameInputs(selectedCount);
+    startBtn.style.display = 'inline-block';
+  });
+});
+
+function renderNameInputs(n) {
+  nameInputsEl.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const row = document.createElement('div');
+    row.className = 'name-input-row';
+    row.innerHTML = `<label>Player ${i+1}:</label><input type="text" placeholder="Name" data-idx="${i}" value="Player ${i+1}">`;
+    nameInputsEl.appendChild(row);
+  }
+}
+
+startBtn.addEventListener('click', startGame);
+
+// Debug: add ?debug=true to URL to skip straight to end screen
+if (new URLSearchParams(window.location.search).get('debug') === 'true') {
+  welcomeEl.style.display = 'none';
+  showEndScreen([
+    { name: 'Alice', pairs: 10 },
+    { name: 'Bob', pairs: 10 },
+    { name: 'Charlie', pairs: 6 },
+  ]);
+}
+
+// ── Start Game ──
+function startGame() {
+  const inputs = nameInputsEl.querySelectorAll('input');
+  players = [];
+  inputs.forEach((inp, i) => {
+    players.push({ name: inp.value.trim() || `Player ${i+1}`, pairs: 0, hand: [] });
+  });
+  currentPlayer = 0;
+  matchedCount = 0;
+  flippedCards = [];
+  lockBoard = false;
+  triId = 0;
+  deck = shuffle(makeDeck());
+
+  welcomeEl.style.display = 'none';
+  gameEl.style.display = 'block';
+  document.getElementById('endscreen').classList.remove('visible');
+
+  renderGame();
+}
+
+// ── Positions for 2/3/4 players ──
+const POSITIONS = {
+  2: ['top', 'bottom'],
+  3: ['top', 'left', 'right'],
+  4: ['top', 'right', 'bottom', 'left'],
+};
+
+// ── Render Game ──
+function renderGame() {
+  gameEl.innerHTML = '';
+  const gridContainer = document.createElement('div');
+  gridContainer.id = 'grid-container';
+
+  deck.forEach((card, idx) => {
+    const slot = document.createElement('div');
+    slot.className = 'card-slot';
+    slot.dataset.idx = idx;
+
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+
+    const back = document.createElement('div');
+    back.className = 'card-back';
+    back.innerHTML = trianglePattern();
+
+    const face = document.createElement('div');
+    const color = SUIT_COLOR[card.suit];
+    face.className = `card-face ${color}`;
+    face.innerHTML = `
+      <div class="corner corner-tl"><span class="rank">${card.rank}</span>${suitSVG(card.suit, 'suit-icon')}</div>
+      <div class="corner corner-br"><span class="rank">${card.rank}</span>${suitSVG(card.suit, 'suit-icon')}</div>
+      ${suitSVG(card.suit, 'center-suit')}
+    `;
+
+    inner.appendChild(back);
+    inner.appendChild(face);
+    slot.appendChild(inner);
+    slot.addEventListener('click', () => onCardClick(slot, idx));
+    gridContainer.appendChild(slot);
+  });
+
+  gameEl.appendChild(gridContainer);
+
+  // Player areas
+  const positions = POSITIONS[players.length];
+  players.forEach((p, i) => {
+    const area = document.createElement('div');
+    area.className = `player-area player-${positions[i]}`;
+    area.id = `player-area-${i}`;
+    area.innerHTML = `
+      <div class="player-info">
+        <div class="player-name" id="pname-${i}">${p.name}</div>
+        <div class="player-pairs" id="ppairs-${i}">${p.pairs} pairs</div>
+      </div>
+      <div class="player-hand" id="phand-${i}"></div>
+    `;
+    gameEl.appendChild(area);
+  });
+
+  updateActivePlayer();
+}
+
+function updateActivePlayer() {
+  players.forEach((_, i) => {
+    const area = document.getElementById(`player-area-${i}`);
+    if (area) area.classList.toggle('active', i === currentPlayer);
+  });
+}
+
+// ── Card Click ──
+function onCardClick(slot, idx) {
+  if (lockBoard) return;
+  if (slot.classList.contains('flipped') || slot.classList.contains('ghost')) return;
+  if (flippedCards.length >= 2) return;
+  if (flippedCards.some(f => f.idx === idx)) return;
+
+  try { playFlip(); } catch(e) {}
+
+  slot.classList.add('flipped');
+  flippedCards.push({ idx, slot, card: deck[idx] });
+
+  if (flippedCards.length === 2) {
+    lockBoard = true;
+    setTimeout(() => checkMatch(), 600);
+  }
+}
+
+function checkMatch() {
+  const [a, b] = flippedCards;
+  const isMatch = a.card.rank === b.card.rank;
+  console.log('checkMatch:', a.card.rank, b.card.rank, 'match:', isMatch);
+
+  if (isMatch) {
+    try { playMatch(); } catch(e) {}
+    a.slot.classList.add('matched');
+    b.slot.classList.add('matched');
+
+    setTimeout(() => {
+      players[currentPlayer].pairs++;
+      players[currentPlayer].hand.push(a.card, b.card);
+      const pairsEl = document.getElementById(`ppairs-${currentPlayer}`);
+      if (pairsEl) pairsEl.textContent = `${players[currentPlayer].pairs} ${players[currentPlayer].pairs === 1 ? 'pair' : 'pairs'}`;
+
+      addToHand(currentPlayer, a.card);
+      addToHand(currentPlayer, b.card);
+
+      a.slot.classList.remove('flipped', 'matched');
+      a.slot.classList.add('ghost');
+      b.slot.classList.remove('flipped', 'matched');
+      b.slot.classList.add('ghost');
+
+      matchedCount++;
+      flippedCards = [];
+      lockBoard = false;
+
+      if (matchedCount === 26) {
+        setTimeout(() => showEndScreen(players), 600);
+      }
+    }, 600);
+  } else {
+    try { playNoMatch(); } catch(e) {}
+    setTimeout(() => {
+      a.slot.classList.remove('flipped');
+      b.slot.classList.remove('flipped');
+      flippedCards = [];
+      currentPlayer = (currentPlayer + 1) % players.length;
+      updateActivePlayer();
+      lockBoard = false;
+    }, 3000);
+  }
+}
+
+function addToHand(playerIdx, card) {
+  const handEl = document.getElementById(`phand-${playerIdx}`);
+  const color = SUIT_COLOR[card.suit];
+  const miniCard = document.createElement('div');
+  miniCard.className = `mini-card ${color}`;
+  miniCard.innerHTML = `<span class="mini-rank">${card.rank}</span>${suitSVG(card.suit, 'mini-suit')}`;
+  handEl.appendChild(miniCard);
+}
+
+// ── End Screen ──
+function showEndScreen(playerData) {
+  gameEl.style.display = 'none';
+  welcomeEl.style.display = 'none';
+
+  const sorted = [...playerData].sort((a, b) => b.pairs - a.pairs);
+  const topScore = sorted[0].pairs;
+  const winners = sorted.filter(p => p.pairs === topScore);
+
+  const endEl = document.getElementById('endscreen');
+  const titleEl = document.getElementById('endTitle');
+  const nameEl = document.getElementById('winnerName');
+  const scoreEl = document.getElementById('winnerScore');
+  const lbEl = document.getElementById('leaderboard');
+
+  if (winners.length > 1) {
+    titleEl.textContent = "IT'S A TIE!";
+    nameEl.textContent = winners.map(w => w.name).join(' & ');
+    scoreEl.textContent = `${topScore} pairs each`;
+  } else {
+    titleEl.textContent = 'WINNER';
+    nameEl.textContent = winners[0].name;
+    scoreEl.textContent = `${topScore} pairs`;
+  }
+
+  lbEl.innerHTML = '';
+  let rank = 1;
+  sorted.forEach((p, i) => {
+    if (i > 0 && p.pairs < sorted[i-1].pairs) rank = i + 1;
+    const suffix = rank === 1 ? 'st' : rank === 2 ? 'nd' : rank === 3 ? 'rd' : 'th';
+    const row = document.createElement('div');
+    row.innerHTML = `<span class="pos">${rank}${suffix}</span><span class="lb-name">${p.name}</span><span class="lb-score">${p.pairs} pairs</span>`;
+    lbEl.appendChild(row);
+  });
+
+  endEl.classList.add('visible');
+  playVictory();
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const suits = ['♠', '♥', '♦', '♣'];
+  const colors = ['#ef4444', '#3b82f6', '#e2e8f0', '#2dd4bf'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.textContent = suits[i % 4];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.color = colors[i % 4];
+    el.style.fontSize = (14 + Math.random() * 14) + 'px';
+    el.style.animationDuration = (2 + Math.random() * 3) + 's';
+    el.style.animationDelay = (Math.random() * 2) + 's';
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+document.getElementById('playAgainBtn').addEventListener('click', () => {
+  document.getElementById('endscreen').classList.remove('visible');
+  document.querySelectorAll('.confetti').forEach(c => c.remove());
+  welcomeEl.style.display = '';
+  gameEl.style.display = 'none';
+});
+</script>
+</body>
+</html>

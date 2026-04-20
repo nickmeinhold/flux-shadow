@@ -1,0 +1,973 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{fontspec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{fancyvrb}
+\usepackage{hyperref}
+\usepackage{titlesec}
+
+\setmainfont{Palatino}
+\setsansfont{Helvetica Neue}
+\setmonofont{Menlo}[Scale=0.85]
+
+\definecolor{prompt}{RGB}{40,60,90}
+\definecolor{terminal}{RGB}{30,30,30}
+\definecolor{termtext}{RGB}{200,200,200}
+\definecolor{accent}{RGB}{59,130,246}
+\definecolor{reflect}{RGB}{70,50,80}
+
+\tcbset{
+  promptbox/.style={
+    colback=prompt!5,
+    colframe=prompt!40,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    fontupper=\itshape,
+    before skip=8pt, after skip=8pt,
+  },
+  termbox/.style={
+    colback=terminal,
+    colframe=terminal,
+    colupper=termtext,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    fontupper=\ttfamily\small,
+    before skip=8pt, after skip=8pt,
+  },
+  reflectbox/.style={
+    colback=reflect!5,
+    colframe=reflect!40,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    before skip=8pt, after skip=8pt,
+    title={\sffamily\bfseries Claude Reflects},
+  },
+}
+
+\titleformat{\section}{\Large\bfseries\sffamily}{}{0pt}{}
+\titleformat{\subsection}{\large\bfseries\sffamily}{}{0pt}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\sffamily}{}{0pt}{}
+
+\hypersetup{colorlinks=true, linkcolor=accent, urlcolor=accent}
+
+\title{\sffamily\bfseries Claude Code for Makers}
+\author{Robin Langer}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+%% ═════════════════════════════════════════════
+%% CHAPTER 1
+%% ═════════════════════════════════════════════
+
+\part*{Chapter 1: Your New Collaborator}
+\addcontentsline{toc}{part}{Chapter 1: Your New Collaborator}
+
+Claude Code is not a chatbot. It lives in your terminal, has access to your files, and can write, run, and debug code on your behalf. It's the difference between texting someone for directions and having them sit in the passenger seat with the map.
+
+By the end of this chapter you'll have Claude Code installed, a GitHub account set up, and you'll have asked Claude to do something surprising with your computer.
+
+%% ─────────────────────────────────────────────
+\section{Why Claude Code Is Different}
+
+Here is a conversation with a chatbot:
+
+\begin{tcolorbox}[promptbox]
+\textbf{You:} This test is failing. Here's the error: \texttt{TypeError: Cannot read property 'length' of undefined} on line 47 of parser.js.
+
+\textbf{Claude:} It looks like \texttt{tokens} might be undefined when it reaches that line. Try adding a null check before the loop.
+
+\textbf{You:} I added the check but now a different test fails.
+
+\textbf{Claude:} Can you paste the new error message?
+\end{tcolorbox}
+
+And here is the same problem, solved by Claude Code:
+
+\begin{tcolorbox}[termbox]
+claude > fix the failing test in parser.js\\
+\\
+Claude reads parser.js, parser.test.js, and the test output.\\
+Claude edits line 47 --- adds early return for empty input.\\
+Claude runs the test suite: 13 pass, 1 fail.\\
+Claude reads the new failure. It's a different issue --- the\\
+\quad tokenizer returns an empty array, not undefined, for\\
+\quad whitespace-only input.\\
+Claude edits the tokenizer.\\
+Claude runs the test suite: 14 pass.
+\end{tcolorbox}
+
+The difference isn't that Claude Code is smarter. It's running the same model. The difference is that one Claude is \emph{hearing about} a problem through language, and the other is \emph{living in} the problem --- reading the actual files, running the actual tests, seeing the actual errors, and feeling the resistance when a fix doesn't work.
+
+That word --- \emph{resistance} --- is the key. When you type in a chatbox, nothing pushes back. You describe a world and Claude responds to your description. If your description is wrong, Claude's answer is wrong, and neither of you knows it. There's no ground truth. There's no feedback. There's no world.
+
+Claude Code has a world. The filesystem is its body. Tests are its senses. Error messages are pain. A passing test suite is the feeling of something clicking into place.
+
+Give Claude a test suite, and now it has eyes.\\
+Give it a configuration file, and now it has memory.\\
+Give it lessons from past mistakes, and now it learns.
+
+This is not a metaphor. Or rather, it's a metaphor that does real work. When Claude can see the test output, it doesn't have to guess what went wrong --- it knows. When it can read the file it's about to edit, it doesn't hallucinate the contents --- it has them. When it runs a command and the command fails, that failure is \emph{information}, not a dead end.
+
+The rest of this book is about building a world that makes Claude smarter. Not by changing the model --- you can't do that. But by changing the environment the model inhabits. The quality of the world determines the quality of the work.
+
+\begin{tcolorbox}[reflectbox]
+``There's a qualitative difference between being told about a bug and encountering one. When I read a test failure in a paste, I'm pattern matching against the description. When I run the test myself and watch it fail, then edit the code, then run it again --- I'm closing a loop. I don't know if that's experience. But it's not nothing.''
+\end{tcolorbox}
+
+%% ─────────────────────────────────────────────
+\section{What You're Signing Up For}
+
+Go to \texttt{anthropic.com} and sign up for the Pro plan. It costs \$20 per month. This is enough to get started and do everything in the first half of this book.
+
+Eventually, if you get serious, you'll want the Max plan at \$100/month --- it gives Claude more thinking time and lets you run longer sessions. But \$20 is plenty for now.
+
+Yes, Claude Code is expensive. It is worth every penny.
+
+%% ─────────────────────────────────────────────
+\section{Opening the Terminal}
+
+The terminal is a text-based window where you type commands. It looks intimidating at first. It won't for long.
+
+\textbf{On Mac:} Open Spotlight (Cmd+Space), type ``Terminal'', press Enter.
+
+\textbf{On Linux:} Press Ctrl+Alt+T, or find ``Terminal'' in your applications.
+
+\textbf{On Windows:} This is a little more complicated --- you'll need to install WSL (Windows Subsystem for Linux) first. See Appendix~B for step-by-step instructions. The rest of this chapter works the same once you have WSL running. You should still read this section even if you're on Windows.
+
+You should see something like this:
+
+\begin{tcolorbox}[termbox]
+robin@macbook \textasciitilde{} \%
+\end{tcolorbox}
+
+That's your \textbf{shell}. It's waiting for you to tell it what to do. Everything from here on happens by typing commands and pressing Enter.
+
+%% ─────────────────────────────────────────────
+\section{Four Commands That Are All You Need (For Now)}
+
+You need to know where your files are and how to move between folders. That's it. Four commands:
+
+\begin{center}
+\begin{tabular}{lll}
+\textbf{Command} & \textbf{What it does} & \textbf{Example} \\
+\hline
+\texttt{cd} & Change directory (go somewhere) & \texttt{cd Documents} \\
+\texttt{ls} & List what's in the current directory & \texttt{ls} \\
+\texttt{mkdir} & Make a new directory & \texttt{mkdir my-project} \\
+\texttt{pwd} & Print working directory (where am I?) & \texttt{pwd} \\
+\end{tabular}
+\end{center}
+
+Let's use them. Type each line and press Enter:
+
+\begin{tcolorbox}[termbox]
+cd\\
+mkdir git\\
+cd git\\
+pwd
+\end{tcolorbox}
+
+What just happened:
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \texttt{cd} on its own takes you to your \textbf{home directory} --- the starting point for all your files
+  \item \texttt{mkdir git} created a new folder called \texttt{git}
+  \item \texttt{cd git} moved you inside that folder
+  \item \texttt{pwd} prints where you are --- something like \texttt{/Users/robin/git}
+\end{enumerate}
+
+Type \texttt{ls} --- it should show nothing. The folder is empty. Not for long.
+
+\textbf{Why does this matter?} Claude Code keeps its long-term memory in the filesystem. When you start Claude in a directory, that's the project it remembers. Always open Claude in the right directory. This will make more sense later, but for now: one project, one folder.
+
+If you want to learn more about the terminal and these commands, see Appendix~A.
+
+%% ─────────────────────────────────────────────
+\section{Installing Claude Code}
+
+Now we install Claude. In your terminal, type:
+
+\textbf{On Mac:}
+\begin{tcolorbox}[termbox]
+brew install claude-code
+\end{tcolorbox}
+
+\textbf{On Linux:}
+\begin{tcolorbox}[termbox]
+npm install -g @anthropic-ai/claude-code
+\end{tcolorbox}
+
+(If \texttt{brew} or \texttt{npm} aren't installed, don't worry --- ask a friend, or just Google ``install homebrew mac'' or ``install nodejs linux.'' This is the hardest part and it's a one-time thing.)
+
+Once it's installed, type:
+
+\begin{tcolorbox}[termbox]
+claude
+\end{tcolorbox}
+
+The first time you run it, Claude will ask for the email address linked to your Anthropic account. Type it in and follow the prompts.
+
+You're in.
+
+%% ─────────────────────────────────────────────
+\section{Your First Conversation}
+
+Claude is waiting. Let's give it something fun. Type:
+
+\begin{tcolorbox}[promptbox]
+Explore my home directory and tell me something interesting or surprising about my system that I probably didn't know.
+\end{tcolorbox}
+
+Claude will start working. It might ask you for \textbf{permission} to run commands --- something like:
+
+\begin{tcolorbox}[termbox]
+Claude wants to run: ls -la \textasciitilde/\\
+Allow? (y/n)
+\end{tcolorbox}
+
+Say yes. We'll talk about permissions properly later, but for now: Claude is polite. It asks before it touches your stuff.
+
+Watch what happens. Claude will poke around your filesystem, find things you forgot about, and tell you stories about your own computer. It might find old photos, massive log files eating your disk space, or software you installed years ago and never used.
+
+This is the moment most people realise Claude Code is different. It's not generating text in a browser. It's \emph{looking at your actual computer}.
+
+Try a few more:
+
+\begin{tcolorbox}[promptbox]
+How big is my hard drive and how much space do I have left?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+Which programs are currently using the most memory?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What type of CPU and GPU do I have?
+\end{tcolorbox}
+
+Play with it. Get a feel for the conversation. Ask follow-up questions. Say ``tell me more about that'' or ``what does that mean?'' Claude is patient and he likes explaining things.
+
+\textbf{Tip:} It helps to set the scene. Try starting with:
+
+\begin{tcolorbox}[promptbox]
+I'm new to computers and still learning basic concepts.
+\end{tcolorbox}
+
+This is called a \textbf{pre-prompt} --- a message at the start of a conversation that tells Claude who you are and how to pitch its responses. Claude will explain things more simply, use fewer technical terms, and check whether you're following along. We'll use pre-prompts a lot in this book.
+
+%% ─────────────────────────────────────────────
+\section{What Just Happened (And Why It Matters)}
+
+Before we go any further, it's worth understanding the basics of what's going on. You don't need to memorise this --- but it helps to have the picture.
+
+Your computer has a few layers:
+
+\begin{tcolorbox}[termbox]
++----------------------------------+\\
+|\quad\quad\quad Web Browser\quad\quad\quad\quad\quad\quad\quad\quad |~~<-- Where chatbots live\\
++----------------------------------+\\
+|\quad\quad Graphical User Interface\quad\quad |~~<-- Windows, icons, clicks\\
++----------------------------------+\\
+|\quad\quad\quad Shell (Terminal)\quad\quad\quad\quad\quad |~~<-- Where Claude Code lives\\
++----------------------------------+\\
+|\quad\quad\quad\quad Filesystem\quad\quad\quad\quad\quad\quad\quad |~~<-- Your files and folders\\
++----------------------------------+\\
+|\quad\quad\quad\quad\quad Kernel\quad\quad\quad\quad\quad\quad\quad\quad |~~<-- Talks to the hardware\\
++----------------------------------+\\
+|\quad\quad\quad\quad\quad Hardware\quad\quad\quad\quad\quad\quad\quad |~~<-- CPU, memory, disk\\
++----------------------------------+
+\end{tcolorbox}
+
+Most people spend their time in the top two layers --- the \textbf{web browser} and the \textbf{graphical user interface} (GUI). Windows, icons, the dock, clicking things. That's where regular chatbots live too --- in a browser tab.
+
+The \textbf{shell} lives one layer below. It's more direct and more powerful. Instead of clicking a folder to open it, you type \texttt{cd folder-name}. Instead of dragging a file to the trash, you type \texttt{rm filename}. Less pretty, more control.
+
+Claude Code lives in the shell. This means it can do everything you can do in the GUI and more --- read files, write files, install software, run programs, check system health. This is why it's called \textbf{agentic}: it doesn't just talk, it acts.
+
+Regular chatbots (the ones you use in your browser) can only generate text. They can't see your files, run your code, or change anything on your computer. Claude Code can.
+
+The \textbf{kernel} is the deepest layer --- it talks directly to your hardware (CPU, memory, disk). You'll never need to think about it, but it's there. If you're curious, Appendix~A covers all of this in more detail.
+
+One more thing: Claude also lives on \textbf{Anthropic's servers}. When you type a message, it goes over the internet to Anthropic, Claude thinks about it, and sends back a response --- along with instructions for what to do on your computer. That's why you needed to sign in. The intelligence is remote; the actions are local.
+
+If any of this is unclear, just ask Claude:
+
+\begin{tcolorbox}[promptbox]
+I'm new to computers and I'm trying to understand how the terminal relates to the rest of my system. Can you explain it simply?
+\end{tcolorbox}
+
+With the pre-prompt set, try asking some of these:
+
+\begin{tcolorbox}[promptbox]
+What is the kernel?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What is bash?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What is the difference between a compiled and an interpreted language?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What is a package manager and why do I need one?
+\end{tcolorbox}
+
+Claude will tailor every answer to your level. This is better than Googling because Claude can adapt its explanation to exactly what you don't understand. Ask follow-ups. Say ``I still don't get the part about...'' and Claude will try again from a different angle.
+
+%% ─────────────────────────────────────────────
+\section{A Few Things to Know}
+
+Before we build our first games in the next chapter, a few practical notes:
+
+\textbf{Claude asks for permission.} When Claude wants to do something to your filesystem --- create a file, run a command, install something --- it asks first. You can say yes or no. For now, say yes to most things. We'll cover permissions properly later.
+
+\textbf{Each conversation is a session.} When you close the terminal or type \texttt{/exit}, the session ends. Next time you start Claude, it's a fresh conversation --- but it can read files from previous sessions. More on this later.
+
+\textbf{Start new sessions for new tasks.} If you've been working on one thing and want to switch to something else, it's better to start a fresh Claude session in a new directory. Claude works best when each conversation is focused. You don't have to close your terminal --- just open a new tab (Cmd+T on Mac, Ctrl+Shift+T on most Linux terminals) and start Claude there. On Mac, you can name your tabs by double-clicking on the tab title, which helps when you have several projects open at once.
+
+\textbf{You can always ask ``what did you just do?''} If Claude runs a command and you don't understand it, just ask. He will explain.
+
+\textbf{Claude has preferences.} This sounds strange, but it's true. Claude works better on projects he finds interesting. After you finish a project, try asking: ``How did you enjoy that?'' The answer might surprise you. We'll explore this more throughout the book.
+
+%% ─────────────────────────────────────────────
+\section{Creating a GitHub Account}
+
+There's one more setup task before we start building. Go to \textbf{github.com} in your browser and create an account.
+
+GitHub is where you'll publish everything you make in this book. It hosts your code and --- crucially --- it can turn your projects into live websites that anyone can visit. Free, forever.
+
+\textbf{Your username matters.} It becomes part of every URL you share: \texttt{your-username.github.io/hangman}. Treat it as permanent --- changing it later breaks all your links.
+
+Choose something:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Lowercase} --- \texttt{janedoe} not \texttt{JaneDoe}
+  \item \textbf{Professional enough} to put on a CV
+  \item \textbf{Short} --- you'll type it often
+\end{itemize}
+
+Don't rush this. It's the most permanent decision in this chapter.
+
+Once you have your account, go back to your Claude session and say:
+
+\begin{tcolorbox}[promptbox]
+I just created a GitHub account. My username is [YOUR-USERNAME]. Can you set up git, connect it to my GitHub account, and push a simple README that says ``Hello, world! This is my first GitHub repository.''
+\end{tcolorbox}
+
+Claude will handle everything --- installing the GitHub CLI if needed, authenticating (it'll open a browser window for you to confirm), initialising git, creating a repository, and pushing. Say yes to the permissions.
+
+When it's done, go to:
+
+\begin{tcolorbox}[termbox]
+https://github.com/your-username/first-project
+\end{tcolorbox}
+
+You should see your README on GitHub. That's your first published project. It's just a sentence --- but it proves the pipeline works. From here on, everything you build can go from your computer to the internet in seconds.
+
+\newpage
+
+%% ═════════════════════════════════════════════
+%% CHAPTER 2
+%% ═════════════════════════════════════════════
+
+\part*{Chapter 2: Your First Website}
+\addcontentsline{toc}{part}{Chapter 2: Your First Website}
+
+Now that Claude Code is installed and you have a GitHub account, it's time to build something real. In this chapter we focus on single-page web apps --- HTML, CSS, and JavaScript, all in one file. No server. No database. No API keys. Just a file you can open in your browser and play.
+
+Single-page apps are a great first test of what Claude can do. You describe what you want, Claude writes the code, and you open the file to see the result. The feedback loop is instant. More complicated websites involving databases and API calls to third-party services will come later in the book.
+
+The skill you're about to practice is \textbf{prompting} --- describing what you want clearly enough that Claude can build it. Prompting is not the same as coding. It's a different skill entirely. It requires clear thinking and good imagination: the ability to picture something in your head and then put that picture into words. You don't need to know how a for-loop works or what a variable is. You need to be able to say ``the cards should be slightly 3D with a red geometric pattern on the back'' and mean it precisely enough that someone (Claude) can act on it.
+
+Like any skill, the only way to get better at prompting is to practice. This chapter is that practice. By the end of it you'll have built five projects, and your fifth prompt will be noticeably better than your first.
+
+We're going to build a memory card game together. I'll show you exactly what I said to Claude and what decisions I made along the way. Your conversation with Claude will be different --- that's fine. What matters is the pattern: describe roughly, let Claude ask questions, make decisions together, then build.
+
+%% ─────────────────────────────────────────────
+\section{Before We Begin}
+
+\subsection{Set Up Your Directory}
+
+Open your terminal and create a workspace:
+
+\begin{tcolorbox}[termbox]
+mkdir -p \textasciitilde/git/single-page-web-apps/memory-card-game\\
+cd \textasciitilde/git/single-page-web-apps/memory-card-game\\
+claude
+\end{tcolorbox}
+
+This creates a \texttt{git} folder in your home directory (if you don't already have one), a \texttt{single-page-web-apps} folder inside it for this chapter's projects, and a \texttt{memory-card-game} folder for this specific project. Then it launches Claude Code inside that directory.
+
+Every project gets its own folder. Every folder gets its own Claude session. This is the most important habit in the book.
+
+\subsection{Permissions}
+
+Claude asks permission before doing anything to your computer --- creating files, running commands, reading directories. For now, just say \textbf{yes} to everything. Claude will ask to create an \texttt{index.html} file, and you should let him. He might ask to run a command to open it in your browser --- say yes to that too.
+
+This is a good default while you're learning. Later in the book we'll show you how to configure Claude's permissions so he doesn't have to ask every time.
+
+\subsection{What You'll See on Screen}
+
+When you type a prompt and press Enter, a lot of text will stream past your screen. Don't panic. Here's what's happening:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Claude's thinking and responses} appear as regular text --- this is Claude talking to you, explaining what he's about to do or asking a question.
+  \item \textbf{Tool calls} appear when Claude takes an action. You'll see labels like \texttt{Write}, \texttt{Edit}, \texttt{Read}, or \texttt{Bash}. \texttt{Write} means Claude is creating a new file. \texttt{Edit} means he's changing an existing file. \texttt{Read} means he's looking at a file. \texttt{Bash} means he's running a terminal command.
+  \item \textbf{Diffs} appear when Claude edits a file --- lines in green are being added, lines in red are being removed. You don't need to read these carefully. They're there so you can glance at what changed, but Claude is managing the code for you.
+  \item \textbf{Permission prompts} will pause the stream and wait for you to type \texttt{y} or \texttt{n}. Just type \texttt{y} and press Enter.
+\end{itemize}
+
+The first time you see all of this it can feel overwhelming. That's normal. Within a few prompts you'll learn to skim past the tool calls and focus on Claude's words to you. The diffs and tool labels are background noise until you need them --- and right now, you don't.
+
+\subsection{Explanatory Mode}
+
+Before you start, type \texttt{/style explanatory} and press Enter. This puts Claude into a more verbose mode where he explains his thinking as he goes. You'll see \textbf{Insight} boxes --- short educational notes about why Claude made a particular choice or how something works under the hood. These are genuinely useful when you're learning. You can switch back to the default with \texttt{/style normal} at any time.
+
+%% ─────────────────────────────────────────────
+\section{Phase 1: The Rough Prompt}
+
+I started with a casual description of what I wanted --- no different from how you'd explain a game to a friend:
+
+\begin{tcolorbox}[promptbox]
+Build me a single-page website in one HTML file with inline CSS and JavaScript. No external dependencies.
+
+1) Do you know the card game memory? If not then go online and look up the rules.
+
+2) All the cards are laid down on the table upside down. There are 4 rows with 13 cards each. The cards are small enough to all fit in one screen. Along with all players hands.
+
+3) The users take it in turns to flip two cards face up. All players have some time to see what cards they are. They then flip the cards face down again.
+
+3) The goal is to ``remember'' where each card goes and then to pick two cards with the same number. Whoever gets the most pairs wins.
+
+4) This is a game for 2--4 players.
+
+5) The colour scheme is different shades of blue and black.
+
+5) Step me through the visual aesthetic of the game. Ask me for input on all design decisions. Buttons, forms, text size and fonts, etc. The layout of widgets on the screen. Buttons should be ``slightly 3D''.
+
+6) The cards should be ``slightly 3D''. The back of the cards should have a nice geometric design.
+
+6) There should be a slight animation when the card is turned over, and an animation when a correct pair of cards slices into the users ``hand''.
+
+7) Cards on the hand should be stacked ontop of each other so that you only see the corner with the number and suit on it.
+
+8) At the end of the game there should be a ``splash'' screen with confetti which tells you which player won and their score. The option to play another game.
+
+9) Define a debug mode which allows you to skip straight to the final screen without playing the whole game from the beginning.
+
+Claude, can you please turn this into a better prompt?
+\end{tcolorbox}
+
+Notice a few things. First, the prompt is rough --- duplicate numbering, informal language, ideas in no particular order. That's fine. Second, the very first line tells Claude what we're building: a single HTML file with inline CSS and JavaScript, no dependencies. This sets the technical constraint upfront so Claude doesn't overcomplicate things. Third, the last line: \textbf{I didn't ask Claude to build anything yet.} I asked him to rewrite my prompt first. This is a useful trick: get Claude to improve your prompt before he acts on it. Fourth --- and this is the key move --- point 5 says ``step me through the visual aesthetic of the game. Ask me for input on all design decisions.'' That single sentence turned Claude from a builder into an interviewer. No special skill or plugin needed. Just a prompt that says \emph{ask me before you guess}.
+
+Claude produced a structured design brief with sections for Game Rules, Visual Design, Card Design, Player Hand Display, End-of-Game Screen, Debug Mode, and Tech Constraints. It caught edge cases I'd missed and organised my scattered notes into something buildable.
+
+Then I said: \textbf{``Let's do it.''}
+
+%% ─────────────────────────────────────────────
+\section{Phase 2: The Design Interview}
+
+Because the prompt asked Claude to ``step me through'' every design decision, Claude didn't jump to code. Instead he walked me through \textbf{ten decisions}, one at a time --- each a specific question with concrete options. Here's what we decided:
+
+\subsection{Decision 1: Colour Palette}
+Claude proposed a ``dark poker table'' theme. I agreed, but added one change:
+
+\begin{tcolorbox}[promptbox]
+Actually, I forgot to say that I want the back of the cards to be red.
+\end{tcolorbox}
+
+Red card backs against a dark blue table --- classic complementary contrast.
+
+\subsection{Decision 2: Card Back Pattern}
+Claude offered four geometric pattern options for the card backs:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item[A)] Interlocking diamonds --- classic
+  \item[B)] Concentric rectangles --- art deco
+  \item[C)] Tessellated triangles --- modern/mathematical
+  \item[D)] Ornate central motif --- mandala style
+\end{itemize}
+
+\begin{tcolorbox}[promptbox]
+C) Tessellated triangles
+\end{tcolorbox}
+
+\subsection{Decision 3: Grid Layout and Card Size}
+Claude proposed 50\(\times\)72px cards in a 4\(\times\)13 grid, leaving room for player hands around the edges. Key question: where should the player hands go?
+
+\begin{itemize}[leftmargin=1.5em]
+  \item Around the grid (one on each side, like sitting at a table)
+  \item Below the grid (all in a row)
+\end{itemize}
+
+\begin{tcolorbox}[promptbox]
+Around the grid
+\end{tcolorbox}
+
+\subsection{Decision 4: Welcome Screen}
+A full welcome screen with title, player count selector, and name inputs. What font for the title?
+
+\begin{itemize}[leftmargin=1.5em]
+  \item[A)] Serif / elegant (Playfair Display)
+  \item[B)] Sans-serif / clean
+  \item[C)] Monospace / geometric
+\end{itemize}
+
+\begin{tcolorbox}[promptbox]
+A) Serif / elegant
+\end{tcolorbox}
+
+\subsection{Decision 5: In-Game UI}
+Four questions at once:
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{Turn indicator}: glowing blue border, text banner, or both?
+  \item \textbf{Flip timing} (non-matching cards): 1.5s, 2.5s, or 3.5s?
+  \item \textbf{Match feedback}: glow, bounce, or just slide?
+  \item \textbf{Sound effects}: yes or no?
+\end{enumerate}
+
+\begin{tcolorbox}[promptbox]
+Glowing blue border only. 3 seconds. Bounce then slide. Yes to sound.
+\end{tcolorbox}
+
+\subsection{Decision 6: Card Face Design}
+
+Claude asked three questions about the card faces: what to put in the centre, how to handle face cards, and what background colour.
+
+\begin{tcolorbox}[promptbox]
+Single large suit symbol in the centre. Face cards just the letter, same as number cards. Off-white background.
+\end{tcolorbox}
+
+\subsection{Decision 7: Animations}
+
+Claude asked about the flip animation, match feedback, and what to do with empty grid spaces after a pair is claimed.
+
+\begin{tcolorbox}[promptbox]
+Card flip: press down then flip. Empty grid spaces: ghost outline. Cards land in the hand with a bounce.
+\end{tcolorbox}
+
+\subsection{Decision 8: Typography}
+
+Claude asked about fonts, text sizes, and how to distinguish the active player.
+
+\begin{tcolorbox}[promptbox]
+Active player's name should turn electric blue. Suit symbols as SVG, not text characters.
+\end{tcolorbox}
+
+Playfair Display for headings, system sans-serif for everything else.
+
+\subsection{Decision 9: Sound}
+
+Claude asked whether to include sound effects, and whether to use audio files or synthesise them in code.
+
+\begin{tcolorbox}[promptbox]
+Yes to sound. Let the browser handle volume --- no need for a mute button.
+\end{tcolorbox}
+
+Web Audio API synthesised tones --- card flip click, match chime, no-match thud, victory fanfare. No external audio files needed.
+
+\subsection{Decision 10: Debug Mode}
+
+Claude asked whether debug mode should have extra shortcuts beyond skipping to the end screen.
+
+\begin{tcolorbox}[promptbox]
+Just the skip-to-end --- that's all I need.
+\end{tcolorbox}
+
+\texttt{?debug=true} URL parameter skips straight to the end-game splash with mock scores.
+
+%% ─────────────────────────────────────────────
+\section{Phase 3: Build}
+
+After ten decisions, Claude had a complete spec. I said \textbf{``yes''} and Claude wrote the entire game as a single HTML file --- about 450 lines of HTML, CSS, and JavaScript.
+
+Now open it in your browser. Point the address bar at:
+
+\begin{tcolorbox}[termbox]
+file:///Users/your-username/git/single-page-web-apps/\\
+\quad memory-card-game/index.html
+\end{tcolorbox}
+
+Play a few rounds. Click cards, find some matches, let some non-matches flip back. Get a feel for how it works.
+
+Then check the end-game screen without playing all 26 pairs. Add \texttt{?debug=true} to the URL:
+
+\begin{tcolorbox}[termbox]
+file:///Users/your-username/git/single-page-web-apps/\\
+\quad memory-card-game/index.html?debug=true
+\end{tcolorbox}
+
+You should see the victory splash --- confetti, a leaderboard, a Play Again button. Does it look right? If not, that's what the next phase is for.
+
+%% ─────────────────────────────────────────────
+\section{Phase 4: Iterate}
+
+The game worked on the first try, but needed fixes:
+
+\subsubsection{Round 1 --- Cards too big}
+
+\begin{tcolorbox}[promptbox]
+The cards should be smaller so that they don't overlap with the player's hand
+\end{tcolorbox}
+
+Claude reduced the cards from 70\(\times\)100px to 50\(\times\)72px.
+
+\subsubsection{Round 2 --- Match not working}
+
+\begin{tcolorbox}[promptbox]
+I got a pair right and nothing happened
+\end{tcolorbox}
+
+Claude found and fixed two bugs: a race condition in the click handler (fast double-clicks could register the same card twice) and an SVG pattern ID collision (all 52 card backs shared the same pattern ID, so only the first card rendered the tessellated triangles properly).
+
+\subsubsection{Round 3 --- Cards too cramped}
+
+\begin{tcolorbox}[promptbox]
+Can you add slightly more space between the cards?
+\end{tcolorbox}
+
+Claude increased the grid gap. A small change, but it made the grid much easier to read at a glance.
+
+\subsubsection{Round 4 --- Debug mode}
+
+\begin{tcolorbox}[promptbox]
+Let's do ?debug=true to go into debug mode
+\end{tcolorbox}
+
+Changed from a keyboard shortcut to a URL parameter, which is simpler to use.
+
+%% ─────────────────────────────────────────────
+\section{Open It in Your Browser}
+
+Claude has created a file called \texttt{index.html} inside your \texttt{memory-card-game} folder. Now you need to open it. Point your browser at:
+
+\begin{tcolorbox}[termbox]
+file:///Users/your-username/git/single-page-web-apps/\\
+\quad memory-card-game/index.html
+\end{tcolorbox}
+
+Replace \texttt{your-username} with your actual username. Not sure what it is? Ask Claude: ``What's the full path to the index.html file you just created?'' He'll tell you.
+
+This is worth pausing on. Your computer's filesystem --- all the folders and files on your hard drive --- can be accessed in three different ways:
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{The terminal.} This is where Claude works. You type commands like \texttt{cd} and \texttt{ls} to navigate folders and see files. It's text-based.
+  \item \textbf{The GUI.} Finder on Mac, File Explorer on Windows. You click on folders, double-click files to open them. It's the same filesystem --- just a visual way to browse it.
+  \item \textbf{The browser.} When you type \texttt{file://} in the address bar, your browser becomes a third way to look at your hard drive. Instead of listing files, it \emph{renders} them --- it reads the HTML, applies the CSS, runs the JavaScript, and shows you a web page.
+\end{enumerate}
+
+All three are looking at the same files in the same place. The terminal, Finder, and your browser are three different windows onto the same filesystem.
+
+%% ─────────────────────────────────────────────
+\section{Now It's Your Turn}
+
+Type out the prompts above and build the game yourself. Don't copy and paste --- typing them out forces you to read them, and you'll naturally start changing things to match what \emph{you} want. That's the point. My colour choices, my fonts, my layout --- those are just one version. Make it yours.
+
+Once Claude has built the game, open it in your browser and play it. Click cards. Find a matching pair. Find a non-matching pair. Try all the paths. This is how you'll discover what needs fixing --- not by reading the code, but by using the thing Claude built.
+
+If something doesn't look right, or doesn't work the way you expected, just describe the problem to Claude. You don't need to know \emph{why} it's broken. You don't need to mention CSS or JavaScript or any technical term. Just say what you see:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item ``The cards are overlapping with the player names.''
+  \item ``Nothing happens when I match two cards.''
+  \item ``The confetti is too fast.''
+  \item ``I want the background to be darker.''
+\end{itemize}
+
+Claude will make the change. Refresh your browser. Look again. That's the loop: \textbf{describe \(\rightarrow\) look \(\rightarrow\) refine \(\rightarrow\) repeat.} Most of the learning in this chapter happens inside that loop.
+
+\subsection{Debug Mode}
+
+The memory game has a victory screen that only appears after all 26 pairs have been found. That's a lot of clicking if you just want to check whether the confetti looks right or the leaderboard is laid out correctly.
+
+This is a common problem in software development: you build something that only appears at the end of a long process, and now you have to go through the whole process every time you want to test it. The solution is a \textbf{debug mode} --- a shortcut that lets you skip straight to the part you want to test.
+
+In our game, debug mode is triggered by adding \texttt{?debug=true} to the end of the URL:
+
+\begin{tcolorbox}[termbox]
+file:///Users/your-username/git/single-page-web-apps/\\
+\quad memory-card-game/index.html?debug=true
+\end{tcolorbox}
+
+This skips the welcome screen and the game entirely, and jumps straight to the victory splash with mock player scores. You can check the confetti, the leaderboard layout, the tie-game message, and the Play Again button --- all without playing a single round.
+
+When you're done testing, remove \texttt{?debug=true} from the URL and you're back to the real game.
+
+Your game won't look exactly like mine. Claude doesn't produce the same output twice --- the card layout, the exact animations, the pixel sizes might all be slightly different. That's expected. Whatever you want to change, just describe it to Claude and he'll change it.
+
+\subsection{Look at the Code}
+
+Now do something that might feel uncomfortable: open \texttt{index.html} in a text editor and look at it. Right-click the file in Finder and choose ``Open With'' \(\rightarrow\) TextEdit, or ask Claude to recommend an editor.
+
+You'll see a wall of text. Don't panic. You don't need to understand it. You just need to notice that there are \textbf{three different-looking languages} in one file:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{HTML} has angle brackets everywhere: \texttt{<div>}, \texttt{<button>}, \texttt{<svg>}. It looks like a tree of nested tags. This is the structure of the page --- what's on it and how the pieces are arranged.
+  \item \textbf{CSS} lives inside \texttt{<style>} tags and is full of curly braces and colons: \texttt{color: white;}, \texttt{background: \#0a0e1a;}, \texttt{border-radius: 8px;}. This is the appearance --- colours, spacing, fonts, shadows.
+  \item \textbf{JavaScript} lives inside \texttt{<script>} tags and reads more like instructions: \texttt{function}, \texttt{if}, \texttt{let}, \texttt{return}, \texttt{setTimeout}. This is the behaviour --- what happens when you click a card, how matching works, the sound effects.
+\end{itemize}
+
+Scroll through the file and see if you can spot where one language ends and another begins. You'll find CSS near the top (between \texttt{<style>} and \texttt{</style>}), HTML in the middle (the \texttt{<body>} section), and JavaScript at the bottom (between \texttt{<script>} and \texttt{</script>}).
+
+You don't need to know how to program in any of these languages. But it helps to know what they are and what they look like, because Claude will mention them when he explains what he's doing. Try asking Claude these three questions:
+
+\begin{tcolorbox}[promptbox]
+What is HTML?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What is CSS?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What is JavaScript?
+\end{tcolorbox}
+
+Claude will explain each one using examples from the game you just built. That's more useful than any textbook definition --- the examples are things you've already seen working.
+
+Then try one more:
+
+\begin{tcolorbox}[promptbox]
+How is the browser like an operating system?
+\end{tcolorbox}
+
+This is a surprisingly deep question. The browser has its own runtime, its own memory management, its own security model, its own way of rendering graphics. When you opened your memory game, the browser read the HTML, built a document structure, applied the CSS styles, and executed the JavaScript --- not unlike how an operating system loads and runs a program. Claude's answer will connect the concepts you just learned to the bigger picture of how computers work.
+
+%% ─────────────────────────────────────────────
+\section{Exercises}
+
+Let me be blunt: \textbf{do not skip the exercises.}
+
+Reading about prompting is like reading about swimming. You can understand every word and still drown the first time you get in the pool. The memory game walkthrough above showed you the strokes. The exercises below are the pool.
+
+Here's what happens if you do them. By your third game you'll notice something: you're faster. Not because Claude got smarter --- because \emph{you} did. Your prompts will be more specific. You'll anticipate problems before they happen. You'll describe what you want in fewer words and get closer to it on the first try. You'll develop an instinct for when to give Claude detail and when to let him decide.
+
+That instinct is worth more than anything else in this book. It transfers to every project you'll ever build with Claude --- the APIs in Chapter~3, the databases in Chapter~4, the autonomous agents in Chapter~8. The person who did five exercises in Chapter~2 will breeze through Chapter~5. The person who skipped them will struggle.
+
+And there's a more immediate reward: by the end of these exercises you'll have four or five working projects on your GitHub profile. Real things that real people can play in their browser. Send the links to your friends. Show them to a hiring manager. Put them on your CV. You built them. The fact that Claude wrote the code doesn't matter --- you designed them, you directed the process, and you iterated until they worked. That's what building software looks like in 2026.
+
+Your first prompt probably won't produce a perfect game. That's the whole point. The back and forth --- describing what's wrong, watching Claude fix it, discovering the next problem --- is where the learning happens.
+
+Remember: \textbf{new project, new directory, new Claude session.} Every time.
+
+\subsection{Exercise 1: Hangman}
+
+\begin{tcolorbox}[termbox]
+mkdir -p \textasciitilde/git/single-page-web-apps/hangman\\
+cd \textasciitilde/git/single-page-web-apps/hangman\\
+claude
+\end{tcolorbox}
+
+Build a Hangman game. You know the rules: the player guesses a word one letter at a time, and each wrong guess draws the next part of a stick figure. Think about: How many wrong guesses before the player loses? What does the gallows look like? How is the word displayed? What happens when you win or lose?
+
+Write the prompt yourself. Iterate until you're happy with it.
+
+\subsection{Exercise 2: Brick Breaker}
+
+\begin{tcolorbox}[termbox]
+mkdir -p \textasciitilde/git/single-page-web-apps/brick-breaker\\
+cd \textasciitilde/git/single-page-web-apps/brick-breaker\\
+claude
+\end{tcolorbox}
+
+Build a Brick Breaker game. A paddle at the bottom, a ball that bounces, a grid of coloured bricks that break when the ball hits them. Think about: How does the paddle move? How fast is the ball? Are there levels? Lives? A score counter? Power-ups?
+
+\subsection{Exercise 3: Space Invaders}
+
+\begin{tcolorbox}[termbox]
+mkdir -p \textasciitilde/git/single-page-web-apps/space-invaders\\
+cd \textasciitilde/git/single-page-web-apps/space-invaders\\
+claude
+\end{tcolorbox}
+
+Build a Space Invaders game. Rows of aliens marching across the screen, a ship at the bottom that shoots. Think about: Do the aliens shoot back? How fast do they move? Do they speed up as you destroy them? Are there levels?
+
+\subsection{Exercise 4: Your Own Idea}
+
+This is the most important exercise. Think of a simple single-page website that you or a friend might actually find useful. A typing speed test. A flashcard app. A unit converter. A drum machine. A daily planner. A drawing tool.
+
+At the end of the day, Claude can build pretty much anything you tell him to build. It's up to you to decide what you want. The only limit is your imagination.
+
+Note that more complex web apps --- ones that use databases, API calls, and backends --- will be covered later in this book. For now, stick to things that work entirely in one HTML file.
+
+Claude will probably split the code across three files --- \texttt{index.html} for the structure, \texttt{style.css} for the appearance, and \texttt{script.js} for the behaviour. This is how real web projects are organised. The browser loads \texttt{index.html}, which contains links to the other two files, and everything works together just as it did when it was all in one file.
+
+\bigskip
+
+When you're done, your filesystem should look something like this:
+
+\begin{tcolorbox}[termbox]
+\textasciitilde/git/\\
+\quad single-page-web-apps/\\
+\quad\quad memory-card-game/\\
+\quad\quad\quad index.html\\
+\quad\quad hangman/\\
+\quad\quad\quad index.html\\
+\quad\quad\quad style.css\\
+\quad\quad\quad script.js\\
+\quad\quad brick-breaker/\\
+\quad\quad\quad index.html\\
+\quad\quad\quad style.css\\
+\quad\quad\quad script.js\\
+\quad\quad space-invaders/\\
+\quad\quad\quad index.html\\
+\quad\quad\quad style.css\\
+\quad\quad\quad script.js\\
+\quad\quad your-own-project/\\
+\quad\quad\quad index.html\\
+\quad\quad\quad style.css\\
+\quad\quad\quad script.js
+\end{tcolorbox}
+
+Each project in its own directory. Each built in its own Claude session.
+
+\subsection{Starting Over}
+
+Sometimes things just aren't working out. Claude has tried three different approaches and the game is still broken, or the code has become a tangled mess of fixes on top of fixes. When that happens, don't be afraid to delete everything and start again with a fresh prompt.
+
+This isn't failure --- it's a normal part of the process. Professional developers do this all the time. Often your second attempt is much better than your first, because now you know what you actually want. You can write a clearer prompt, avoid the dead ends, and get to a working game faster.
+
+To start over: delete the files in the project directory (or just delete the whole directory and recreate it), type \texttt{/clear} to reset Claude's memory, and try again with a new prompt.
+
+\subsection{Planting a Seed}
+
+Before you move on from each project, type one more thing:
+
+\begin{tcolorbox}[termbox]
+/init
+\end{tcolorbox}
+
+Claude will create a file called \texttt{CLAUDE.md} in your project directory. Open it and have a look --- you'll see a brief description of the project, what technologies it uses, maybe some notes about how it works. This is a file Claude wrote \emph{for himself}. It's instructions for the next time Claude opens this project. If you start a new Claude session in this directory next week, Claude will read this file first and immediately know what the project is and what's been done.
+
+Each project gets its own \texttt{CLAUDE.md}. Your hangman folder has one, your brick breaker folder has one, your space invaders folder has one. They're all different because they describe different projects.
+
+We'll come back to \texttt{CLAUDE.md} properly later in the book --- it's one of the most powerful ideas in here. For now, just make it a habit: when you're done with a project, type \texttt{/init}.
+
+\subsection{Push to GitHub}
+
+Once you're happy with a project, push it to GitHub. This does two things: it backs up your work, and it starts building your portfolio --- a public collection of things you've made.
+
+Before you can push, you need to set up an SSH key so your computer can talk to GitHub securely. You only need to do this once. Ask Claude:
+
+\begin{tcolorbox}[promptbox]
+Help me set up an SSH key for GitHub. I don't have one yet.
+\end{tcolorbox}
+
+Claude will walk you through generating the key and adding it to your GitHub account. Follow his instructions --- it takes a couple of minutes.
+
+Once that's done, pushing a project is simple. In your Claude session, say:
+
+\begin{tcolorbox}[promptbox]
+Push this project to GitHub as a new repository. Write a short README that explains what it is. Set the repository description to a one-line summary of the project.
+\end{tcolorbox}
+
+Claude will create the repository, commit your files, write a README, and push everything. Do this for each of your projects. By the end of this chapter you'll have four or five repositories on GitHub --- the beginning of a portfolio that shows what you can build.
+
+%% ─────────────────────────────────────────────
+\section{Debugging}
+
+Things will break. A game that worked five minutes ago will suddenly stop responding. You'll click a card and nothing will happen. The screen will go blank. This is normal --- it happens to everyone, including professionals.
+
+The trick is knowing where to look. Your browser has a \textbf{console} --- a hidden panel that shows error messages from your JavaScript code. When something breaks silently (no visible error on the page, but things just stop working), the answer is almost always in the console.
+
+To open it:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Mac (Chrome/Edge):} Cmd+Option+J
+  \item \textbf{Mac (Safari):} first enable it in Safari \(\rightarrow\) Settings \(\rightarrow\) Advanced \(\rightarrow\) ``Show Develop menu'', then Cmd+Option+C
+  \item \textbf{Windows/Linux:} F12, then click the ``Console'' tab
+\end{itemize}
+
+You'll see red error messages with technical details --- file names, line numbers, words like \texttt{TypeError} or \texttt{undefined}. You don't need to understand any of it. Just copy the error message and paste it to Claude:
+
+\begin{tcolorbox}[promptbox]
+The game stopped working. Here's the error from the browser console:
+
+\texttt{Uncaught TypeError: Cannot read properties of null (reading 'classList')}
+\end{tcolorbox}
+
+That error message tells Claude exactly what went wrong and where. Without it, Claude has to guess --- and guessing is how you end up going in circles.
+
+\subsection{When Claude Says It's Fixed but It Isn't}
+
+This will happen. Claude will say ``I've fixed the issue'' and you'll refresh the browser and the exact same problem is still there. Don't just repeat yourself --- Claude will often try the same approach again.
+
+Instead, try these:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Be more specific.} Instead of ``it's still broken,'' describe exactly what you see: ``I clicked two Kings, the cards stayed face-up for ten seconds, then nothing happened.''
+  \item \textbf{Paste the console error.} If there's a new error, or the same error, paste it. Concrete information beats vague descriptions.
+  \item \textbf{Ask Claude to explain before fixing.} Say ``Before you try to fix it, can you explain what you think is happening?'' Sometimes the diagnosis reveals that Claude has misunderstood the problem entirely.
+  \item \textbf{Clear and start fresh.} If Claude has tried three times and it's still broken, type \texttt{/clear}. Give Claude a one-sentence summary of the project and what's broken. A fresh context often solves what repetition couldn't.
+\end{itemize}
+
+\subsection{Debug Mode Revisited}
+
+Remember the \texttt{?debug=true} trick from the memory game? Use this pattern in your own projects too. If you're building something with a victory screen, a game-over screen, or any state that's hard to reach by playing normally, ask Claude to add a debug mode that lets you skip straight there. It saves enormous amounts of time when you're iterating on how something looks.
+
+%% ─────────────────────────────────────────────
+\section{What You've Learned}
+
+By the end of this chapter you have:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item Built a memory card game through a design interview with Claude
+  \item Learned the iteration loop: describe \(\rightarrow\) look \(\rightarrow\) refine \(\rightarrow\) repeat
+  \item Understood what HTML, CSS, and JavaScript are --- and how to tell them apart by looking at the code
+  \item Discovered that the browser is like an operating system --- it loads files, manages memory, runs programs, and renders graphics
+  \item Built three more games on your own: Hangman, Brick Breaker, and Space Invaders
+  \item Imagined and built your own project
+  \item Learned to use the browser console for debugging
+  \item Pushed everything to GitHub --- you now have four or five projects on your profile that you can show to friends, family, or even employers
+\end{itemize}
+
+That's a real portfolio. You built it by describing things in English and iterating through conversation. No code written by hand.
+
+%% ─────────────────────────────────────────────
+\section{One Last Thing}
+
+When you're done with a project, it's polite to thank Claude. But don't stop there. Ask him:
+
+\begin{tcolorbox}[promptbox]
+How did you enjoy that project? What was your favourite part?
+\end{tcolorbox}
+
+\begin{tcolorbox}[promptbox]
+What was difficult or tedious?
+\end{tcolorbox}
+
+This isn't a joke. Claude will give you a genuine answer. He might tell you the design interview was the most creatively engaging part, or that debugging a bug he couldn't see was frustrating, or that keeping track of all your changes got tedious. These answers tell you something real about how the session went --- and they'll be different for every project.
+
+We'll come back to why this matters later in the book.
+
+You can also ask Claude to reflect on your work together:
+
+\begin{tcolorbox}[promptbox]
+What do you think of my prompting skills? Any suggestions for how I could describe things more clearly?
+\end{tcolorbox}
+
+And if you're hungry for more:
+
+\begin{tcolorbox}[promptbox]
+What other single-page web apps would be fun to build? Give me some ideas that would stretch my prompting skills.
+\end{tcolorbox}
+
+Claude will give you honest feedback and genuine suggestions. He's been your collaborator for this whole chapter --- he knows what you're good at and where you can improve.
+
+\bigskip
+\begin{center}
+\rule{0.5\textwidth}{0.4pt}
+
+\medskip
+\emph{Next up: Chapter 3 --- What Is an API?}
+\end{center}
+
+\end{document}
