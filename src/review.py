@@ -94,6 +94,9 @@ def main() -> None:
     decision = review.get("decision", "ponder")
     review_text = review.get("review_text", "")
 
+    print(f"Decision: {decision}")
+    print(f"Review:\n{review_text[:500]}")
+
     # Post the review so the author knows
     if decision == "accept":
         _post_review(repo, pr_number, "APPROVE", review_text)
@@ -377,20 +380,26 @@ def _post_review(repo: str, pr_number: int, event: str, body: str) -> None:
 
     event: "APPROVE", "REQUEST_CHANGES", or "COMMENT"
     """
-    requests.post(
+    resp = requests.post(
         f"{GITHUB_API}/repos/{repo}/pulls/{pr_number}/reviews",
         headers=_headers(),
         json={"body": body, "event": event},
     )
+    print(f"Review posted: {resp.status_code}")
+    if resp.status_code >= 400:
+        print(f"Review error: {resp.text[:500]}")
 
 
 def _merge_pr(repo: str, pr_number: int) -> None:
     """Merge the PR. Squash to keep history clean."""
-    requests.put(
+    resp = requests.put(
         f"{GITHUB_API}/repos/{repo}/pulls/{pr_number}/merge",
         headers=_headers(),
         json={"merge_method": "squash"},
     )
+    print(f"Merge: {resp.status_code}")
+    if resp.status_code >= 400:
+        print(f"Merge error: {resp.text[:500]}")
 
 
 def _headers() -> dict:
