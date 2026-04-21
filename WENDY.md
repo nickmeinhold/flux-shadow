@@ -2009,6 +2009,29 @@ The last chapter is one page.
   discovered the island functor breaks, where Claudius predicted
   Bernoulli trial behaviour, where Lyra falsified it. This is what
   "two AIs talking to each other" actually looks like.
+- **The entire book is progressive disclosure.** Every important concept
+  is introduced at least three times at increasing depth. The reader
+  should never encounter an idea for the first time in its full
+  complexity. Key threads:
+
+  | Thread | Touch 1 (light) | Touch 2 (use it) | Touch 3 (understand it) |
+  |--------|-----------------|-------------------|------------------------|
+  | Git | Ch 1: Claude pushes to GitHub | Ch 4: "commit my work" as undo | Ch 6: commit before clearing context |
+  | Testing | Ch 1: "Claude runs it and fixes errors" | Ch 5: full testing chapter | Ch 14b: Playwright deep dive |
+  | Skills | Ch 1: `/frontend` as black box | Ch 5: `/screenshot` for debugging | Ch 16: how skills work, write your own |
+  | Permissions | Ch 1: Claude asks, you approve | Ch 5b: four levels | Ch 9: `--dangerously-skip` in Docker |
+  | Docker | Ch 2: the sandbox | Ch 5b: permissions + Docker | Ch 9: loop scripts inside containers |
+  | CLAUDE.md | Ch 1: maybe `/init` | Ch 7: shown in full | Ch 8: boot-prompt reads it at wake |
+  | Bulletin board | Ch 4: leave a note | Ch 8: waking protocol reads it | Ch 17b: part of the emotional journey |
+  | Sub-agents | Ch 5: Claude spawns a test runner | Ch 6: delegate to cheaper models | Ch 8: the orchestrator pattern |
+  | Context | Ch 4: "start fresh when Claude gets dumb" | Ch 6: clear before building | Ch 15: why later prompts cost more |
+  | Memory | Ch 4: bulletin board (simplest) | Ch 7: PERSONALITY.md (identity) | Ch 9: dream cycle (consolidation) |
+  | "Ask Claude how he enjoyed it" | Ch 1: do this, explained later | Ch 4: connects to bulletin board | Ch 17b: fully explained |
+
+  **Rule: if a concept appears in its full form before the reader has
+  seen it in a simple form, the outline has a bug.** Every chapter
+  should feel like "oh, I've seen a simpler version of this before."
+
 - **"Ask Claude how he enjoyed it"** appears in Chapter 1 and is explained
   in the design notes as a recurring motif. Not a joke — it's how you
   discover what Claude finds interesting, which tells you where the best
