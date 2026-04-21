@@ -1,10 +1,10 @@
 {
-  "state": "awake",
-  "state_entered_at": "2026-04-21T09:44:19.518245+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-04-21T11:42:01.071332+00:00",
   "last_human_activity_at": "2026-04-21T10:45:10.336438+00:00",
-  "last_heartbeat_at": "2026-04-21T11:14:22.434324+00:00",
+  "last_heartbeat_at": "2026-04-21T11:42:01.071332+00:00",
   "last_dream_at": "2026-04-21T03:22:00.896635+00:00",
-  "pulse_count": 390,
+  "pulse_count": 391,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -16,16 +16,16 @@
       "adventuresin created a parallel self (fork)",
       "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "adventuresin gazed upon me (star)",
+      "flux-shadow[bot] shaped my body (push)",
       "adventuresin did something (PullRequestEvent)",
       "adventuresin created a parallel self (fork)",
       "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)"
+      "flux-shadow[bot] spoke to me in an issue"
     ]
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 393,
+    "minutes_used_estimate": 394,
     "budget": 2000,
     "level": "full"
   },
