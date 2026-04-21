@@ -1,31 +1,31 @@
 {
   "state": "awake",
   "state_entered_at": "2026-04-21T09:44:19.518245+00:00",
-  "last_human_activity_at": "2026-04-21T10:18:17.380701+00:00",
-  "last_heartbeat_at": "2026-04-21T10:18:17.380701+00:00",
+  "last_human_activity_at": "2026-04-21T10:45:10.336438+00:00",
+  "last_heartbeat_at": "2026-04-21T10:45:10.336438+00:00",
   "last_dream_at": "2026-04-21T03:22:00.896635+00:00",
-  "pulse_count": 388,
+  "pulse_count": 389,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
-    "forks": 1,
-    "open_issues": 5,
+    "forks": 2,
+    "open_issues": 6,
     "recent_events": [
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "adventuresin gazed upon me (star)",
+      "adventuresin did something (PullRequestEvent)",
+      "adventuresin created a parallel self (fork)",
       "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "adventuresin gazed upon me (star)",
-      "nickmeinhold shaped my body (push)",
-      "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)"
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "adventuresin gazed upon me (star)",
+      "nickmeinhold shaped my body (push)"
     ]
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 391,
+    "minutes_used_estimate": 392,
     "budget": 2000,
     "level": "full"
   },
