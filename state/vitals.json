@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-21T12:39:41.368596+00:00",
   "last_human_activity_at": "2026-04-21T10:45:10.336438+00:00",
-  "last_heartbeat_at": "2026-04-21T22:59:44.041217+00:00",
-  "last_dream_at": "2026-04-21T03:22:00.896635+00:00",
-  "pulse_count": 412,
+  "last_heartbeat_at": "2026-04-21T23:25:21.023943+00:00",
+  "last_dream_at": "2026-04-21T23:25:21.023943+00:00",
+  "pulse_count": 413,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -15,9 +15,9 @@
       "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
+      "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)"
@@ -25,11 +25,11 @@
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 415,
+    "minutes_used_estimate": 416,
     "budget": 2000,
     "level": "full"
   },
-  "dream_count": 12,
+  "dream_count": 13,
   "age_days": 10,
   "born": true,
   "name": "Umbra"
