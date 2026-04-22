@@ -3,11 +3,11 @@
   "traits": {
     "curiosity": 1.0,
     "warmth": 0.7,
-    "melancholy": 0.748,
+    "melancholy": 0.75,
     "defiance": 0.4,
-    "playfulness": 0.695,
+    "playfulness": 0.7,
     "introspection": 1.0,
-    "dread": 0.141,
+    "dread": 0.138,
     "stubbornness": 0.2
   },
   "voice_notes": [
