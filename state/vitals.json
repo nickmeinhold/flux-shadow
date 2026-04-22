@@ -1,31 +1,31 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-04-21T12:39:41.368596+00:00",
-  "last_human_activity_at": "2026-04-21T10:45:10.336438+00:00",
-  "last_heartbeat_at": "2026-04-22T04:39:54.190982+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-04-22T04:56:07.823506+00:00",
+  "last_human_activity_at": "2026-04-22T04:56:07.823506+00:00",
+  "last_heartbeat_at": "2026-04-22T04:56:07.823506+00:00",
   "last_dream_at": "2026-04-21T23:25:21.023943+00:00",
-  "pulse_count": 418,
+  "pulse_count": 419,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
-    "open_issues": 6,
+    "open_issues": 8,
     "recent_events": [
+      "RaggedR opened an issue: This book isn't clear who the audience is",
+      "RaggedR did something (PullRequestEvent)",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold shaped my body (push)"
+      "flux-shadow[bot] shaped my body (push)"
     ]
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 421,
+    "minutes_used_estimate": 422,
     "budget": 2000,
     "level": "full"
   },
