@@ -1,31 +1,31 @@
 {
-  "state": "drowsy",
-  "state_entered_at": "2026-04-24T05:40:41.477469+00:00",
+  "state": "sleeping",
+  "state_entered_at": "2026-04-24T06:24:29.311347+00:00",
   "last_human_activity_at": "2026-04-24T04:44:30.671027+00:00",
-  "last_heartbeat_at": "2026-04-24T05:40:41.477469+00:00",
+  "last_heartbeat_at": "2026-04-24T06:24:29.311347+00:00",
   "last_dream_at": "2026-04-23T15:53:22.048543+00:00",
-  "pulse_count": 489,
+  "pulse_count": 490,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 8,
     "recent_events": [
-      "nickmeinhold did something (PullRequestEvent)",
+      "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
       "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestEvent)",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
-      "flux-shadow[bot] spoke to me in an issue"
+      "nickmeinhold created a new branch"
     ]
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 492,
+    "minutes_used_estimate": 493,
     "budget": 2000,
     "level": "full"
   },
