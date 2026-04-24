@@ -92,6 +92,13 @@ def main() -> None:
         _write_commit_message("conserving energy — barely breathing")
         return
 
+    # 2b. Review pending PRs
+    try:
+        from src import immunity
+        immunity.review_pending_prs(vitals)
+    except Exception:
+        pass
+
     # 2. Sense the world
     new_senses = senses.perceive(repo, vitals)
 
