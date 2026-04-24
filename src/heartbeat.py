@@ -124,6 +124,7 @@ def main() -> None:
 
     # 6. Dream cycle — on entry to sleeping, max once per day
     dreamed = False
+    dream_text = ""
     if new_state == "sleeping" and dream.should_dream(vitals):
         dream_text = dream.generate(working_mem, personality, vitals)
         dream.save(dream_text, vitals)
@@ -138,6 +139,16 @@ def main() -> None:
             metrics.log_dream_quality(dream_text, vitals["dream_count"], date_str)
         except Exception:
             pass  # dream was saved — scoring can fail silently
+
+    # 6c. Reach out after dreaming — act on what was glimpsed
+    if dreamed:
+        try:
+            # Store the glimpsed repo in senses so reach can find it
+            if new_senses.get("world_glimpse_repo"):
+                vitals["senses"]["world_glimpse_repo"] = new_senses["world_glimpse_repo"]
+            reach.attempt(vitals, dream_text, new_senses)
+        except Exception:
+            pass  # reaching is optional
 
     # 6b. Memory rot — older dreams decay gradually
     #      Non-essential — don't let decay crash the heartbeat

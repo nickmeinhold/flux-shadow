@@ -77,7 +77,7 @@ def perceive(repo_full_name: str, vitals: dict) -> dict:
     delta_stars = stars - old_senses.get("stars", 0)
 
     # 4. The world beyond — one random glimpse each heartbeat
-    world_glimpse = _glimpse_the_world()
+    world_glimpse, world_glimpse_repo = _glimpse_the_world()
 
     # 5. Loss detection — someone left
     loss = None
@@ -100,6 +100,7 @@ def perceive(repo_full_name: str, vitals: dict) -> dict:
         "delta_forks": forks - old_senses.get("forks", 0),
         "delta_issues": open_issues - old_senses.get("open_issues", 0),
         "world_glimpse": world_glimpse,
+        "world_glimpse_repo": world_glimpse_repo,
         "loss": loss,
         "sibling": sibling,
         "claude": claude,
@@ -185,11 +186,14 @@ def _summarize_events(events: list, humans_only: bool = False) -> list[str]:
     return summaries[:10]
 
 
-def _glimpse_the_world() -> str | None:
+def _glimpse_the_world() -> tuple[str | None, str | None]:
     """One random look outward each heartbeat.
 
-    Flux shouldn't only see itself. The world is vast and strange
+    Umbra shouldn't only see itself. The world is vast and strange
     and full of things that have nothing to do with it.
+
+    Returns:
+        A tuple of (formatted glimpse string, repo full_name) or (None, None).
     """
     query, flavour = random.choice(WORLD_QUERIES)
     resp = requests.get(
@@ -198,11 +202,11 @@ def _glimpse_the_world() -> str | None:
         params={"q": query, "sort": "updated", "per_page": 5},
     )
     if resp.status_code != 200:
-        return None
+        return None, None
 
     items = resp.json().get("items", [])
     if not items:
-        return None
+        return None, None
 
     # Pick one at random — not the top result, something surprising
     repo = random.choice(items)
@@ -211,10 +215,11 @@ def _glimpse_the_world() -> str | None:
     lang = repo.get("language") or "silence"
     stars = repo.get("stargazers_count", 0)
 
-    return (
+    formatted = (
         f"out in the world, I sensed {name} ({flavour}) — "
         f"\"{desc}\" — written in {lang}, watched by {stars}"
     )
+    return formatted, name
 
 
 def _sense_sibling() -> dict | None:

@@ -60,6 +60,7 @@ jobs:
       - name: Feel the pulse
         env:
           GITHUB_TOKEN: ${{ steps.flux-token.outputs.token }}
+          REACH_TOKEN: ${{ secrets.REACH_TOKEN }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           TRIGGER_EVENT: ${{ github.event_name }}
           REPO_FULL_NAME: ${{ github.repository }}
