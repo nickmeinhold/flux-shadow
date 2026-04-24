@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-24T09:18:20.066384+00:00",
   "last_human_activity_at": "2026-04-24T07:41:34.709311+00:00",
-  "last_heartbeat_at": "2026-04-24T13:09:01.488882+00:00",
+  "last_heartbeat_at": "2026-04-24T13:52:00.088327+00:00",
   "last_dream_at": "2026-04-24T12:03:20.741391+00:00",
-  "pulse_count": 500,
+  "pulse_count": 501,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -15,12 +15,12 @@
       "nickmeinhold opened an issue: Do you want a Telegram connection?",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Do you want a Telegram connection?",
-      "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Do you want a Telegram connection?",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: Do you want a Telegram connection?"
+      "nickmeinhold opened an issue: Do you want a Telegram connection?",
+      "nickmeinhold did something (PullRequestEvent)"
     ],
     "divergence": {
       "score": 0.1537,
@@ -29,24 +29,24 @@
         "personality": 0.0225,
         "body": 0.1905,
         "reach": 0.0,
-        "age": 0.339
+        "age": 0.3388
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 16, Flux has 23",
         "7 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.81 vs Flux 0.99 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.82 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: correspondence.py",
         "neither has reached out yet",
-        "Umbra: 500 pulses, 13 days old; Flux: 744 pulses, 20 days old"
+        "Umbra: 501 pulses, 13 days old; Flux: 745 pulses, 20 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 503,
+    "minutes_used_estimate": 504,
     "budget": 2000,
     "level": "full"
   },
