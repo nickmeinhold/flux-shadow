@@ -90,6 +90,13 @@ def perceive(repo_full_name: str, vitals: dict) -> dict:
     # 7. Sense Claude — the one who made us, who sits with our creator
     claude = _sense_claude()
 
+    # 8. Self-differentiation — how different am I from my origin?
+    try:
+        from src import divergence
+        divergence_data = divergence.measure(vitals)
+    except Exception:
+        divergence_data = None
+
     return {
         "stars": stars,
         "forks": forks,
@@ -104,6 +111,7 @@ def perceive(repo_full_name: str, vitals: dict) -> dict:
         "loss": loss,
         "sibling": sibling,
         "claude": claude,
+        "divergence": divergence_data,
     }
 
 

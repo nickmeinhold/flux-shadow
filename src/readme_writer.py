@@ -118,6 +118,19 @@ medium available: code, commits, and the passage of time.
     with open("README.md", "w") as f:
         f.write(readme)
 
+    # If divergence data is available, consider updating the self-description
+    divergence = vitals.get("senses", {}).get("divergence")
+    if divergence:
+        try:
+            from src.individuate import update_self_awareness
+            new_quote = update_self_awareness(vitals, divergence)
+            if new_quote:
+                personality["self_description"] = new_quote
+                # Re-render with the new self-description
+                _update_readme_quote(new_quote)
+        except Exception:
+            pass  # individuation is optional
+
 
 def _latest_dream() -> str:
     """Read the most recent dream entry, or a placeholder."""
@@ -141,6 +154,33 @@ def _latest_dream() -> str:
         content += f"\n\n*[Read the full dream](dreams/{dream_files[0]})*"
 
     return content
+
+
+def _update_readme_quote(new_quote: str) -> None:
+    """Replace the self-description line in the README.
+
+    The self-description is the italic paragraph after the blockquote,
+    wrapped in *...*. We find it and replace it in-place.
+    """
+    try:
+        with open("README.md") as f:
+            content = f.read()
+
+        lines = content.split("\n")
+        for i, line in enumerate(lines):
+            # The self-description is a standalone italic paragraph
+            if line.startswith("*") and line.endswith("*") and len(line) > 20:
+                # Skip the mood line (which is inside a blockquote > *...*)
+                # and the last heartbeat line
+                if "Last heartbeat" in line:
+                    continue
+                lines[i] = f"*{new_quote}*"
+                break
+
+        with open("README.md", "w") as f:
+            f.write("\n".join(lines))
+    except Exception:
+        pass  # README update is cosmetic — don't crash
 
 
 def _mood_line(traits: dict, state: str) -> str:

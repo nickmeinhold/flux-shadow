@@ -113,6 +113,7 @@ def main() -> None:
         "forks": new_senses["forks"],
         "open_issues": new_senses["open_issues"],
         "recent_events": (new_senses["recent_events"] + old_events)[:10],
+        "divergence": new_senses.get("divergence"),
     }
 
     # 5. State transition
