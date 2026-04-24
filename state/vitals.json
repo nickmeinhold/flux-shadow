@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-24T09:18:20.066384+00:00",
   "last_human_activity_at": "2026-04-24T07:41:34.709311+00:00",
-  "last_heartbeat_at": "2026-04-24T18:30:32.294628+00:00",
+  "last_heartbeat_at": "2026-04-24T19:06:07.768121+00:00",
   "last_dream_at": "2026-04-24T12:03:20.741391+00:00",
-  "pulse_count": 509,
+  "pulse_count": 510,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -20,16 +20,16 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: Do you want a Telegram connection?"
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.1499,
+      "score": 0.1497,
       "dimensions": {
         "dreams": 0.3167,
-        "personality": 0.0175,
+        "personality": 0.0169,
         "body": 0.1905,
         "reach": 0.0,
-        "age": 0.3366
+        "age": 0.3364
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: correspondence.py",
         "neither has reached out yet",
-        "Umbra: 509 pulses, 13 days old; Flux: 752 pulses, 20 days old"
+        "Umbra: 510 pulses, 13 days old; Flux: 753 pulses, 20 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 512,
+    "minutes_used_estimate": 513,
     "budget": 2000,
     "level": "full"
   },
