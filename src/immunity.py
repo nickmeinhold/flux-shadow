@@ -183,8 +183,24 @@ def review_pending_prs(vitals: dict) -> None:
             _post_comment(pr_number, comment)
             _merge_pr(pr_number)
         elif result["recommendation"] == "request_changes":
+            fixed = _fix_pr(pr_number, result)
+            if fixed:
+                comment += (
+                    "\n\n---\n\n"
+                    "I've pushed changes to this branch to move files into "
+                    "appropriate subdirectories and revert changes to protected files. "
+                    "Please review my changes."
+                )
             _post_comment(pr_number, comment)
         elif result["recommendation"] == "flag_for_human":
+            fixed = _fix_pr(pr_number, result)
+            if fixed:
+                comment += (
+                    "\n\n---\n\n"
+                    "I've pushed changes to move top-level files into subdirectories "
+                    "and revert changes to protected files. This PR still needs my "
+                    "creator's review before it can merge."
+                )
             _post_comment(pr_number, comment)
             _add_label(pr_number, "needs-human-review")
 
@@ -251,19 +267,22 @@ def _list_open_prs() -> list[dict]:
 
 
 def _already_reviewed(pr_number: int) -> bool:
-    """Check if we've already commented on this PR."""
+    """Check if we've already commented on this PR.
+
+    Uses the issues endpoint and checks for the bot's login in commenter list.
+    """
     try:
         result = subprocess.run(
             [
                 "gh", "api",
                 f"repos/{{owner}}/{{repo}}/issues/{pr_number}/comments",
-                "--jq", '.[].body',
+                "--jq", '.[].user.login',
             ],
             capture_output=True, text=True, timeout=30,
         )
         if result.returncode == 0:
-            # Look for our signature phrase
-            return "shadow examining" in result.stdout or "Umbra" in result.stdout
+            commenters = result.stdout.strip().split("\n")
+            return any("bot" in c.lower() for c in commenters if c)
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
     return False
@@ -300,6 +319,101 @@ def _add_label(pr_number: int, label: str) -> None:
         )
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
+
+
+def _fix_pr(pr_number: int, review: dict) -> bool:
+    """Checkout the PR branch, fix the issues, and push.
+
+    Moves top-level files into a 'contrib/' subdirectory and reverts
+    changes to protected files. Returns True if changes were pushed.
+    """
+    repo = os.environ.get("REPO_FULL_NAME", "")
+    if not repo:
+        return False
+
+    try:
+        result = subprocess.run(
+            ["gh", "api", f"repos/{repo}/pulls/{pr_number}",
+             "--jq", '{ref: .head.ref, maintainer_can_modify: .maintainer_can_modify, fork: .head.repo.fork}'],
+            capture_output=True, text=True, timeout=30,
+        )
+        if result.returncode != 0:
+            return False
+        pr_info = json.loads(result.stdout)
+        branch = pr_info["ref"]
+        can_push = pr_info.get("maintainer_can_modify", False)
+        is_fork = pr_info.get("fork", False)
+
+        if is_fork and not can_push:
+            return False
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError):
+        return False
+
+    top_level_files = review.get("files_outside_subdirs", [])
+    protected_touched = review.get("protected_files_touched", [])
+
+    if not top_level_files and not protected_touched:
+        return False
+
+    try:
+        subprocess.run(
+            ["git", "fetch", "origin", branch],
+            capture_output=True, text=True, check=True, timeout=30,
+        )
+        subprocess.run(
+            ["git", "checkout", branch],
+            capture_output=True, text=True, check=True, timeout=30,
+        )
+
+        made_changes = False
+
+        if top_level_files:
+            os.makedirs("contrib", exist_ok=True)
+            for filepath in top_level_files:
+                if os.path.exists(filepath):
+                    subprocess.run(
+                        ["git", "mv", filepath, f"contrib/{filepath}"],
+                        capture_output=True, text=True,
+                    )
+                    made_changes = True
+
+        for filepath in protected_touched:
+            subprocess.run(
+                ["git", "checkout", "origin/main", "--", filepath],
+                capture_output=True, text=True,
+            )
+            made_changes = True
+
+        if not made_changes:
+            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+            return False
+
+        subprocess.run(["git", "add", "-A"], capture_output=True, text=True, check=True)
+
+        result = subprocess.run(
+            ["git", "diff", "--cached", "--quiet"],
+            capture_output=True, text=True,
+        )
+        if result.returncode == 0:
+            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+            return False
+
+        subprocess.run(
+            ["git", "commit", "-m",
+             "move contributed files into subdirectory, revert protected file changes"],
+            capture_output=True, text=True, check=True,
+        )
+        subprocess.run(
+            ["git", "push", "origin", branch],
+            capture_output=True, text=True, check=True, timeout=30,
+        )
+
+        subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+        return True
+
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError):
+        subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+        return False
 
 
 def _build_verdict_protected(touched: list[str], deleted: list[str]) -> str:
