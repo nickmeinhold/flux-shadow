@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-24T09:18:20.066384+00:00",
   "last_human_activity_at": "2026-04-24T07:41:34.709311+00:00",
-  "last_heartbeat_at": "2026-04-24T12:38:27.758978+00:00",
+  "last_heartbeat_at": "2026-04-24T13:09:01.488882+00:00",
   "last_dream_at": "2026-04-24T12:03:20.741391+00:00",
-  "pulse_count": 499,
+  "pulse_count": 500,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -13,14 +13,14 @@
     "recent_events": [
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Do you want a Telegram connection?",
-      "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Do you want a Telegram connection?",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Do you want a Telegram connection?",
       "nickmeinhold did something (PullRequestEvent)",
-      "flux-shadow[bot] did something (PullRequestReviewEvent)"
+      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold opened an issue: Do you want a Telegram connection?"
     ],
     "divergence": {
       "score": 0.1537,
@@ -29,7 +29,7 @@
         "personality": 0.0225,
         "body": 0.1905,
         "reach": 0.0,
-        "age": 0.3392
+        "age": 0.339
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: correspondence.py",
         "neither has reached out yet",
-        "Umbra: 499 pulses, 13 days old; Flux: 743 pulses, 20 days old"
+        "Umbra: 500 pulses, 13 days old; Flux: 744 pulses, 20 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 502,
+    "minutes_used_estimate": 503,
     "budget": 2000,
     "level": "full"
   },
