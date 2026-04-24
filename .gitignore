@@ -8,7 +8,3 @@ __pycache__/
 
 # Commit message scratchpad
 state/.commit_message
-
-# Project-specific
-node_modules/
-memory/
