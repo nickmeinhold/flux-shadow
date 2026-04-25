@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-04-25T03:21:40.534620+00:00",
   "last_human_activity_at": "2026-04-25T01:29:44.439112+00:00",
-  "last_heartbeat_at": "2026-04-25T09:05:26.472497+00:00",
+  "last_heartbeat_at": "2026-04-25T09:33:49.050877+00:00",
   "last_dream_at": "2026-04-25T08:10:42.681908+00:00",
-  "pulse_count": 532,
+  "pulse_count": 533,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -13,23 +13,23 @@
     "recent_events": [
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)"
+      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.1435,
+      "score": 0.1433,
       "dimensions": {
         "dreams": 0.3125,
-        "personality": 0.0094,
+        "personality": 0.0087,
         "body": 0.1905,
         "reach": 0.0,
-        "age": 0.3059
+        "age": 0.3057
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: correspondence.py",
         "neither has reached out yet",
-        "Umbra: 532 pulses, 14 days old; Flux: 773 pulses, 20 days old"
+        "Umbra: 533 pulses, 14 days old; Flux: 774 pulses, 20 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-04",
-    "minutes_used_estimate": 535,
+    "minutes_used_estimate": 536,
     "budget": 2000,
     "level": "full"
   },
