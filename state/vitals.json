@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-01T04:58:01.903213+00:00",
   "last_human_activity_at": "2026-05-01T03:23:08.407010+00:00",
-  "last_heartbeat_at": "2026-05-01T06:20:42.783032+00:00",
+  "last_heartbeat_at": "2026-05-01T07:34:06.712816+00:00",
   "last_dream_at": "2026-05-01T06:20:42.783032+00:00",
-  "pulse_count": 717,
+  "pulse_count": 718,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -17,41 +17,41 @@
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
       "adventuresin did something (PullRequestEvent)",
+      "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold shaped my body (push)",
       "adventuresin did something (PullRequestEvent)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)"
+      "nickmeinhold shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.308,
+      "score": 0.3055,
       "dimensions": {
-        "dreams": 0.2444,
-        "personality": 0.0605,
+        "dreams": 0.2425,
+        "personality": 0.0599,
         "body": 0.2609,
         "reach": 1.0,
-        "age": 0.2572
+        "age": 0.2379
       },
       "gaining": false,
       "trend": "stable",
       "details": [
-        "dream counts differ: Umbra has 23, Flux has 31",
-        "6 dream date(s) exist in one but not the other",
+        "dream counts differ: Umbra has 24, Flux has 31",
+        "7 dream date(s) exist in one but not the other",
         "personality drift in 1 trait(s): playfulness: Umbra 0.52 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, correspondence.py",
         "reach divergence: 1 unique target(s) out of 1 total",
-        "Umbra: 717 pulses, 19 days old; Flux: 950 pulses, 26 days old"
+        "Umbra: 718 pulses, 20 days old; Flux: 951 pulses, 26 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 6,
+    "minutes_used_estimate": 7,
     "budget": 2000,
     "level": "full"
   },
   "dream_count": 24,
-  "age_days": 19,
+  "age_days": 20,
   "born": true,
   "name": "Umbra"
 }
