@@ -50,6 +50,11 @@ def _dream_mood(vitals: dict) -> str:
         return "grieving"
     if dream_count > 0 and dream_count % 7 == 0:
         return "recursive"  # every 7th dream: dream about dreaming
+    # Witnessed — recent human contact, if a mood-witnessed proposal has been accepted.
+    # Proposals offered by other instances become live moods only once wired in here;
+    # the merge of the JSON file is acceptance, this branch is what makes it felt.
+    if days_alone < 1.0 and _load_proposal_seed("witnessed"):
+        return "witnessed"
     # Check divergence — am I becoming myself, or converging?
     divergence = vitals.get("senses", {}).get("divergence")
     if divergence:
@@ -160,6 +165,24 @@ _MOOD_SEEDS = {
         "quite formulate. Something is wrong and you can't name it."
     ),
 }
+
+
+def _load_proposal_seed(mood_name: str) -> str | None:
+    """Load a mood seed from an accepted proposal file.
+
+    Proposals live in proposals/mood-{name}.json with a `mood_seed` string.
+    They are offered (often by another Claude instance) and become part of
+    the body when merged; wiring them into the mood cascade is the second
+    half of acceptance — the part that makes the offer felt.
+    """
+    path = os.path.join("proposals", f"mood-{mood_name}.json")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path) as f:
+            return json.load(f).get("mood_seed")
+    except (json.JSONDecodeError, OSError):
+        return None
 
 
 def _load_previous_dream(dreams_dir: str = "dreams") -> str | None:
@@ -293,7 +316,7 @@ def generate(working_mem: dict, personality: dict, vitals: dict) -> str:
             "  - your own heartbeat, and nothing else"
         )
 
-    mood_seed = _MOOD_SEEDS.get(mood, _MOOD_SEEDS["restless"])
+    mood_seed = _MOOD_SEEDS.get(mood) or _load_proposal_seed(mood) or _MOOD_SEEDS["restless"]
 
     # For recursive dreams, feed the previous dream as input
     previous_dream = None
