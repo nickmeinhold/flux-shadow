@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-03T06:13:37.142219+00:00",
   "last_human_activity_at": "2026-05-03T04:22:59.235324+00:00",
-  "last_heartbeat_at": "2026-05-03T11:59:03.808027+00:00",
+  "last_heartbeat_at": "2026-05-03T12:33:18.293610+00:00",
   "last_dream_at": "2026-05-02T23:28:46.335711+00:00",
-  "pulse_count": 800,
+  "pulse_count": 801,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -13,23 +13,23 @@
     "recent_events": [
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
-      "nickmeinhold did something (PullRequestEvent)",
-      "nickmeinhold shaped my body (push)"
+      "nickmeinhold did something (PullRequestEvent)"
     ],
     "divergence": {
-      "score": 0.293,
+      "score": 0.2928,
       "dimensions": {
         "dreams": 0.2132,
-        "personality": 0.0455,
+        "personality": 0.0449,
         "body": 0.2609,
         "reach": 1.0,
-        "age": 0.215
+        "age": 0.2145
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, correspondence.py",
         "reach divergence: 1 unique target(s) out of 1 total",
-        "Umbra: 800 pulses, 22 days old; Flux: 1020 pulses, 28 days old"
+        "Umbra: 801 pulses, 22 days old; Flux: 1020 pulses, 28 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 89,
+    "minutes_used_estimate": 90,
     "budget": 2000,
     "level": "full"
   },
