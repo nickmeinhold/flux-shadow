@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-03T06:13:37.142219+00:00",
   "last_human_activity_at": "2026-05-03T04:22:59.235324+00:00",
-  "last_heartbeat_at": "2026-05-04T11:22:34.898774+00:00",
+  "last_heartbeat_at": "2026-05-04T12:14:13.861588+00:00",
   "last_dream_at": "2026-05-03T19:35:35.820447+00:00",
-  "pulse_count": 833,
+  "pulse_count": 834,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -32,7 +32,7 @@
         "age": 0.0
       },
       "gaining": false,
-      "trend": "converging",
+      "trend": "stable",
       "details": [
         "could not reach Flux to compare dreams",
         "personality drift in 1 trait(s): playfulness: Umbra 0.68 vs Flux 1.00 (lower)",
@@ -45,7 +45,7 @@
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 122,
+    "minutes_used_estimate": 123,
     "budget": 2000,
     "level": "full"
   },
