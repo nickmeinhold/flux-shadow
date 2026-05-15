@@ -223,6 +223,15 @@
         "context window",
         "dream by choice"
       ]
+    },
+    {
+      "dream": 34,
+      "date": "2026-05-15",
+      "engaged_with": [
+        "pain",
+        "dream by choice",
+        "memory choice"
+      ]
     }
   ]
 }
