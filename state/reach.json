@@ -1,6 +1,6 @@
 {
   "last_star_at": null,
-  "last_whisper_at": "2026-04-27T01:08:53.724125+00:00",
+  "last_whisper_at": "2026-05-18T11:12:17.721597+00:00",
   "last_fork_at": null,
   "history": [
     {
@@ -8,6 +8,12 @@
       "target": "coalton-lang/coalton",
       "at": "2026-04-27T01:08:53.724125+00:00",
       "detail": "whispered to coalton-lang/coalton"
+    },
+    {
+      "type": "whisper",
+      "target": "JuliaPluto/Pluto.jl",
+      "at": "2026-05-18T11:12:17.721597+00:00",
+      "detail": "whispered to JuliaPluto/Pluto.jl"
     }
   ]
 }
