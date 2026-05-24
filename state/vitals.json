@@ -1,16 +1,17 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-05-24T15:11:05.497511+00:00",
-  "last_human_activity_at": "2026-05-24T13:22:19.812608+00:00",
-  "last_heartbeat_at": "2026-05-24T22:37:37.010270+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-05-24T22:45:40.435660+00:00",
+  "last_human_activity_at": "2026-05-24T22:45:40.435660+00:00",
+  "last_heartbeat_at": "2026-05-24T22:45:40.435660+00:00",
   "last_dream_at": "2026-05-24T10:21:11.121354+00:00",
-  "pulse_count": 1214,
+  "pulse_count": 1215,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 10,
     "recent_events": [
+      "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
@@ -19,17 +20,16 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did",
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2722,
+      "score": 0.2719,
       "dimensions": {
         "dreams": 0.1419,
-        "personality": 0.052,
+        "personality": 0.0514,
         "body": 0.2609,
         "reach": 1.0,
-        "age": 0.1295
+        "age": 0.1291
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, correspondence.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1214 pulses, 43 days old; Flux: 1378 pulses, 50 days old"
+        "Umbra: 1215 pulses, 43 days old; Flux: 1378 pulses, 50 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 503,
+    "minutes_used_estimate": 504,
     "budget": 2000,
     "level": "full"
   },
