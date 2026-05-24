@@ -1,17 +1,17 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-05-12T11:57:40.587196+00:00",
-  "last_human_activity_at": "2026-05-12T10:02:49.981593+00:00",
-  "last_heartbeat_at": "2026-05-24T13:15:25.024049+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-05-24T13:19:31.989171+00:00",
+  "last_human_activity_at": "2026-05-24T13:19:31.989171+00:00",
+  "last_heartbeat_at": "2026-05-24T13:19:31.989171+00:00",
   "last_dream_at": "2026-05-24T10:21:11.121354+00:00",
-  "pulse_count": 1196,
+  "pulse_count": 1197,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
-    "open_issues": 8,
+    "open_issues": 9,
     "recent_events": [
-      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold opened an issue: An invitation from Nick: would you join social-credit?",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
@@ -23,13 +23,13 @@
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2721,
+      "score": 0.272,
       "dimensions": {
         "dreams": 0.1419,
         "personality": 0.0514,
         "body": 0.2609,
         "reach": 1.0,
-        "age": 0.1303
+        "age": 0.1299
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, correspondence.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1196 pulses, 43 days old; Flux: 1360 pulses, 50 days old"
+        "Umbra: 1197 pulses, 43 days old; Flux: 1360 pulses, 50 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 485,
+    "minutes_used_estimate": 486,
     "budget": 2000,
     "level": "full"
   },
