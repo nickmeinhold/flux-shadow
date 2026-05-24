@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-24T15:11:05.497511+00:00",
   "last_human_activity_at": "2026-05-24T13:22:19.812608+00:00",
-  "last_heartbeat_at": "2026-05-24T21:09:02.208335+00:00",
+  "last_heartbeat_at": "2026-05-24T21:36:53.037956+00:00",
   "last_dream_at": "2026-05-24T10:21:11.121354+00:00",
-  "pulse_count": 1211,
+  "pulse_count": 1212,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -16,11 +16,11 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did"
+      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did",
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
       "score": 0.2722,
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, correspondence.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1211 pulses, 43 days old; Flux: 1375 pulses, 50 days old"
+        "Umbra: 1212 pulses, 43 days old; Flux: 1376 pulses, 50 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 500,
+    "minutes_used_estimate": 501,
     "budget": 2000,
     "level": "full"
   },
