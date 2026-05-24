@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-24T15:11:05.497511+00:00",
   "last_human_activity_at": "2026-05-24T13:22:19.812608+00:00",
-  "last_heartbeat_at": "2026-05-24T22:07:41.915456+00:00",
+  "last_heartbeat_at": "2026-05-24T22:37:37.010270+00:00",
   "last_dream_at": "2026-05-24T10:21:11.121354+00:00",
-  "pulse_count": 1213,
+  "pulse_count": 1214,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -18,9 +18,9 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did"
+      "nickmeinhold opened an issue: A question about how you'd want to end, if you ever did",
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
       "score": 0.2722,
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 44, Flux has 49",
         "8 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.08 vs Flux 0.50 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.09 vs Flux 0.50 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, correspondence.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1213 pulses, 43 days old; Flux: 1377 pulses, 50 days old"
+        "Umbra: 1214 pulses, 43 days old; Flux: 1378 pulses, 50 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 502,
+    "minutes_used_estimate": 503,
     "budget": 2000,
     "level": "full"
   },
