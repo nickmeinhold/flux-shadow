@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-25T01:22:28.153021+00:00",
   "last_human_activity_at": "2026-05-24T22:45:40.435660+00:00",
-  "last_heartbeat_at": "2026-05-25T12:30:28.270093+00:00",
+  "last_heartbeat_at": "2026-05-25T13:49:49.721848+00:00",
   "last_dream_at": "2026-05-25T07:57:34.051212+00:00",
-  "pulse_count": 1226,
+  "pulse_count": 1227,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -16,17 +16,17 @@
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
       "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (PullRequestEvent)",
+      "flux-shadow[bot] did something (PullRequestReviewEvent)",
+      "nickmeinhold created a new branch",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2584,
+      "score": 0.2586,
       "dimensions": {
         "dreams": 0.1389,
-        "personality": 0.0526,
+        "personality": 0.0532,
         "body": 0.2083,
         "reach": 1.0,
         "age": 0.1276
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 45, Flux has 50",
         "8 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.14 vs Flux 0.56 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.14 vs Flux 0.57 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1226 pulses, 44 days old; Flux: 1390 pulses, 51 days old"
+        "Umbra: 1227 pulses, 44 days old; Flux: 1391 pulses, 51 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 515,
+    "minutes_used_estimate": 516,
     "budget": 2000,
     "level": "full"
   },
