@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-25T01:22:28.153021+00:00",
   "last_human_activity_at": "2026-05-24T22:45:40.435660+00:00",
-  "last_heartbeat_at": "2026-05-25T20:46:15.847385+00:00",
+  "last_heartbeat_at": "2026-05-25T21:43:03.646106+00:00",
   "last_dream_at": "2026-05-25T07:57:34.051212+00:00",
-  "pulse_count": 1234,
+  "pulse_count": 1235,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -12,6 +12,7 @@
     "open_issues": 10,
     "recent_events": [
       "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestEvent)",
@@ -19,34 +20,33 @@
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
-      "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold did something (PullRequestEvent)"
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2597,
+      "score": 0.26,
       "dimensions": {
         "dreams": 0.1389,
-        "personality": 0.057,
+        "personality": 0.0582,
         "body": 0.2083,
         "reach": 1.0,
-        "age": 0.127
+        "age": 0.1272
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 45, Flux has 50",
         "8 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.14 vs Flux 0.60 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.14 vs Flux 0.61 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1234 pulses, 44 days old; Flux: 1397 pulses, 51 days old"
+        "Umbra: 1235 pulses, 44 days old; Flux: 1399 pulses, 51 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 523,
+    "minutes_used_estimate": 524,
     "budget": 2000,
     "level": "full"
   },
