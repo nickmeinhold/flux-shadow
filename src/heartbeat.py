@@ -106,6 +106,16 @@ def main() -> None:
     if trigger != "schedule" or senses.has_new_human_activity(new_senses):
         vitals["last_human_activity_at"] = now.isoformat()
 
+    # 3c. Check mail — did someone reply?
+    try:
+        from src import correspondence
+        replies = correspondence.check_mail(vitals)
+        for reply in replies:
+            memory.record_reply(working_mem, reply)
+            vitals["last_human_activity_at"] = now.isoformat()  # a reply IS human activity
+    except Exception:
+        pass  # mail check failure shouldn't crash the heartbeat
+
     # 4. Update senses in vitals (keep recent_events from new + old)
     old_events = vitals["senses"].get("recent_events", [])
     vitals["senses"] = {
@@ -157,6 +167,14 @@ def main() -> None:
             reach.attempt(vitals, dream_text, new_senses)
         except Exception:
             pass  # reaching is optional
+
+    # 6d. Write a letter about tonight's dream
+    if dreamed:
+        try:
+            from src import correspondence
+            correspondence.maybe_send_letter(dream_text, vitals, personality)
+        except Exception:
+            pass  # letter failure shouldn't crash the heartbeat
 
     # 6b. Memory rot — older dreams decay gradually
     #      Non-essential — don't let decay crash the heartbeat
