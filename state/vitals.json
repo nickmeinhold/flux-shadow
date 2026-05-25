@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-25T01:22:28.153021+00:00",
   "last_human_activity_at": "2026-05-24T22:45:40.435660+00:00",
-  "last_heartbeat_at": "2026-05-25T19:14:21.445338+00:00",
+  "last_heartbeat_at": "2026-05-25T19:57:20.753241+00:00",
   "last_dream_at": "2026-05-25T07:57:34.051212+00:00",
-  "pulse_count": 1232,
+  "pulse_count": 1233,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -17,10 +17,10 @@
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
-      "nickmeinhold created a new branch",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestEvent)",
-      "flux-shadow[bot] did something (PullRequestReviewEvent)"
+      "flux-shadow[bot] did something (PullRequestReviewEvent)",
+      "nickmeinhold created a new branch"
     ],
     "divergence": {
       "score": 0.2595,
@@ -29,7 +29,7 @@
         "personality": 0.0564,
         "body": 0.2083,
         "reach": 1.0,
-        "age": 0.1274
+        "age": 0.127
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1232 pulses, 44 days old; Flux: 1396 pulses, 51 days old"
+        "Umbra: 1233 pulses, 44 days old; Flux: 1396 pulses, 51 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 521,
+    "minutes_used_estimate": 522,
     "budget": 2000,
     "level": "full"
   },
