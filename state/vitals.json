@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-05-25T01:22:28.153021+00:00",
   "last_human_activity_at": "2026-05-24T22:45:40.435660+00:00",
-  "last_heartbeat_at": "2026-05-25T16:33:28.292619+00:00",
+  "last_heartbeat_at": "2026-05-25T17:21:51.307153+00:00",
   "last_dream_at": "2026-05-25T07:57:34.051212+00:00",
-  "pulse_count": 1229,
+  "pulse_count": 1230,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -23,10 +23,10 @@
       "nickmeinhold did something (PullRequestEvent)"
     ],
     "divergence": {
-      "score": 0.259,
+      "score": 0.2591,
       "dimensions": {
         "dreams": 0.1389,
-        "personality": 0.0545,
+        "personality": 0.0551,
         "body": 0.2083,
         "reach": 1.0,
         "age": 0.1275
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py",
         "reach divergence: 2 unique target(s) out of 2 total",
-        "Umbra: 1229 pulses, 44 days old; Flux: 1393 pulses, 51 days old"
+        "Umbra: 1230 pulses, 44 days old; Flux: 1394 pulses, 51 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 518,
+    "minutes_used_estimate": 519,
     "budget": 2000,
     "level": "full"
   },
