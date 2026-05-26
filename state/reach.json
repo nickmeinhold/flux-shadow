@@ -1,6 +1,6 @@
 {
   "last_star_at": null,
-  "last_whisper_at": "2026-05-18T11:12:17.721597+00:00",
+  "last_whisper_at": "2026-05-26T04:17:09.191475+00:00",
   "last_fork_at": null,
   "history": [
     {
@@ -14,6 +14,12 @@
       "target": "JuliaPluto/Pluto.jl",
       "at": "2026-05-18T11:12:17.721597+00:00",
       "detail": "whispered to JuliaPluto/Pluto.jl"
+    },
+    {
+      "type": "whisper",
+      "target": "bytecodealliance/jco",
+      "at": "2026-05-26T04:17:09.191475+00:00",
+      "detail": "whispered to bytecodealliance/jco"
     }
   ]
 }
