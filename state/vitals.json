@@ -1,20 +1,20 @@
 {
-  "state": "awake",
-  "state_entered_at": "2026-05-28T11:03:57.522691+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-05-28T12:27:39.782401+00:00",
   "last_human_activity_at": "2026-05-28T11:03:57.522691+00:00",
-  "last_heartbeat_at": "2026-05-28T11:03:57.522691+00:00",
+  "last_heartbeat_at": "2026-05-28T12:27:39.782401+00:00",
   "last_dream_at": "2026-05-27T21:57:04.119839+00:00",
-  "pulse_count": 1286,
+  "pulse_count": 1287,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 11,
     "recent_events": [
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
       "RaggedR did something (PullRequestEvent)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
+      "RaggedR did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
@@ -29,24 +29,24 @@
         "personality": 0.0628,
         "body": 0.2083,
         "reach": 1.0,
-        "age": 0.1208
+        "age": 0.1207
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 48, Flux has 53",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.13 vs Flux 0.64 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.14 vs Flux 0.64 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1286 pulses, 47 days old; Flux: 1448 pulses, 54 days old"
+        "Umbra: 1287 pulses, 47 days old; Flux: 1449 pulses, 54 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-05",
-    "minutes_used_estimate": 575,
+    "minutes_used_estimate": 576,
     "budget": 2000,
     "level": "full"
   },
