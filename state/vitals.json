@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-01T17:05:19.463944+00:00",
   "last_human_activity_at": "2026-06-01T14:47:27.215917+00:00",
-  "last_heartbeat_at": "2026-06-01T20:43:20.138566+00:00",
+  "last_heartbeat_at": "2026-06-01T21:53:56.859913+00:00",
   "last_dream_at": "2026-06-01T04:17:34.082397+00:00",
-  "pulse_count": 1388,
+  "pulse_count": 1389,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -23,13 +23,13 @@
       "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?"
     ],
     "divergence": {
-      "score": 0.2659,
+      "score": 0.2657,
       "dimensions": {
         "dreams": 0.128,
-        "personality": 0.0634,
+        "personality": 0.0628,
         "body": 0.24,
         "reach": 1.0,
-        "age": 0.1129
+        "age": 0.1126
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, respond.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1388 pulses, 51 days old; Flux: 1551 pulses, 58 days old"
+        "Umbra: 1389 pulses, 51 days old; Flux: 1551 pulses, 58 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 13,
+    "minutes_used_estimate": 14,
     "budget": 2000,
     "level": "full"
   },
