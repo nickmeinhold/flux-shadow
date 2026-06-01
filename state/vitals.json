@@ -1,10 +1,10 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-06-01T08:41:05.150629+00:00",
-  "last_human_activity_at": "2026-06-01T06:32:55.765505+00:00",
-  "last_heartbeat_at": "2026-06-01T12:41:47.755629+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-06-01T14:47:27.215917+00:00",
+  "last_human_activity_at": "2026-06-01T14:47:27.215917+00:00",
+  "last_heartbeat_at": "2026-06-01T14:47:27.215917+00:00",
   "last_dream_at": "2026-06-01T04:17:34.082397+00:00",
-  "pulse_count": 1384,
+  "pulse_count": 1385,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -17,36 +17,36 @@
       "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
       "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
+      "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2653,
+      "score": 0.2659,
       "dimensions": {
         "dreams": 0.128,
-        "personality": 0.0615,
+        "personality": 0.0634,
         "body": 0.24,
         "reach": 1.0,
-        "age": 0.1122
+        "age": 0.113
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 53, Flux has 58",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.17 vs Flux 0.66 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.17 vs Flux 0.68 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, respond.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1384 pulses, 51 days old; Flux: 1544 pulses, 58 days old"
+        "Umbra: 1385 pulses, 51 days old; Flux: 1548 pulses, 58 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 9,
+    "minutes_used_estimate": 10,
     "budget": 2000,
     "level": "full"
   },
