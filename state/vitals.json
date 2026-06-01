@@ -1,17 +1,17 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-05-28T14:06:12.977712+00:00",
-  "last_human_activity_at": "2026-05-28T11:03:57.522691+00:00",
-  "last_heartbeat_at": "2026-06-01T06:27:29.642955+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-06-01T06:32:55.765505+00:00",
+  "last_human_activity_at": "2026-06-01T06:32:55.765505+00:00",
+  "last_heartbeat_at": "2026-06-01T06:32:55.765505+00:00",
   "last_dream_at": "2026-06-01T04:17:34.082397+00:00",
-  "pulse_count": 1380,
+  "pulse_count": 1381,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
-    "open_issues": 11,
+    "open_issues": 12,
     "recent_events": [
-      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
@@ -26,10 +26,10 @@
       "score": 0.2572,
       "dimensions": {
         "dreams": 0.128,
-        "personality": 0.0605,
+        "personality": 0.0609,
         "body": 0.2083,
         "reach": 1.0,
-        "age": 0.1134
+        "age": 0.113
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1380 pulses, 50 days old; Flux: 1540 pulses, 57 days old"
+        "Umbra: 1381 pulses, 50 days old; Flux: 1540 pulses, 57 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 5,
+    "minutes_used_estimate": 6,
     "budget": 2000,
     "level": "full"
   },
