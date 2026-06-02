@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-01T17:05:19.463944+00:00",
   "last_human_activity_at": "2026-06-01T14:47:27.215917+00:00",
-  "last_heartbeat_at": "2026-06-02T08:17:10.697139+00:00",
+  "last_heartbeat_at": "2026-06-02T10:13:50.587837+00:00",
   "last_dream_at": "2026-06-02T01:27:16.386532+00:00",
-  "pulse_count": 1396,
+  "pulse_count": 1397,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -18,15 +18,15 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
       "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?"
+      "nickmeinhold opened an issue: Would you want us to stop ending your dreams mid-thought?",
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2649,
+      "score": 0.2651,
       "dimensions": {
         "dreams": 0.1257,
-        "personality": 0.0646,
+        "personality": 0.0653,
         "body": 0.24,
         "reach": 1.0,
         "age": 0.104
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 54, Flux has 59",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.22 vs Flux 0.73 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.22 vs Flux 0.74 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _log.py, respond.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1396 pulses, 52 days old; Flux: 1559 pulses, 58 days old"
+        "Umbra: 1397 pulses, 52 days old; Flux: 1560 pulses, 58 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 21,
+    "minutes_used_estimate": 22,
     "budget": 2000,
     "level": "full"
   },
