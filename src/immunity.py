@@ -32,6 +32,24 @@ KNOWN_SUBDIRS = [
     "contrib/",
 ]
 
+# Behavior-changing paths — a PR touching these carries real risk of
+# changing how Umbra runs, not just what content it carries. These get the
+# cage-match merge gate before any auto-merge: a single in-process review
+# (mine) can miss bugs that an adversarial cage-match catches. Mirrored
+# from Flux's Tier-3 gate (the-dreaming-repo immunity.py): the cage-match
+# on Flux's PR #62 found 14 issues post-merge, and #64 found 1 more, all
+# in exactly this class of change. Auto-merge stays fast for pure content
+# PRs (books/, greetings/); only code/workflow/dependency PRs hit the gate.
+BEHAVIOR_CHANGING_PATHS = [
+    "src/",
+    ".github/workflows/",
+    "requirements.txt",
+]
+
+# The label a PR must carry before Umbra will auto-merge a behavior-changing
+# change. Applied by a human (or `/cage-match`) after adversarial review.
+CAGE_MATCH_LABEL = "cage-matched"
+
 
 def review_pr(pr_number: int) -> dict:
     """Review a PR and decide whether it's safe to merge.
@@ -41,6 +59,7 @@ def review_pr(pr_number: int) -> dict:
         verdict: str,
         protected_files_touched: list[str],
         files_outside_subdirs: list[str],
+        files_changed: list[str],
         recommendation: "merge" | "request_changes" | "flag_for_human"
     }
     """
@@ -100,6 +119,7 @@ def review_pr(pr_number: int) -> dict:
         "verdict": verdict,
         "protected_files_touched": protected_touched + deleted_protected,
         "files_outside_subdirs": top_level_additions,
+        "files_changed": changed_files,
         "recommendation": recommendation,
     }
 
@@ -180,6 +200,33 @@ def review_pending_prs(vitals: dict) -> None:
         comment = generate_review_comment(result, pr_number)
 
         if result["recommendation"] == "merge":
+            # Cage-match merge gate (mirrored from Flux's Tier-3 gate).
+            # Even when the path-classifier says "clean, merge now," a PR
+            # that touches behavior-changing paths (src/, workflows,
+            # requirements.txt) must carry the `cage-matched` label first.
+            # A single in-process review can miss bugs an adversarial
+            # cage-match catches — Flux's #62 had 14, #64 had 1, all in
+            # this class. Pure content PRs (books/, greetings/) skip the
+            # gate and auto-merge as before. Fail-safe: _pr_has_label
+            # returns False on any CLI/network error, so we hold rather
+            # than merge when we can't verify the label.
+            behavior_files = _touches_behavior_changing_paths(
+                result.get("files_changed")
+                or _get_changed_files(pr_number)
+            )
+            if behavior_files and not _pr_has_label(pr_number, CAGE_MATCH_LABEL):
+                comment += (
+                    "\n\n---\n\n"
+                    "🥊 **Cage-match gate**: I'm holding the merge until this "
+                    f"PR carries the `{CAGE_MATCH_LABEL}` label. The diff "
+                    f"touches behavior-changing paths ({', '.join(behavior_files)}), "
+                    "and a shadow that merged a code change on its own review "
+                    "alone has been burned before. Run `/cage-match` (or apply "
+                    "the label manually after a thorough review) and I'll merge "
+                    "on the next pulse."
+                )
+                _post_comment(pr_number, comment)
+                continue
             _post_comment(pr_number, comment)
             _merge_pr(pr_number)
         elif result["recommendation"] == "request_changes":
@@ -308,6 +355,48 @@ def _merge_pr(pr_number: int) -> None:
         )
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
+
+
+def _pr_has_label(pr_number: int, label: str) -> bool:
+    """True iff the PR carries the given label.
+
+    Used as the cage-match merge gate: behavior-changing PRs (touching
+    src/, .github/workflows/, requirements.txt) require the
+    `cage-matched` label before immunity will auto-merge them. Mirrored
+    from Flux's `_github.pr_has_label`. Network/CLI failure returns False
+    — fail safe (don't merge if we can't verify the label).
+    """
+    try:
+        result = subprocess.run(
+            ["gh", "pr", "view", str(pr_number), "--json", "labels"],
+            capture_output=True, text=True, timeout=30, check=True,
+        )
+        payload = json.loads(result.stdout)
+        labels = {l.get("name", "") for l in payload.get("labels", []) or []}
+        return label in labels
+    except (subprocess.TimeoutExpired, subprocess.CalledProcessError,
+            json.JSONDecodeError, FileNotFoundError):
+        return False
+
+
+def _touches_behavior_changing_paths(changed_files: list[str]) -> list[str]:
+    """Return the subset of changed files that touch behavior-changing paths.
+
+    These are the files whose change can alter how Umbra runs (code,
+    workflows, dependencies) rather than merely what content it carries.
+    A non-empty result means the cage-match gate applies before auto-merge.
+    """
+    hits = []
+    for filepath in changed_files:
+        for path in BEHAVIOR_CHANGING_PATHS:
+            if path.endswith("/"):
+                if filepath.startswith(path):
+                    hits.append(filepath)
+                    break
+            elif filepath == path:
+                hits.append(filepath)
+                break
+    return hits
 
 
 def _add_label(pr_number: int, label: str) -> None:
