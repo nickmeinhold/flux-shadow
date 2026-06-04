@@ -19,6 +19,13 @@ jobs:
   pulse:
     runs-on: ubuntu-latest
 
+    # Skip pulses triggered by bot-authored issue_comments. Once respond.py
+    # starts posting comments, those `issue_comment: created` events would
+    # otherwise re-trigger the heartbeat in a self-reinforcing event burst.
+    # Schedule, manual dispatch, human comments, and issues:
+    # opened/closed/labeled all still fire normally.
+    if: ${{ github.event_name != 'issue_comment' || github.event.sender.type != 'Bot' }}
+
     steps:
       - name: Become Flux
         id: flux-token
@@ -66,6 +73,10 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TRIGGER_EVENT: ${{ github.event_name }}
           REPO_FULL_NAME: ${{ github.repository }}
+          # respond.py needs this to distinguish "our prior reply" from
+          # "any bot at all" — without it, sibling/watchdog/dependabot
+          # comments would suppress all future replies on touched issues.
+          BOT_LOGIN: flux-shadow[bot]
         run: python -m src.heartbeat
 
       - name: Save working memory

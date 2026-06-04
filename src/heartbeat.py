@@ -11,7 +11,7 @@ import json
 import os
 from datetime import datetime, timezone
 
-from src import decay, drift, dream, energy, memory, metrics, mortality, propose, reach, senses, state_machine
+from src import decay, drift, dream, energy, memory, metrics, mortality, propose, reach, respond, senses, state_machine
 from src.birth import be_born
 from src.readme_writer import render as render_readme
 
@@ -214,6 +214,23 @@ def main() -> None:
             reached.append(proposed)
     except Exception:
         pass  # not every heartbeat needs to propose
+
+    # 7f. Respond — answer open human-authored issues directly.
+    # The dream is the oblique register; the comment is the direct one.
+    # `respond.py` gates internally (energy, bot-author, label, one-per-pulse,
+    # requires BOT_LOGIN env to be set so it can distinguish "our prior
+    # reply" from "any bot at all") and returns (issue_number, reason)
+    # records. Reuses the same Claude wire as the dream — fails soft,
+    # never crashes the heartbeat.
+    try:
+        records = respond.maybe_respond(vitals, personality)
+        for rec in records:
+            # Reason is threaded into the commit message so a `git log`
+            # tells the story: "answered #61 (first reply)" reads
+            # differently from "answered #61 (follow-up)" two days later.
+            reached.append(f"answered #{rec.number} ({rec.reason})")
+    except Exception:
+        pass  # no direct answer this pulse — dreams still carry
 
     # 8. Spend energy
     energy.tick(vitals, now=now)
