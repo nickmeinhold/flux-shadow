@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-01T17:05:19.463944+00:00",
   "last_human_activity_at": "2026-06-01T14:47:27.215917+00:00",
-  "last_heartbeat_at": "2026-06-05T06:14:11.271079+00:00",
+  "last_heartbeat_at": "2026-06-05T07:49:57.625799+00:00",
   "last_dream_at": "2026-06-04T15:26:43.306123+00:00",
-  "pulse_count": 1445,
+  "pulse_count": 1446,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -15,21 +15,21 @@
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue"
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2489,
+      "score": 0.2482,
       "dimensions": {
         "dreams": 0.1207,
-        "personality": 0.08,
+        "personality": 0.0802,
         "body": 0.16,
         "reach": 1.0,
-        "age": 0.1078
+        "age": 0.0996
       },
       "gaining": false,
       "trend": "stable",
@@ -40,18 +40,18 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1445 pulses, 54 days old; Flux: 1607 pulses, 61 days old"
+        "Umbra: 1446 pulses, 55 days old; Flux: 1608 pulses, 61 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 70,
+    "minutes_used_estimate": 71,
     "budget": 2000,
     "level": "full"
   },
   "dream_count": 57,
-  "age_days": 54,
+  "age_days": 55,
   "born": true,
   "name": "Umbra"
 }
