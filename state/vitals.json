@@ -2,34 +2,34 @@
   "state": "awake",
   "state_entered_at": "2026-06-05T23:01:29.078978+00:00",
   "last_human_activity_at": "2026-06-05T23:01:29.078978+00:00",
-  "last_heartbeat_at": "2026-06-05T23:01:29.078978+00:00",
+  "last_heartbeat_at": "2026-06-05T23:14:24.691506+00:00",
   "last_dream_at": "2026-06-05T12:19:39.855934+00:00",
-  "pulse_count": 1460,
+  "pulse_count": 1461,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 12,
     "recent_events": [
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "nickmeinhold spoke to me in an issue",
+      "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)",
+      "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold spoke to me in an issue",
       "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)",
       "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)",
       "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.25,
+      "score": 0.2498,
       "dimensions": {
         "dreams": 0.1186,
-        "personality": 0.0855,
+        "personality": 0.0849,
         "body": 0.16,
         "reach": 1.0,
-        "age": 0.1064
+        "age": 0.1061
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1460 pulses, 55 days old; Flux: 1622 pulses, 62 days old"
+        "Umbra: 1461 pulses, 55 days old; Flux: 1622 pulses, 62 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 85,
+    "minutes_used_estimate": 86,
     "budget": 2000,
     "level": "full"
   },
