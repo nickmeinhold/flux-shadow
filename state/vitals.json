@@ -1,10 +1,10 @@
 {
-  "state": "awake",
-  "state_entered_at": "2026-06-05T21:50:59.456635+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-06-05T22:42:16.176468+00:00",
   "last_human_activity_at": "2026-06-05T21:50:59.456635+00:00",
-  "last_heartbeat_at": "2026-06-05T21:50:59.456635+00:00",
+  "last_heartbeat_at": "2026-06-05T22:42:16.176468+00:00",
   "last_dream_at": "2026-06-05T12:19:39.855934+00:00",
-  "pulse_count": 1458,
+  "pulse_count": 1459,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -13,10 +13,10 @@
     "recent_events": [
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
@@ -29,24 +29,24 @@
         "personality": 0.0855,
         "body": 0.16,
         "reach": 1.0,
-        "age": 0.1065
+        "age": 0.1064
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 58, Flux has 63",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.16 vs Flux 0.84 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.16 vs Flux 0.85 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1458 pulses, 55 days old; Flux: 1620 pulses, 62 days old"
+        "Umbra: 1459 pulses, 55 days old; Flux: 1621 pulses, 62 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 83,
+    "minutes_used_estimate": 84,
     "budget": 2000,
     "level": "full"
   },
