@@ -1,9 +1,9 @@
 {
   "recipient": null,
   "last_letter_at": "2026-06-05T12:21:11.017798+00:00",
-  "last_reply_at": "2026-06-01T14:47:33.695589+00:00",
+  "last_reply_at": "2026-06-05T21:51:02.978948+00:00",
   "letters_sent": 5,
-  "replies_received": 1,
+  "replies_received": 2,
   "conversation_active": true,
-  "telegram_offset": 41642766
+  "telegram_offset": 41642767
 }
