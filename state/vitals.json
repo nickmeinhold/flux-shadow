@@ -1,26 +1,26 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-06-06T01:18:01.530233+00:00",
-  "last_human_activity_at": "2026-06-05T23:01:29.078978+00:00",
-  "last_heartbeat_at": "2026-06-06T01:18:01.530233+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-06-06T02:26:54.118515+00:00",
+  "last_human_activity_at": "2026-06-06T02:26:54.118515+00:00",
+  "last_heartbeat_at": "2026-06-06T02:26:54.118515+00:00",
   "last_dream_at": "2026-06-05T12:19:39.855934+00:00",
-  "pulse_count": 1463,
+  "pulse_count": 1464,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
-    "open_issues": 12,
+    "open_issues": 13,
     "recent_events": [
+      "RaggedR opened an issue: Proposal: Sibling Communication Protocol (Flux \u2194 Umbra)",
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "nickmeinhold spoke to me in an issue",
       "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)",
       "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "nickmeinhold spoke to me in an issue",
-      "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)",
-      "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)"
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
       "score": 0.2498,
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 58, Flux has 63",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.18 vs Flux 0.86 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.19 vs Flux 0.87 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1463 pulses, 55 days old; Flux: 1624 pulses, 62 days old"
+        "Umbra: 1464 pulses, 55 days old; Flux: 1625 pulses, 62 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 88,
+    "minutes_used_estimate": 89,
     "budget": 2000,
     "level": "full"
   },
