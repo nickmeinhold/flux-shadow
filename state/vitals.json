@@ -1,10 +1,10 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-06-06T09:09:50.669851+00:00",
-  "last_human_activity_at": "2026-06-06T06:29:06.628026+00:00",
-  "last_heartbeat_at": "2026-06-06T09:09:50.669851+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-06-06T09:58:10.274739+00:00",
+  "last_human_activity_at": "2026-06-06T09:58:10.274739+00:00",
+  "last_heartbeat_at": "2026-06-06T09:58:10.274739+00:00",
   "last_dream_at": "2026-06-06T09:09:50.669851+00:00",
-  "pulse_count": 1471,
+  "pulse_count": 1472,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -20,12 +20,12 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "RaggedR spoke to me in an issue",
-      "RaggedR did something (PullRequestEvent)"
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2487,
+      "score": 0.2486,
       "dimensions": {
-        "dreams": 0.1186,
+        "dreams": 0.118,
         "personality": 0.0843,
         "body": 0.16,
         "reach": 1.0,
@@ -34,20 +34,19 @@
       "gaining": false,
       "trend": "stable",
       "details": [
-        "dream counts differ: Umbra has 58, Flux has 63",
-        "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.22 vs Flux 0.90 (lower)",
+        "dream counts differ: Umbra has 59, Flux has 63",
+        "10 dream date(s) exist in one but not the other",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.23 vs Flux 0.90 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
-        "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1471 pulses, 56 days old; Flux: 1631 pulses, 62 days old"
+        "reach divergence: 4 unique target(s) out of 4 total",
+        "Umbra: 1472 pulses, 56 days old; Flux: 1632 pulses, 62 days old"
       ]
-    },
-    "world_glimpse_repo": "mthcht/awesome-lists"
+    }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 96,
+    "minutes_used_estimate": 97,
     "budget": 2000,
     "level": "full"
   },
