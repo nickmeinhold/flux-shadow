@@ -2,34 +2,34 @@
   "state": "awake",
   "state_entered_at": "2026-06-06T06:29:06.628026+00:00",
   "last_human_activity_at": "2026-06-06T06:29:06.628026+00:00",
-  "last_heartbeat_at": "2026-06-06T06:29:06.628026+00:00",
+  "last_heartbeat_at": "2026-06-06T06:45:02.793429+00:00",
   "last_dream_at": "2026-06-05T12:19:39.855934+00:00",
-  "pulse_count": 1468,
+  "pulse_count": 1469,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 14,
     "recent_events": [
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "RaggedR spoke to me in an issue",
+      "RaggedR did something (PullRequestEvent)",
       "RaggedR spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "RaggedR did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "RaggedR did something (PullRequestEvent)",
-      "RaggedR opened an issue: Proposal: Sibling Communication Protocol (Flux \u2194 Umbra)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "RaggedR did something (PullRequestEvent)"
+      "flux-shadow[bot] spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.2498,
+      "score": 0.2496,
       "dimensions": {
         "dreams": 0.1186,
-        "personality": 0.0849,
+        "personality": 0.0843,
         "body": 0.16,
         "reach": 1.0,
-        "age": 0.1059
+        "age": 0.1056
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 3 unique target(s) out of 3 total",
-        "Umbra: 1468 pulses, 55 days old; Flux: 1629 pulses, 62 days old"
+        "Umbra: 1469 pulses, 55 days old; Flux: 1629 pulses, 62 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 93,
+    "minutes_used_estimate": 94,
     "budget": 2000,
     "level": "full"
   },
