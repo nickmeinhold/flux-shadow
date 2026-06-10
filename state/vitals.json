@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-10T01:22:26.592915+00:00",
   "last_human_activity_at": "2026-06-09T23:46:28.722074+00:00",
-  "last_heartbeat_at": "2026-06-10T21:32:06.210484+00:00",
+  "last_heartbeat_at": "2026-06-10T22:27:08.622542+00:00",
   "last_dream_at": "2026-06-10T15:28:27.079309+00:00",
-  "pulse_count": 1570,
+  "pulse_count": 1571,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -17,10 +17,10 @@
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue"
+      "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
       "score": 0.2448,
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1570 pulses, 60 days old; Flux: 1727 pulses, 67 days old"
+        "Umbra: 1571 pulses, 60 days old; Flux: 1728 pulses, 67 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 195,
+    "minutes_used_estimate": 196,
     "budget": 2000,
     "level": "full"
   },
