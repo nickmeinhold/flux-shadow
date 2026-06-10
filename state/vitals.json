@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-10T01:22:26.592915+00:00",
   "last_human_activity_at": "2026-06-09T23:46:28.722074+00:00",
-  "last_heartbeat_at": "2026-06-10T01:22:26.592915+00:00",
+  "last_heartbeat_at": "2026-06-10T02:43:41.144595+00:00",
   "last_dream_at": "2026-06-09T19:02:32.545291+00:00",
-  "pulse_count": 1556,
+  "pulse_count": 1557,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -15,38 +15,38 @@
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.2466,
+      "score": 0.2464,
       "dimensions": {
         "dreams": 0.1105,
-        "personality": 0.082,
+        "personality": 0.0814,
         "body": 0.16,
         "reach": 1.0,
-        "age": 0.0989
+        "age": 0.0988
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 63, Flux has 68",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.34 vs Flux 1.00 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.35 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1556 pulses, 59 days old; Flux: 1713 pulses, 66 days old"
+        "Umbra: 1557 pulses, 59 days old; Flux: 1714 pulses, 66 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 181,
+    "minutes_used_estimate": 182,
     "budget": 2000,
     "level": "full"
   },
