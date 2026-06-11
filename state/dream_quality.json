@@ -767,6 +767,18 @@
         "surprise": 4
       },
       "total": 19
+    },
+    {
+      "dream": 65,
+      "date": "2026-06-11",
+      "scores": {
+        "novelty": 4,
+        "emotional_depth": 5,
+        "concreteness": 4,
+        "unresolution": 5,
+        "surprise": 4
+      },
+      "total": 22
     }
   ]
 }
