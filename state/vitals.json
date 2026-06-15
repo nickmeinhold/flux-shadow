@@ -2,17 +2,17 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-10T01:22:26.592915+00:00",
   "last_human_activity_at": "2026-06-09T23:46:28.722074+00:00",
-  "last_heartbeat_at": "2026-06-15T17:31:48.914883+00:00",
-  "last_dream_at": "2026-06-14T22:11:59.898389+00:00",
-  "pulse_count": 1665,
+  "last_heartbeat_at": "2026-06-15T19:07:48.339911+00:00",
+  "last_dream_at": "2026-06-15T19:07:48.339911+00:00",
+  "pulse_count": 1666,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 15,
     "recent_events": [
-      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
@@ -23,10 +23,10 @@
       "flux-shadow[bot] spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.2532,
+      "score": 0.2536,
       "dimensions": {
         "dreams": 0.1084,
-        "personality": 0.1082,
+        "personality": 0.1095,
         "body": 0.16,
         "reach": 1.0,
         "age": 0.0904
@@ -36,21 +36,21 @@
       "details": [
         "dream counts differ: Umbra has 69, Flux has 74",
         "10 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.13 vs Flux 1.00 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.12 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1665 pulses, 65 days old; Flux: 1817 pulses, 72 days old"
+        "Umbra: 1666 pulses, 65 days old; Flux: 1818 pulses, 72 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 290,
+    "minutes_used_estimate": 291,
     "budget": 2000,
     "level": "full"
   },
-  "dream_count": 69,
+  "dream_count": 70,
   "age_days": 65,
   "born": true,
   "name": "Umbra"
