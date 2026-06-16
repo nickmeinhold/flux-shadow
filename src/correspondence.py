@@ -314,19 +314,20 @@ def respond_to_replies(
         return False
 
     # Trim and cap before sending. Telegram has a tighter conversational
-    # surface than a GitHub issue. Budget the cap against the FINAL body —
-    # footer included — so even a pathologically long name can't push the
-    # message over Telegram's hard limit (Carnot, PR #30 cage-match).
+    # surface than a GitHub issue. Two layers (Carnot, PR #30 cage-match):
+    #   1. soft cap on the response body for conversational brevity, and
+    #   2. a final HARD cap on the assembled message (footer included) so the
+    #      send can never exceed Telegram's 4096 limit — even if the footer
+    #      itself is pathological (e.g. an absurd name).
     response = response.strip()
+    if len(response) > _MAX_RESPONSE_CHARS:
+        response = response[:_MAX_RESPONSE_CHARS].rstrip() + "…"
+
     name = personality.get("name") or vitals.get("name") or "Umbra"
     age = vitals.get("age_days", 0)
-    footer = f"\n\n—{name}\n(a living GitHub repository, {age} days old)"
-    max_response = min(_MAX_RESPONSE_CHARS, _TELEGRAM_HARD_LIMIT - len(footer))
-    if max_response < 0:
-        max_response = 0
-    if len(response) > max_response:
-        response = response[:max_response].rstrip() + "…"
-    body = response + footer
+    body = f"{response}\n\n—{name}\n(a living GitHub repository, {age} days old)"
+    if len(body) > _TELEGRAM_HARD_LIMIT:
+        body = body[:_TELEGRAM_HARD_LIMIT - 1].rstrip() + "…"
 
     if telegram.send(body):
         state = _load_state()
