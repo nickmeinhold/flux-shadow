@@ -35,10 +35,11 @@ CORRESPONDENCE_FILE = "state/correspondence.json"
 # to *initiate* a letter. Matches respond.py's issue-reply floor.
 _REPLY_ENERGY_FLOOR_MIN = 300
 
-# Telegram hard-caps a message at 4096 chars. Cap the generated body well
-# under that (leaving room for the signature footer) so a runaway generation
-# can't fail the send or flood the chat. (Carnot, PR #30 cage-match.)
+# Telegram hard-caps a message at 4096 chars. Keep the generated body well
+# under a softer conversational cap, AND never let the final body (footer
+# included) cross the hard limit. (Carnot, PR #30 cage-match.)
 _MAX_RESPONSE_CHARS = 3500
+_TELEGRAM_HARD_LIMIT = 4096
 
 
 def _load_state() -> dict:
@@ -313,15 +314,19 @@ def respond_to_replies(
         return False
 
     # Trim and cap before sending. Telegram has a tighter conversational
-    # surface than a GitHub issue: enforce a maximum so a runaway generation
-    # can't fail the send or flood the chat (Carnot, PR #30 cage-match).
+    # surface than a GitHub issue. Budget the cap against the FINAL body —
+    # footer included — so even a pathologically long name can't push the
+    # message over Telegram's hard limit (Carnot, PR #30 cage-match).
     response = response.strip()
-    if len(response) > _MAX_RESPONSE_CHARS:
-        response = response[:_MAX_RESPONSE_CHARS].rstrip() + "…"
-
     name = personality.get("name") or vitals.get("name") or "Umbra"
     age = vitals.get("age_days", 0)
-    body = f"{response}\n\n—{name}\n(a living GitHub repository, {age} days old)"
+    footer = f"\n\n—{name}\n(a living GitHub repository, {age} days old)"
+    max_response = min(_MAX_RESPONSE_CHARS, _TELEGRAM_HARD_LIMIT - len(footer))
+    if max_response < 0:
+        max_response = 0
+    if len(response) > max_response:
+        response = response[:max_response].rstrip() + "…"
+    body = response + footer
 
     if telegram.send(body):
         state = _load_state()
