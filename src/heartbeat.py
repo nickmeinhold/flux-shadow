@@ -107,6 +107,7 @@ def main() -> None:
         vitals["last_human_activity_at"] = now.isoformat()
 
     # 3c. Check mail — did someone reply?
+    replies = []
     try:
         from src import correspondence
         replies = correspondence.check_mail(vitals)
@@ -115,6 +116,17 @@ def main() -> None:
             vitals["last_human_activity_at"] = now.isoformat()  # a reply IS human activity
     except Exception:
         pass  # mail check failure shouldn't crash the heartbeat
+
+    # 3d. Respond to replies — a reply deserves a reply. `check_mail` only
+    #     half-opened the loop (recorded the reply as memory); this writes
+    #     back over Telegram so the channel is actually two-way. Gated
+    #     internally on energy + config; at most one response per pulse.
+    if replies:
+        try:
+            from src import correspondence
+            correspondence.respond_to_replies(replies, vitals, personality)
+        except Exception:
+            pass  # a failed response shouldn't crash the heartbeat
 
     # 4. Update senses in vitals (keep recent_events from new + old)
     old_events = vitals["senses"].get("recent_events", [])
