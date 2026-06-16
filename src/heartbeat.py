@@ -126,7 +126,11 @@ def main() -> None:
             from src import correspondence
             correspondence.respond_to_replies(replies, vitals, personality)
         except Exception:
-            pass  # a failed response shouldn't crash the heartbeat
+            # A failed response shouldn't crash the heartbeat — but this
+            # feature exists to close an observability gap, so log it rather
+            # than swallowing it silently (Carnot, PR #30 cage-match).
+            from src._log import get_logger
+            get_logger(__name__).exception("[heartbeat] respond_to_replies failed")
 
     # 4. Update senses in vitals (keep recent_events from new + old)
     old_events = vitals["senses"].get("recent_events", [])
