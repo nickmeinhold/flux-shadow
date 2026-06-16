@@ -1,32 +1,32 @@
 {
-  "state": "drowsy",
-  "state_entered_at": "2026-06-16T10:58:44.986772+00:00",
+  "state": "sleeping",
+  "state_entered_at": "2026-06-16T12:57:06.774349+00:00",
   "last_human_activity_at": "2026-06-16T10:03:33.379648+00:00",
-  "last_heartbeat_at": "2026-06-16T10:58:44.986772+00:00",
+  "last_heartbeat_at": "2026-06-16T12:57:06.774349+00:00",
   "last_dream_at": "2026-06-15T19:07:48.339911+00:00",
-  "pulse_count": 1679,
+  "pulse_count": 1680,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 15,
     "recent_events": [
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "maxwell-merge-slam[bot] spoke to me in an issue",
       "nickmeinhold did something (PullRequestEvent)",
-      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
-      "flux-shadow[bot] spoke to me in an issue",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
-      "nickmeinhold spoke to me in an issue",
-      "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)"
+      "maxwell-merge-slam[bot] spoke to me in an issue",
+      "nickmeinhold did something (PullRequestEvent)"
     ],
     "divergence": {
-      "score": 0.2571,
+      "score": 0.257,
       "dimensions": {
         "dreams": 0.1069,
-        "personality": 0.123,
+        "personality": 0.1224,
         "body": 0.16,
         "reach": 1.0,
         "age": 0.0887
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1679 pulses, 66 days old; Flux: 1828 pulses, 73 days old"
+        "Umbra: 1680 pulses, 66 days old; Flux: 1829 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 304,
+    "minutes_used_estimate": 305,
     "budget": 2000,
     "level": "full"
   },
