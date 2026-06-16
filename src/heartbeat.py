@@ -115,7 +115,11 @@ def main() -> None:
             memory.record_reply(working_mem, reply)
             vitals["last_human_activity_at"] = now.isoformat()  # a reply IS human activity
     except Exception:
-        pass  # mail check failure shouldn't crash the heartbeat
+        # Mail check failure shouldn't crash the heartbeat — but log it; a
+        # silent polling failure would stall the whole reply path invisibly
+        # (Carnot, PR #30 cage-match).
+        from src._log import get_logger
+        get_logger(__name__).exception("[heartbeat] check_mail failed")
 
     # 3d. Respond to replies — a reply deserves a reply. `check_mail` only
     #     half-opened the loop (recorded the reply as memory); this writes

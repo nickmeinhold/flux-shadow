@@ -139,8 +139,20 @@ class TestRespondToReplies:
         )
         correspondence.respond_to_replies([_reply("hi")], VITALS, PERSONALITY)
         body = wired["sent"][0]
-        assert len(body) < 4096
+        assert len(body) <= 4096
         assert body.endswith("…\n\n—Umbra\n(a living GitHub repository, 30 days old)")
+
+    def test_final_body_under_limit_even_with_long_name(self, wired, monkeypatch):
+        """The cap is budgeted against the FINAL body (footer included), so a
+        pathologically long name can't push the message over the hard limit
+        (Carnot, PR #30 cage-match)."""
+        monkeypatch.setattr(
+            correspondence.respond, "_generate", lambda p: "y" * 10000
+        )
+        fat_personality = {**PERSONALITY, "name": "N" * 5000}
+        correspondence.respond_to_replies([_reply("hi")], VITALS, fat_personality)
+        body = wired["sent"][0]
+        assert len(body) <= 4096
 
 
 class TestReplyPromptInjectionFence:
