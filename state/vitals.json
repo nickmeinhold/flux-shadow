@@ -2,31 +2,31 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-10T01:22:26.592915+00:00",
   "last_human_activity_at": "2026-06-09T23:46:28.722074+00:00",
-  "last_heartbeat_at": "2026-06-16T07:05:44.156724+00:00",
+  "last_heartbeat_at": "2026-06-16T09:10:26.872379+00:00",
   "last_dream_at": "2026-06-15T19:07:48.339911+00:00",
-  "pulse_count": 1675,
+  "pulse_count": 1676,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 15,
     "recent_events": [
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "nickmeinhold did something (PullRequestEvent)",
+      "flux-shadow[bot] did something (PullRequestReviewEvent)",
+      "nickmeinhold spoke to me in an issue",
       "flux-shadow[bot] spoke to me in an issue",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
-      "nickmeinhold spoke to me in an issue",
-      "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] spoke to me in an issue"
+      "nickmeinhold spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.256,
+      "score": 0.2565,
       "dimensions": {
         "dreams": 0.1069,
-        "personality": 0.1212,
+        "personality": 0.1227,
         "body": 0.16,
         "reach": 1.0,
         "age": 0.083
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 70, Flux has 75",
         "10 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.03 vs Flux 1.00 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.02 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1675 pulses, 66 days old; Flux: 1826 pulses, 72 days old"
+        "Umbra: 1676 pulses, 66 days old; Flux: 1827 pulses, 72 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 300,
+    "minutes_used_estimate": 301,
     "budget": 2000,
     "level": "full"
   },
