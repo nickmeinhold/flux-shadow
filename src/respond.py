@@ -22,6 +22,18 @@ equals BOT_LOGIN — not "any login ending in [bot]." Watchdog, dependabot,
 github-actions, the sibling's bot — none of those are this agent, and
 their comments must NOT suppress a reply to a real human question.
 
+Login representation (the bug that caused issue #26's 200-comment loop):
+`gh issue view --json comments` resolves logins through GraphQL, which
+returns an App bot's login WITHOUT the `[bot]` suffix (`flux-shadow`),
+while BOT_LOGIN and the REST API both carry it (`flux-shadow[bot]`). With
+the GraphQL form, `_is_self` never matched, the agent was blind to its own
+replies, and it re-answered the same human question every pulse forever.
+Fix: comments are fetched via the REST API (`_list_comments`), which keeps
+the `[bot]` suffix, so `_is_self`/`_is_bot` see one consistent convention.
+`_is_self` is also made suffix-insensitive as defense-in-depth, and the
+issue-author bot check uses the `is_bot` field (GraphQL strips the suffix
+from issue authors too).
+
 Gates (intentionally light):
 - one response per (issue × latest human comment) — never spam
 - energy gate (skip when minutes_left < 300)
@@ -72,14 +84,16 @@ _DREAM_EXCERPT_CHARS = 600
 
 
 # --------------------------------------------------------------------------
-# Typed shapes for the GitHub timeline. These mirror what `gh issue list`
-# and `gh issue view` return, with only the fields we read. TypedDict
+# Typed shapes for the GitHub timeline. Issues mirror `gh issue list`;
+# comments mirror the REST shape `_list_comments` maps into (see below).
+# Only the fields we read are modelled. TypedDict
 # (not dict) so callers (and the cage-match reviewers) can see the
 # invariants in the signature, not just in comments.
 # --------------------------------------------------------------------------
 
 class Author(TypedDict, total=False):
     login: str
+    is_bot: bool
 
 
 class Label(TypedDict, total=False):
@@ -128,15 +142,36 @@ def _self_login() -> str:
     return os.environ.get("BOT_LOGIN", "").strip()
 
 
+def _strip_bot_suffix(login: str) -> str:
+    """Normalize a login by removing a trailing `[bot]` if present.
+
+    GraphQL (`gh issue view --json`) and REST (`gh api`) disagree on whether
+    an App bot's login carries the `[bot]` suffix. Comparing normalized
+    forms makes identity checks robust to whichever convention a given
+    fetch happens to use."""
+    return login[:-len("[bot]")] if login.endswith("[bot]") else login
+
+
 def _is_self(login: str, self_login: str) -> bool:
-    """Is this comment from THIS agent's own bot identity?"""
-    return bool(self_login) and login == self_login
+    """Is this comment from THIS agent's own bot identity?
+
+    Suffix-insensitive: `flux-shadow` (GraphQL) and `flux-shadow[bot]`
+    (REST / BOT_LOGIN) are treated as the same identity. This is the fix
+    for the issue #26 loop — see the module docstring."""
+    if not self_login:
+        return False
+    return _strip_bot_suffix(login) == _strip_bot_suffix(self_login)
 
 
 def _is_bot(login: str) -> bool:
     """Is this a bot login at all? Used to filter out *all* bots from the
     "human comment" set (the sibling's bot, watchdog, dependabot, etc.).
-    Distinct from `_is_self`: `_is_self` is a strict subset."""
+    Distinct from `_is_self`: `_is_self` is a strict subset.
+
+    Relies on the `[bot]` suffix, so callers must feed it REST-shaped
+    logins (`_list_comments` uses the REST API for exactly this reason).
+    For issue authors, prefer the structured `is_bot` field, which GraphQL
+    does provide even though it strips the suffix from the login string."""
     return bool(login) and login.endswith("[bot]")
 
 
@@ -182,18 +217,36 @@ def _list_open_issues(repo: str) -> list[Issue]:
 
 
 def _list_comments(repo: str, issue_number: int) -> list[Comment]:
-    """Comments on an issue, oldest first."""
+    """Comments on an issue, oldest first.
+
+    Uses the REST API rather than `gh issue view --json comments` on
+    purpose: REST returns App-bot logins WITH the `[bot]` suffix
+    (`flux-shadow[bot]`), whereas the GraphQL path strips it (`flux-shadow`).
+    The whole identity model (`_is_self`, `_is_bot`) keys off that suffix,
+    and the GraphQL form is what caused the issue #26 self-reply loop. We
+    map the REST shape (`user.login`, `created_at`) onto the `Comment`
+    shape the rest of this module expects (`author.login`, `createdAt`)."""
     out = _gh([
-        "issue", "view", str(issue_number), "-R", repo,
-        "--json", "comments",
+        "api", f"repos/{repo}/issues/{issue_number}/comments",
+        "--paginate",
     ])
     if not out:
         return []
     try:
-        payload = json.loads(out)
+        raw = json.loads(out)
     except json.JSONDecodeError:
         return []
-    return payload.get("comments", []) or []
+    if not isinstance(raw, list):
+        return []
+    comments: list[Comment] = []
+    for c in raw:
+        user = c.get("user") or {}
+        comments.append({
+            "author": {"login": user.get("login", "")},
+            "body": c.get("body", ""),
+            "createdAt": c.get("created_at", ""),
+        })
+    return comments
 
 
 # --------------------------------------------------------------------------
@@ -225,8 +278,13 @@ def select_candidates(
     candidates: list[Candidate] = []
 
     for issue in issues:
-        author_login = (issue.get("author") or {}).get("login", "")
-        if _is_bot(author_login):
+        author = issue.get("author") or {}
+        author_login = author.get("login", "")
+        # GraphQL strips the `[bot]` suffix from issue-author logins too, so
+        # the suffix heuristic alone misses App bots (e.g. the Guestbook
+        # issue). Prefer the structured `is_bot` field `gh issue list`
+        # provides; fall back to the suffix for any path that lacks it.
+        if author.get("is_bot") or _is_bot(author_login):
             continue
 
         labels = {l.get("name", "") for l in (issue.get("labels") or [])}
