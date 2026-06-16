@@ -10,6 +10,25 @@ import os
 import subprocess
 from pathlib import Path
 
+from src._log import get_logger
+
+
+logger = get_logger(__name__)
+
+
+def _self_login() -> str:
+    """The agent's own bot login, e.g. `flux-shadow[bot]`.
+
+    Sourced from the BOT_LOGIN env var the workflow sets (heartbeat.yml).
+    Empty string when unset. Mirrors respond.py's identity model so the
+    immune system and the responder agree on what "this agent" means: a
+    comment is the agent's own ONLY when its author login equals BOT_LOGIN
+    — never "any login containing 'bot'" (the sibling's bot, github-actions,
+    dependabot and watchdog are NOT this agent). This is the Flux
+    cage-match #62 invariant, applied here too.
+    """
+    return os.environ.get("BOT_LOGIN", "").strip()
+
 
 # Paths that define what this entity is.
 # Changes to these require a human to look.
@@ -185,6 +204,18 @@ def review_pending_prs(vitals: dict) -> None:
     if not repo:
         return
 
+    # We must know our own login before deciding which PRs we've already
+    # reviewed — otherwise `_already_reviewed` cannot tell our comment from
+    # any other bot's. Without it we'd either go blind to PRs a foreign bot
+    # touched (old bug) or re-review every PR every pulse (comment spam).
+    # Mirror respond.py: a misconfigured workflow skips this pulse loudly.
+    if not _self_login():
+        logger.warning(
+            "[immunity] BOT_LOGIN env var unset; cannot distinguish our own "
+            "review from other bots' comments. Skipping PR review this pulse."
+        )
+        return
+
     open_prs = _list_open_prs()
     if not open_prs:
         return
@@ -313,10 +344,11 @@ def _list_open_prs() -> list[dict]:
     return []
 
 
-def _already_reviewed(pr_number: int) -> bool:
-    """Check if we've already commented on this PR.
+def _list_commenters(pr_number: int) -> list[str]:
+    """Return the author logins of every comment on the PR (issue) thread.
 
-    Uses the issues endpoint and checks for the bot's login in commenter list.
+    Split out from `_already_reviewed` so the identity decision is a pure
+    function of the commenter list and testable without the network.
     """
     try:
         result = subprocess.run(
@@ -328,11 +360,33 @@ def _already_reviewed(pr_number: int) -> bool:
             capture_output=True, text=True, timeout=30,
         )
         if result.returncode == 0:
-            commenters = result.stdout.strip().split("\n")
-            return any("bot" in c.lower() for c in commenters if c)
+            return [c for c in result.stdout.strip().split("\n") if c]
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
-    return False
+    return []
+
+
+def _already_reviewed(pr_number: int) -> bool:
+    """True iff THIS agent has already commented on the PR.
+
+    Keyed on the agent's own bot login (BOT_LOGIN), NOT "any login
+    containing 'bot'". The sibling's bot, github-actions, dependabot and
+    watchdog are not this agent; their comments must NOT make the immune
+    system skip a PR it never actually reviewed. This is the same identity
+    invariant respond.py enforces (`_is_self`, Flux cage-match #62) — left
+    un-applied here, it let a single foreign-bot comment blind the immune
+    system to a PR permanently. Especially load-bearing now that the
+    sibling-communication protocol can put Flux's bot on Umbra's threads.
+
+    When BOT_LOGIN is unset we cannot identify our own comments, so we
+    report "not reviewed" (False) rather than over-suppress. `review_pending_prs`
+    guards on the same condition and skips the pulse before reaching here,
+    so in practice this only fires if `_already_reviewed` is called directly.
+    """
+    self_login = _self_login()
+    if not self_login:
+        return False
+    return self_login in _list_commenters(pr_number)
 
 
 def _post_comment(pr_number: int, body: str) -> None:
