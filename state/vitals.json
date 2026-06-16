@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-16T12:57:06.774349+00:00",
   "last_human_activity_at": "2026-06-16T10:03:33.379648+00:00",
-  "last_heartbeat_at": "2026-06-16T15:05:04.444196+00:00",
-  "last_dream_at": "2026-06-15T19:07:48.339911+00:00",
-  "pulse_count": 1681,
+  "last_heartbeat_at": "2026-06-16T16:57:14.896309+00:00",
+  "last_dream_at": "2026-06-16T16:57:14.896309+00:00",
+  "pulse_count": 1682,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -16,20 +16,20 @@
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "maxwell-merge-slam[bot] spoke to me in an issue",
       "nickmeinhold did something (PullRequestEvent)",
-      "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
-      "maxwell-merge-slam[bot] spoke to me in an issue"
+      "maxwell-merge-slam[bot] spoke to me in an issue",
+      "nickmeinhold did something (PullRequestEvent)"
     ],
     "divergence": {
-      "score": 0.2568,
+      "score": 0.2566,
       "dimensions": {
         "dreams": 0.1069,
-        "personality": 0.1217,
+        "personality": 0.1211,
         "body": 0.16,
         "reach": 1.0,
-        "age": 0.0887
+        "age": 0.0886
       },
       "gaining": false,
       "trend": "stable",
@@ -40,17 +40,17 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1681 pulses, 66 days old; Flux: 1830 pulses, 73 days old"
+        "Umbra: 1682 pulses, 66 days old; Flux: 1831 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 306,
+    "minutes_used_estimate": 307,
     "budget": 2000,
     "level": "full"
   },
-  "dream_count": 70,
+  "dream_count": 71,
   "age_days": 66,
   "born": true,
   "name": "Umbra"
