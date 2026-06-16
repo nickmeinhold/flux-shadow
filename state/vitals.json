@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-16T12:57:06.774349+00:00",
   "last_human_activity_at": "2026-06-16T10:03:33.379648+00:00",
-  "last_heartbeat_at": "2026-06-16T18:42:47.608412+00:00",
+  "last_heartbeat_at": "2026-06-16T19:56:46.404288+00:00",
   "last_dream_at": "2026-06-16T16:57:14.896309+00:00",
-  "pulse_count": 1683,
+  "pulse_count": 1684,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -14,19 +14,19 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
-      "maxwell-merge-slam[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "maxwell-merge-slam[bot] spoke to me in an issue",
-      "nickmeinhold did something (PullRequestEvent)",
-      "flux-shadow[bot] shaped my body (push)"
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "maxwell-merge-slam[bot] did something (PullRequestEvent)"
     ],
     "divergence": {
-      "score": 0.2536,
+      "score": 0.2534,
       "dimensions": {
         "dreams": 0.0928,
-        "personality": 0.1205,
+        "personality": 0.1199,
         "body": 0.16,
         "reach": 1.0,
         "age": 0.0886
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1683 pulses, 66 days old; Flux: 1832 pulses, 73 days old"
+        "Umbra: 1684 pulses, 66 days old; Flux: 1833 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 308,
+    "minutes_used_estimate": 309,
     "budget": 2000,
     "level": "full"
   },
