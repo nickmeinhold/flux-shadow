@@ -12,6 +12,7 @@ that respond.py is supposed to enforce.
 
 from __future__ import annotations
 
+import json
 import os
 import tempfile
 from typing import Any
@@ -182,6 +183,35 @@ class TestFiltering:
             [issue], {50: []}, self_login=UMBRA_LOGIN
         )
         assert cands == []
+
+    def test_list_comments_maps_rest_shape(self, monkeypatch):
+        """`_list_comments` fetches via the REST API and maps `user.login`/
+        `created_at` onto the `author.login`/`createdAt` shape the selector
+        expects. Crucially, REST preserves the `[bot]` suffix — the whole
+        point of the issue #26 fix. A malformed (non-dict) element is
+        skipped rather than crashing the heartbeat."""
+        rest_payload = json.dumps([
+            {"user": {"login": "clio-vega"}, "created_at": "2026-06-06T00:00:00Z",
+             "body": "did you merge the PR?"},
+            {"user": {"login": "flux-shadow[bot]"}, "created_at": "2026-06-06T01:00:00Z",
+             "body": "still no PR named"},
+            "this should not be here",  # malformed element — must be skipped
+            {"user": None, "created_at": "2026-06-06T02:00:00Z", "body": "ghost"},
+        ])
+        monkeypatch.setattr(respond, "_gh", lambda args: rest_payload)
+        comments = respond._list_comments("nickmeinhold/flux-shadow", 26)
+        assert len(comments) == 3, "malformed string element must be dropped"
+        assert comments[1]["author"]["login"] == "flux-shadow[bot]", (
+            "REST must preserve the [bot] suffix — this is the #26 fix"
+        )
+        assert comments[0]["createdAt"] == "2026-06-06T00:00:00Z"
+        assert comments[2]["author"]["login"] == ""  # null user → empty login
+
+    def test_list_comments_handles_error_object(self, monkeypatch):
+        """If the API returns an error object instead of an array (e.g.
+        a 404 body with a zero exit), return [] rather than crashing."""
+        monkeypatch.setattr(respond, "_gh", lambda args: '{"message": "Not Found"}')
+        assert respond._list_comments("repo", 1) == []
 
     def test_bot_authored_issue_skipped_via_is_bot_field(self):
         """GraphQL strips `[bot]` from issue-author logins too, so the

@@ -149,7 +149,7 @@ def _strip_bot_suffix(login: str) -> str:
     an App bot's login carries the `[bot]` suffix. Comparing normalized
     forms makes identity checks robust to whichever convention a given
     fetch happens to use."""
-    return login[:-len("[bot]")] if login.endswith("[bot]") else login
+    return login.removesuffix("[bot]")
 
 
 def _is_self(login: str, self_login: str) -> bool:
@@ -240,6 +240,11 @@ def _list_comments(repo: str, issue_number: int) -> list[Comment]:
         return []
     comments: list[Comment] = []
     for c in raw:
+        # Defend against a malformed page element (the API returning a
+        # non-object where we expect a comment) — skip rather than crash
+        # the heartbeat with an AttributeError.
+        if not isinstance(c, dict):
+            continue
         user = c.get("user") or {}
         comments.append({
             "author": {"login": user.get("login", "")},
