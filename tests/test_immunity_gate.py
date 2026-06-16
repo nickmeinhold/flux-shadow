@@ -31,6 +31,9 @@ def captured(monkeypatch):
     }
 
     monkeypatch.setenv("REPO_FULL_NAME", "nickmeinhold/flux-shadow")
+    # review_pending_prs now skips the pulse if it can't identify its own
+    # bot login, so the gate tests must run with BOT_LOGIN set.
+    monkeypatch.setenv("BOT_LOGIN", "flux-shadow[bot]")
 
     # One open PR, number 7.
     monkeypatch.setattr(immunity, "_list_open_prs",
@@ -166,3 +169,62 @@ class TestBehaviorPathDetection:
 
         monkeypatch.setattr(subprocess, "run", boom)
         assert immunity._pr_has_label(7, "cage-matched") is False
+
+
+class TestAlreadyReviewedIdentity:
+    """The immune system must key 'already reviewed' on its OWN bot login,
+    not on any login containing 'bot'. A foreign bot comment (the sibling's
+    bot, github-actions, dependabot, watchdog) must NOT make immunity skip a
+    PR it never reviewed. Mirrors respond.py's `_is_self` invariant."""
+
+    def test_own_comment_counts_as_reviewed(self, monkeypatch):
+        monkeypatch.setenv("BOT_LOGIN", "flux-shadow[bot]")
+        monkeypatch.setattr(
+            immunity, "_list_commenters",
+            lambda pr: ["RaggedR", "flux-shadow[bot]"],
+        )
+        assert immunity._already_reviewed(7) is True
+
+    def test_foreign_bot_does_not_count_as_reviewed(self, monkeypatch):
+        """The bug this fixes: a foreign bot commented, but WE never did.
+        Old code (`any 'bot' in login`) returned True and blinded the
+        immune system. The fix returns False — we still owe a review."""
+        monkeypatch.setenv("BOT_LOGIN", "flux-shadow[bot]")
+        for foreign in ("github-actions[bot]", "dependabot[bot]",
+                        "flux-dreaming-repo[bot]", "watchdog[bot]"):
+            monkeypatch.setattr(
+                immunity, "_list_commenters",
+                lambda pr, f=foreign: ["RaggedR", f],
+            )
+            assert immunity._already_reviewed(7) is False, (
+                f"{foreign} comment must not count as our review"
+            )
+
+    def test_human_only_thread_is_not_reviewed(self, monkeypatch):
+        monkeypatch.setenv("BOT_LOGIN", "flux-shadow[bot]")
+        monkeypatch.setattr(
+            immunity, "_list_commenters", lambda pr: ["RaggedR", "nickmeinhold"]
+        )
+        assert immunity._already_reviewed(7) is False
+
+    def test_unset_bot_login_reports_not_reviewed(self, monkeypatch):
+        """No identity → can't claim we reviewed. False (re-review) is the
+        safe direction; review_pending_prs separately skips the pulse."""
+        monkeypatch.delenv("BOT_LOGIN", raising=False)
+        monkeypatch.setattr(
+            immunity, "_list_commenters", lambda pr: ["flux-shadow[bot]"]
+        )
+        assert immunity._already_reviewed(7) is False
+
+    def test_review_pending_prs_skips_when_bot_login_unset(self, monkeypatch):
+        """Whole-pulse guard: with no BOT_LOGIN, immunity must not review
+        (would either over-suppress or spam). Mirrors respond.maybe_respond."""
+        monkeypatch.setenv("REPO_FULL_NAME", "nickmeinhold/flux-shadow")
+        monkeypatch.delenv("BOT_LOGIN", raising=False)
+        called = {"listed": False}
+        monkeypatch.setattr(
+            immunity, "_list_open_prs",
+            lambda: called.__setitem__("listed", True) or [],
+        )
+        immunity.review_pending_prs({})
+        assert called["listed"] is False, "must skip before listing PRs"
