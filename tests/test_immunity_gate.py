@@ -227,6 +227,18 @@ class TestFailClosedOnUnreadableDiff:
         monkeypatch.setattr(subprocess, "run", boom)
         assert immunity._get_deleted_protected(7) is None
 
+    def test_deleted_protected_fails_closed_on_nonzero_exit(self, monkeypatch):
+        """The other half of the fail-closed branch: a non-zero `gh` exit
+        (not just a timeout) must also return None."""
+        import subprocess
+
+        class R:
+            returncode = 1
+            stdout = ""
+
+        monkeypatch.setattr(subprocess, "run", lambda *a, **k: R())
+        assert immunity._get_deleted_protected(7) is None
+
     def test_review_pr_holds_when_deletion_scan_unreadable(self, monkeypatch):
         """changed_files readable but the deletion scan fails → hold, not merge."""
         monkeypatch.setattr(immunity, "_get_changed_files", lambda pr: ["books/a.md"])
@@ -234,6 +246,22 @@ class TestFailClosedOnUnreadableDiff:
         result = immunity.review_pr(7)
         assert result["recommendation"] == "flag_for_human"
         assert result["safe"] is False
+
+    def test_unreadable_deletion_hold_preserves_computed_evidence(self, monkeypatch):
+        """The hold must NOT discard the protected/top-level lists already
+        computed from the readable name-only diff — _fix_pr and the review
+        comment need them (Carnot, PR #33)."""
+        # A protected file touched + a stray top-level file, with the
+        # deletion scan failing.
+        monkeypatch.setattr(
+            immunity, "_get_changed_files",
+            lambda pr: ["src/immunity.py", "stray.txt"],
+        )
+        monkeypatch.setattr(immunity, "_get_deleted_protected", lambda pr: None)
+        result = immunity.review_pr(7)
+        assert result["recommendation"] == "flag_for_human"
+        assert "src/immunity.py" in result["protected_files_touched"]
+        assert "stray.txt" in result["files_outside_subdirs"]
 
 
 class TestSharedIdentity:
