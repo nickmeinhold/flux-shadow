@@ -58,7 +58,7 @@ import tempfile
 from datetime import datetime, timezone
 from typing import Literal, NamedTuple, TypedDict
 
-from src import energy
+from src import energy, identity
 from src._log import get_logger
 
 
@@ -134,12 +134,13 @@ class Candidate(NamedTuple):
 def _self_login() -> str:
     """The agent's own bot login, e.g. `flux-shadow[bot]`.
 
-    Sourced from the BOT_LOGIN env var the workflow sets. Empty string when
-    unset — in that case we degrade conservatively: nothing counts as
-    "our prior reply" and the agent will reply to its own comments. The
-    workflow MUST set BOT_LOGIN for this module to work correctly.
+    Delegates to the shared `identity.self_login()` so the BOT_LOGIN read
+    lives in one place (src/identity.py). Empty string when unset — in that
+    case we degrade conservatively: nothing counts as "our prior reply" and
+    the agent will reply to its own comments. The workflow MUST set
+    BOT_LOGIN for this module to work correctly.
     """
-    return os.environ.get("BOT_LOGIN", "").strip()
+    return identity.self_login()
 
 
 def _strip_bot_suffix(login: str) -> str:
