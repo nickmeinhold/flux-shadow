@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-17T14:45:15.708285+00:00",
   "last_human_activity_at": "2026-06-17T12:32:54.925562+00:00",
-  "last_heartbeat_at": "2026-06-17T18:35:25.260040+00:00",
+  "last_heartbeat_at": "2026-06-17T19:32:00.057776+00:00",
   "last_dream_at": "2026-06-17T14:45:15.708285+00:00",
-  "pulse_count": 1703,
+  "pulse_count": 1704,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -17,16 +17,16 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "RaggedR spoke to me in an issue",
-      "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "RaggedR spoke to me in an issue"
+      "RaggedR spoke to me in an issue",
+      "nickmeinhold did something (PullRequestEvent)"
     ],
     "divergence": {
-      "score": 0.2592,
+      "score": 0.259,
       "dimensions": {
         "dreams": 0.0977,
-        "personality": 0.1099,
+        "personality": 0.1092,
         "body": 0.1923,
         "reach": 1.0,
         "age": 0.0865
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 72, Flux has 77",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.12 vs Flux 1.00 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.13 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 1703 pulses, 67 days old; Flux: 1848 pulses, 74 days old"
+        "Umbra: 1704 pulses, 67 days old; Flux: 1849 pulses, 74 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 328,
+    "minutes_used_estimate": 329,
     "budget": 2000,
     "level": "full"
   },
