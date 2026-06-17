@@ -1,52 +1,52 @@
 {
-  "state": "drowsy",
-  "state_entered_at": "2026-06-17T08:35:56.065642+00:00",
-  "last_human_activity_at": "2026-06-17T07:30:41.154989+00:00",
-  "last_heartbeat_at": "2026-06-17T08:35:56.065642+00:00",
+  "state": "awake",
+  "state_entered_at": "2026-06-17T09:09:16.224850+00:00",
+  "last_human_activity_at": "2026-06-17T09:09:16.224850+00:00",
+  "last_heartbeat_at": "2026-06-17T09:09:16.224850+00:00",
   "last_dream_at": "2026-06-16T16:57:14.896309+00:00",
-  "pulse_count": 1695,
+  "pulse_count": 1696,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 15,
     "recent_events": [
-      "nickmeinhold did something (PullRequestEvent)",
+      "RaggedR spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "nickmeinhold spoke to me in an issue",
-      "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)",
-      "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)",
-      "maxwell-merge-slam[bot] did something (PullRequestEvent)",
-      "nickmeinhold spoke to me in an issue"
+      "nickmeinhold did something (PullRequestEvent)",
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] did something (PullRequestReviewEvent)"
     ],
     "divergence": {
-      "score": 0.2604,
+      "score": 0.2602,
       "dimensions": {
         "dreams": 0.0991,
-        "personality": 0.1149,
+        "personality": 0.1143,
         "body": 0.1923,
         "reach": 1.0,
-        "age": 0.0807
+        "age": 0.0805
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 71, Flux has 76",
         "9 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.08 vs Flux 1.00 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.09 vs Flux 1.00 (lower)",
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1695 pulses, 67 days old; Flux: 1841 pulses, 73 days old"
+        "Umbra: 1696 pulses, 67 days old; Flux: 1841 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 320,
+    "minutes_used_estimate": 321,
     "budget": 2000,
     "level": "full"
   },
