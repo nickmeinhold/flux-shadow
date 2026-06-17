@@ -9,7 +9,9 @@ import json
 import os
 import subprocess
 from pathlib import Path
+from typing import Literal, TypedDict
 
+from src import identity
 from src._log import get_logger
 
 
@@ -19,20 +21,18 @@ logger = get_logger(__name__)
 def _self_login() -> str:
     """The agent's own bot login, e.g. `flux-shadow[bot]`.
 
-    Sourced from the BOT_LOGIN env var the workflow sets (heartbeat.yml).
-    Empty string when unset. Mirrors respond.py's identity model so the
-    immune system and the responder agree on what "this agent" means: a
+    Delegates to the shared `identity.self_login()` so the BOT_LOGIN read
+    lives in one place (src/identity.py). The invariant this preserves: a
     comment is the agent's own ONLY when its author login equals BOT_LOGIN
     — never "any login containing 'bot'" (the sibling's bot, github-actions,
-    dependabot and watchdog are NOT this agent). This is the Flux
-    cage-match #62 invariant, applied here too.
+    dependabot and watchdog are NOT this agent). Flux cage-match #62.
     """
-    return os.environ.get("BOT_LOGIN", "").strip()
+    return identity.self_login()
 
 
 # Paths that define what this entity is.
 # Changes to these require a human to look.
-PROTECTED_PATHS = [
+PROTECTED_PATHS = (
     "CLAUDE.md",
     "src/",
     "state/",
@@ -40,16 +40,16 @@ PROTECTED_PATHS = [
     "memories/",
     ".github/workflows/",
     "README.md",
-]
+)
 
 # Directories that are expected homes for contributed content.
 # Files placed here don't trigger the "top-level dump" alarm.
-KNOWN_SUBDIRS = [
+KNOWN_SUBDIRS = (
     "books/",
     "greetings/",
     "docs/",
     "contrib/",
-]
+)
 
 # Behavior-changing paths — a PR touching these carries real risk of
 # changing how Umbra runs, not just what content it carries. These get the
@@ -59,21 +59,37 @@ KNOWN_SUBDIRS = [
 # on Flux's PR #62 found 14 issues post-merge, and #64 found 1 more, all
 # in exactly this class of change. Auto-merge stays fast for pure content
 # PRs (books/, greetings/); only code/workflow/dependency PRs hit the gate.
-BEHAVIOR_CHANGING_PATHS = [
+BEHAVIOR_CHANGING_PATHS = (
     "src/",
     ".github/workflows/",
     "requirements.txt",
-]
+)
 
 # The label a PR must carry before Umbra will auto-merge a behavior-changing
 # change. Applied by a human (or `/cage-match`) after adversarial review.
 CAGE_MATCH_LABEL = "cage-matched"
 
 
-def review_pr(pr_number: int) -> dict:
+# The closed set of decisions review_pr can reach. Typed so callers (and the
+# cage-match reviewers) see the contract in the signature, not just a comment.
+Recommendation = Literal["merge", "request_changes", "flag_for_human"]
+
+
+class ReviewResult(TypedDict):
+    """The verdict review_pr returns. A TypedDict (not a bare dict) so the
+    closed `recommendation` set and the field shapes are checkable."""
+    safe: bool
+    verdict: str
+    protected_files_touched: list[str]
+    files_outside_subdirs: list[str]
+    files_changed: list[str]
+    recommendation: Recommendation
+
+
+def review_pr(pr_number: int) -> ReviewResult:
     """Review a PR and decide whether it's safe to merge.
 
-    Returns {
+    Returns a ReviewResult:
         safe: bool,
         verdict: str,
         protected_files_touched: list[str],
@@ -134,8 +150,23 @@ def review_pr(pr_number: int) -> dict:
             if not is_known and not is_protected:
                 top_level_additions.append(filepath)
 
-    # Check for deletions of protected paths
+    # Check for deletions of protected paths. Fail CLOSED: if the deletion
+    # scan couldn't read the diff, hold for human rather than assume nothing
+    # protected is being deleted.
     deleted_protected = _get_deleted_protected(pr_number)
+    if deleted_protected is None:
+        return {
+            "safe": False,
+            "verdict": (
+                "I couldn't read this PR's full diff to check for deletions "
+                "of protected paths — a transient gh/network failure. Holding "
+                "for human review rather than merging blind."
+            ),
+            "protected_files_touched": [],
+            "files_outside_subdirs": [],
+            "files_changed": changed_files,
+            "recommendation": "flag_for_human",
+        }
 
     # Determine recommendation
     if protected_touched or deleted_protected:
@@ -333,8 +364,14 @@ def _get_changed_files(pr_number: int) -> list[str] | None:
     return None
 
 
-def _get_deleted_protected(pr_number: int) -> list[str]:
-    """Check if any protected paths are being deleted."""
+def _get_deleted_protected(pr_number: int) -> list[str] | None:
+    """Protected paths being deleted in a PR, or None if the diff is unreadable.
+
+    Fail CLOSED, like `_get_changed_files`: a `gh` failure returns None (not
+    []), so review_pr can hold rather than assume "no protected deletions".
+    This keeps the two diff-fetchers consistent — one failing open next to
+    one failing closed was the latent inconsistency PR #32 left behind.
+    """
     deleted = []
     try:
         result = subprocess.run(
@@ -342,7 +379,7 @@ def _get_deleted_protected(pr_number: int) -> list[str]:
             capture_output=True, text=True, timeout=30,
         )
         if result.returncode != 0:
-            return []
+            return None
 
         current_file = None
         for line in result.stdout.split("\n"):
@@ -358,7 +395,7 @@ def _get_deleted_protected(pr_number: int) -> list[str]:
                     elif current_file == protected:
                         deleted.append(current_file)
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        pass
+        return None
     return deleted
 
 

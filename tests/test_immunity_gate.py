@@ -216,6 +216,40 @@ class TestFailClosedOnUnreadableDiff:
         monkeypatch.setattr("subprocess.run", lambda *a, **k: R())
         assert immunity._get_changed_files(7) == []
 
+    def test_deleted_protected_fails_closed_on_error(self, monkeypatch):
+        """The deletion scan must also fail CLOSED — None on a gh error,
+        not [] — so review_pr can hold (the sibling-consistency fix)."""
+        import subprocess
+
+        def boom(*a, **k):
+            raise subprocess.TimeoutExpired("gh", 30)
+
+        monkeypatch.setattr(subprocess, "run", boom)
+        assert immunity._get_deleted_protected(7) is None
+
+    def test_review_pr_holds_when_deletion_scan_unreadable(self, monkeypatch):
+        """changed_files readable but the deletion scan fails → hold, not merge."""
+        monkeypatch.setattr(immunity, "_get_changed_files", lambda pr: ["books/a.md"])
+        monkeypatch.setattr(immunity, "_get_deleted_protected", lambda pr: None)
+        result = immunity.review_pr(7)
+        assert result["recommendation"] == "flag_for_human"
+        assert result["safe"] is False
+
+
+class TestSharedIdentity:
+    def test_immunity_self_login_delegates_to_identity(self, monkeypatch):
+        from src import identity
+        monkeypatch.setenv("BOT_LOGIN", "flux-shadow[bot]")
+        assert immunity._self_login() == "flux-shadow[bot]"
+        assert immunity._self_login() == identity.self_login()
+
+    def test_respond_and_immunity_agree_on_self(self, monkeypatch):
+        from src import respond, identity
+        monkeypatch.setenv("BOT_LOGIN", "  flux-shadow[bot]  ")
+        # Both strip and read the same env → identical answer.
+        assert immunity._self_login() == respond._self_login() == identity.self_login()
+        assert identity.self_login() == "flux-shadow[bot]"
+
     def test_fail_safe_label_check_on_error_returns_false(self, monkeypatch):
         """_pr_has_label must return False (→ hold, don't merge) if gh fails."""
         import subprocess
