@@ -84,6 +84,24 @@ def review_pr(pr_number: int) -> dict:
     """
     changed_files = _get_changed_files(pr_number)
 
+    # Fail CLOSED: if we couldn't read the diff, we cannot judge safety —
+    # hold for a human rather than merge blind. This closes the hole that
+    # let PR #30 auto-merge ungated (a transient `gh pr diff` failure was
+    # indistinguishable from "no files changed", which classified as merge).
+    if changed_files is None:
+        return {
+            "safe": False,
+            "verdict": (
+                "I couldn't read this PR's diff — a transient gh/network "
+                "failure. I can't tell what it changes, so I'm holding it "
+                "for human review rather than merging blind."
+            ),
+            "protected_files_touched": [],
+            "files_outside_subdirs": [],
+            "files_changed": [],
+            "recommendation": "flag_for_human",
+        }
+
     protected_touched = []
     top_level_additions = []
 
@@ -241,9 +259,12 @@ def review_pending_prs(vitals: dict) -> None:
             # gate and auto-merge as before. Fail-safe: _pr_has_label
             # returns False on any CLI/network error, so we hold rather
             # than merge when we can't verify the label.
+            # Use the authoritative list from review_pr — no re-fetch. (The
+            # old `or _get_changed_files(...)` re-fetch could now return None
+            # and crash; and re-fetching is pointless since review_pr already
+            # holds the PR when the diff is unreadable.)
             behavior_files = _touches_behavior_changing_paths(
-                result.get("files_changed")
-                or _get_changed_files(pr_number)
+                result.get("files_changed") or []
             )
             if behavior_files and not _pr_has_label(pr_number, CAGE_MATCH_LABEL):
                 comment += (
@@ -287,8 +308,19 @@ def review_pending_prs(vitals: dict) -> None:
 # Internal helpers — subprocess wrappers around gh CLI
 # ---------------------------------------------------------------------------
 
-def _get_changed_files(pr_number: int) -> list[str]:
-    """Get list of files changed in a PR via gh."""
+def _get_changed_files(pr_number: int) -> list[str] | None:
+    """Files changed in a PR via gh, or None if the diff could not be read.
+
+    CRITICAL — fail CLOSED: returns None (not []) on ANY failure (non-zero
+    exit, timeout, CLI error). A network/CLI hiccup must NOT be
+    indistinguishable from a genuinely empty diff. `review_pr` treats None as
+    "I can't tell what changed → hold for human", so the immune system never
+    merges blind. An empty list means the diff was read and really had no
+    files. This was the hole that let PR #30 auto-merge ungated: the old
+    code returned [] on failure, review_pr saw "no protected paths" and
+    recommended merge, and the cage-match gate saw no behavior-changing
+    files and waved it through.
+    """
     try:
         result = subprocess.run(
             ["gh", "pr", "diff", str(pr_number), "--name-only"],
@@ -298,7 +330,7 @@ def _get_changed_files(pr_number: int) -> list[str]:
             return [f for f in result.stdout.strip().split("\n") if f]
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
-    return []
+    return None
 
 
 def _get_deleted_protected(pr_number: int) -> list[str]:
@@ -433,15 +465,21 @@ def _pr_has_label(pr_number: int, label: str) -> bool:
         return False
 
 
-def _touches_behavior_changing_paths(changed_files: list[str]) -> list[str]:
+def _touches_behavior_changing_paths(
+    changed_files: list[str] | None,
+) -> list[str]:
     """Return the subset of changed files that touch behavior-changing paths.
 
     These are the files whose change can alter how Umbra runs (code,
     workflows, dependencies) rather than merely what content it carries.
     A non-empty result means the cage-match gate applies before auto-merge.
+
+    Defensive: None (an unreadable diff) is treated as empty here, but the
+    real guard is upstream — review_pr holds an unreadable-diff PR before it
+    ever reaches the merge branch.
     """
     hits = []
-    for filepath in changed_files:
+    for filepath in (changed_files or []):
         for path in BEHAVIOR_CHANGING_PATHS:
             if path.endswith("/"):
                 if filepath.startswith(path):
