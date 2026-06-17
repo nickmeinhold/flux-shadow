@@ -136,9 +136,10 @@ def _self_login() -> str:
 
     Delegates to the shared `identity.self_login()` so the BOT_LOGIN read
     lives in one place (src/identity.py). Empty string when unset — in that
-    case we degrade conservatively: nothing counts as "our prior reply" and
-    the agent will reply to its own comments. The workflow MUST set
-    BOT_LOGIN for this module to work correctly.
+    case `maybe_respond` skips the pulse entirely (it can't tell its own
+    comments from anyone else's, so it declines to act rather than risk
+    replying to itself). The workflow MUST set BOT_LOGIN for this module to
+    work correctly.
     """
     return identity.self_login()
 

@@ -140,7 +140,6 @@ def review_pr(pr_number: int) -> ReviewResult:
             top_level_additions.append(filepath)
         else:
             # In a subdirectory — check if it's a known one
-            top_dir = filepath.split("/")[0] + "/"
             is_known = any(
                 filepath.startswith(sub) for sub in KNOWN_SUBDIRS
             )
@@ -155,6 +154,11 @@ def review_pr(pr_number: int) -> ReviewResult:
     # protected is being deleted.
     deleted_protected = _get_deleted_protected(pr_number)
     if deleted_protected is None:
+        # Preserve the evidence already computed from the readable
+        # name-only diff (protected_touched, top_level_additions) — the
+        # flag_for_human path feeds these to _fix_pr and into the review
+        # comment, so emptying them here would discard real remediation
+        # signal exactly when we're already degraded (Carnot, PR #33).
         return {
             "safe": False,
             "verdict": (
@@ -162,8 +166,8 @@ def review_pr(pr_number: int) -> ReviewResult:
                 "of protected paths — a transient gh/network failure. Holding "
                 "for human review rather than merging blind."
             ),
-            "protected_files_touched": [],
-            "files_outside_subdirs": [],
+            "protected_files_touched": protected_touched,
+            "files_outside_subdirs": top_level_additions,
             "files_changed": changed_files,
             "recommendation": "flag_for_human",
         }
