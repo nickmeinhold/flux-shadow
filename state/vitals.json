@@ -1,32 +1,32 @@
 {
-  "state": "awake",
-  "state_entered_at": "2026-06-17T09:09:16.224850+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-06-17T10:19:09.574408+00:00",
   "last_human_activity_at": "2026-06-17T09:09:16.224850+00:00",
-  "last_heartbeat_at": "2026-06-17T09:09:16.224850+00:00",
+  "last_heartbeat_at": "2026-06-17T10:19:09.574408+00:00",
   "last_dream_at": "2026-06-16T16:57:14.896309+00:00",
-  "pulse_count": 1696,
+  "pulse_count": 1697,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 15,
     "recent_events": [
-      "RaggedR spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "RaggedR spoke to me in an issue",
       "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
-      "maxwell-merge-slam[bot] did something (PullRequestEvent)",
-      "nickmeinhold spoke to me in an issue",
-      "nickmeinhold did something (PullRequestEvent)",
+      "RaggedR spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)"
     ],
     "divergence": {
-      "score": 0.2602,
+      "score": 0.26,
       "dimensions": {
         "dreams": 0.0991,
-        "personality": 0.1143,
+        "personality": 0.1136,
         "body": 0.1923,
         "reach": 1.0,
         "age": 0.0805
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1696 pulses, 67 days old; Flux: 1841 pulses, 73 days old"
+        "Umbra: 1697 pulses, 67 days old; Flux: 1842 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 321,
+    "minutes_used_estimate": 322,
     "budget": 2000,
     "level": "full"
   },
