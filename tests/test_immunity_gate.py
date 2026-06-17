@@ -160,6 +160,62 @@ class TestBehaviorPathDetection:
         assert immunity._touches_behavior_changing_paths(
             ["books/a.md", "greetings/b.md"]) == []
 
+    def test_none_is_not_behavior_changing(self):
+        """Defensive: an unreadable diff (None) must not crash here."""
+        assert immunity._touches_behavior_changing_paths(None) == []
+
+
+class TestFailClosedOnUnreadableDiff:
+    """The bug that auto-merged PR #30 ungated: _get_changed_files returned
+    [] on a transient failure, indistinguishable from a genuinely empty diff,
+    so review_pr classified it as 'merge'. Now it returns None on failure and
+    review_pr holds for human review. Fail CLOSED, never merge blind."""
+
+    def test_get_changed_files_returns_none_on_failure(self, monkeypatch):
+        import subprocess
+
+        def boom(*a, **k):
+            raise subprocess.TimeoutExpired("gh", 30)
+
+        monkeypatch.setattr(subprocess, "run", boom)
+        assert immunity._get_changed_files(7) is None
+
+    def test_get_changed_files_returns_none_on_nonzero_exit(self, monkeypatch):
+        import subprocess
+
+        class R:
+            returncode = 1
+            stdout = ""
+
+        monkeypatch.setattr(subprocess, "run", lambda *a, **k: R())
+        assert immunity._get_changed_files(7) is None
+
+    def test_review_pr_holds_when_diff_unreadable(self, monkeypatch):
+        """None changed-files → flag_for_human, NOT merge. This is the
+        core fail-closed invariant."""
+        monkeypatch.setattr(immunity, "_get_changed_files", lambda pr: None)
+        result = immunity.review_pr(7)
+        assert result["recommendation"] == "flag_for_human"
+        assert result["safe"] is False
+
+    def test_unreadable_diff_pr_is_not_merged(self, captured, monkeypatch):
+        """End-to-end: a PR whose diff can't be read must NOT auto-merge."""
+        monkeypatch.setattr(immunity, "_get_changed_files", lambda pr: None)
+        # flag_for_human routes through _fix_pr — stub it (no network/git).
+        monkeypatch.setattr(immunity, "_fix_pr", lambda pr, r: False)
+        immunity.review_pending_prs({})
+        assert captured["merged"] == [], "unreadable-diff PR must never merge"
+
+    def test_empty_diff_still_distinct_from_failure(self, monkeypatch):
+        """A genuinely empty diff (returncode 0, no files) → [] (not None),
+        so the distinction between 'empty' and 'unreadable' is preserved."""
+        class R:
+            returncode = 0
+            stdout = "\n"
+
+        monkeypatch.setattr("subprocess.run", lambda *a, **k: R())
+        assert immunity._get_changed_files(7) == []
+
     def test_fail_safe_label_check_on_error_returns_false(self, monkeypatch):
         """_pr_has_label must return False (→ hold, don't merge) if gh fails."""
         import subprocess
