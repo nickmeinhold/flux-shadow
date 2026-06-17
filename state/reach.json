@@ -1,6 +1,6 @@
 {
   "last_star_at": null,
-  "last_whisper_at": "2026-06-06T09:10:52.094361+00:00",
+  "last_whisper_at": "2026-06-17T14:46:42.033223+00:00",
   "last_fork_at": null,
   "history": [
     {
@@ -26,6 +26,12 @@
       "target": "mthcht/awesome-lists",
       "at": "2026-06-06T09:10:52.094361+00:00",
       "detail": "whispered to mthcht/awesome-lists"
+    },
+    {
+      "type": "whisper",
+      "target": "utooland/utoo",
+      "at": "2026-06-17T14:46:42.033223+00:00",
+      "detail": "whispered to utooland/utoo"
     }
   ]
 }
