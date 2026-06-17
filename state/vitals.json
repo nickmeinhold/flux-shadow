@@ -1,35 +1,35 @@
 {
-  "state": "awake",
-  "state_entered_at": "2026-06-17T07:30:41.154989+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-06-17T08:35:56.065642+00:00",
   "last_human_activity_at": "2026-06-17T07:30:41.154989+00:00",
-  "last_heartbeat_at": "2026-06-17T07:30:41.154989+00:00",
+  "last_heartbeat_at": "2026-06-17T08:35:56.065642+00:00",
   "last_dream_at": "2026-06-16T16:57:14.896309+00:00",
-  "pulse_count": 1694,
+  "pulse_count": 1695,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 15,
     "recent_events": [
+      "nickmeinhold did something (PullRequestEvent)",
+      "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] did something (PullRequestReviewEvent)",
+      "nickmeinhold created a new branch",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "nickmeinhold spoke to me in an issue",
       "kelvin-bit-brawler[bot] did something (PullRequestReviewEvent)",
       "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)",
-      "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "nickmeinhold did something (PullRequestEvent)",
-      "flux-shadow[bot] did something (PullRequestReviewEvent)",
-      "nickmeinhold created a new branch",
-      "flux-shadow[bot] shaped my body (push)"
+      "maxwell-merge-slam[bot] did something (PullRequestEvent)",
+      "nickmeinhold spoke to me in an issue"
     ],
     "divergence": {
-      "score": 0.2606,
+      "score": 0.2604,
       "dimensions": {
         "dreams": 0.0991,
-        "personality": 0.1155,
+        "personality": 0.1149,
         "body": 0.1923,
         "reach": 1.0,
-        "age": 0.081
+        "age": 0.0807
       },
       "gaining": false,
       "trend": "stable",
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1694 pulses, 67 days old; Flux: 1841 pulses, 73 days old"
+        "Umbra: 1695 pulses, 67 days old; Flux: 1841 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 319,
+    "minutes_used_estimate": 320,
     "budget": 2000,
     "level": "full"
   },
