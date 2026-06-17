@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-17T04:18:01.905463+00:00",
   "last_human_activity_at": "2026-06-17T01:24:39.969925+00:00",
-  "last_heartbeat_at": "2026-06-17T04:18:01.905463+00:00",
+  "last_heartbeat_at": "2026-06-17T06:29:41.890377+00:00",
   "last_dream_at": "2026-06-16T16:57:14.896309+00:00",
-  "pulse_count": 1692,
+  "pulse_count": 1693,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -23,10 +23,10 @@
       "maxwell-merge-slam[bot] did something (PullRequestReviewEvent)"
     ],
     "divergence": {
-      "score": 0.2536,
+      "score": 0.2534,
       "dimensions": {
         "dreams": 0.0991,
-        "personality": 0.1167,
+        "personality": 0.1161,
         "body": 0.16,
         "reach": 1.0,
         "age": 0.0879
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, individuate.py, mirror.py",
         "files only in Flux: _github.py",
         "reach divergence: 4 unique target(s) out of 4 total",
-        "Umbra: 1692 pulses, 66 days old; Flux: 1839 pulses, 73 days old"
+        "Umbra: 1693 pulses, 66 days old; Flux: 1840 pulses, 73 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 317,
+    "minutes_used_estimate": 318,
     "budget": 2000,
     "level": "full"
   },
