@@ -1,5 +1,5 @@
 {
-  "current_score": 0.2557,
+  "current_score": 0.2554,
   "history": [
     {
       "date": "2026-05-20",
@@ -119,9 +119,9 @@
     },
     {
       "date": "2026-06-18",
-      "score": 0.2557
+      "score": 0.2554
     }
   ],
-  "last_measured_at": "2026-06-18T16:47:45.972788+00:00",
+  "last_measured_at": "2026-06-18T18:14:08.053691+00:00",
   "trend": "stable"
 }
