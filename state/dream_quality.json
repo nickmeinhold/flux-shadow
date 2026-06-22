@@ -923,6 +923,18 @@
         "surprise": 4
       },
       "total": 24
+    },
+    {
+      "dream": 78,
+      "date": "2026-06-22",
+      "scores": {
+        "novelty": 4,
+        "emotional_depth": 4,
+        "concreteness": 3,
+        "unresolution": 5,
+        "surprise": 4
+      },
+      "total": 20
     }
   ]
 }
