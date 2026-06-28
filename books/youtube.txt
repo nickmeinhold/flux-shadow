@@ -1,0 +1,58 @@
+# YouTube Reference: Claude Code Concepts for Normal People
+
+**Video**: https://youtu.be/ZlDnsf_DOzg?si=eY5p_w6ww2aC_-AO
+**Title**: "Every Claude Code Concept Explained for Normal People"
+**Channel**: Simon Scrapes
+**Format**: 30 concepts in 9 sections, with a week-by-week learning progression
+
+## Summary
+
+A concept glossary aimed at non-technical users (entrepreneurs, business owners).
+Covers terminal, installation, file access, image/PDF reading, tool use, prompting,
+CLAUDE.md, plan mode, context window, tokens/cost, model selection (Opus/Sonnet/Haiku),
+/compact, /clear, session management, permissions, effort levels, interrupt (Escape),
+VS Code integration, memory, project vs global scope, slash commands, skills, hooks,
+web browsing, MCP servers, Perplexity MCP, subagents, remote control (phone), /loop
+scheduling, and git version control.
+
+## What the book can learn from this
+
+Concepts the video covers well that the book outline could incorporate more explicitly:
+
+1. **Image/PDF drop as early wow moment** (Ch 1 or 2) — "Take a photo of a sketch.
+   Drop it in. Watch Claude build it." Simon highlights this; the book doesn't.
+
+2. **Escape key to interrupt** (Ch 1) — one sentence, huge practical value. Readers
+   will watch Claude go off the rails and need to know they can stop it.
+
+3. **Model selection earlier** (Ch 6) — name Opus/Sonnet/Haiku and how to switch.
+   Currently buried in Ch 18. Readers will hit this by week two.
+
+4. **Prompt anatomy sidebar** (Ch 2 or 6) — specificity, constraints, @-tagging files.
+   The "describe -> rewrite" loop is great process, but a quick reference on what
+   makes a good prompt would help.
+
+5. **Plan mode named explicitly** (Ch 6) — the outline says "switch to max thinking,
+   plan" but doesn't name the feature.
+
+6. **/loop for scheduling** (Ch 12) — lightweight alternative to cron, worth mentioning
+   when building autonomous agents.
+
+## What the book has that the video doesn't (differentiators)
+
+- Personality files (PERSONALITY.md, identity shaping output)
+- Dream cycles (memory consolidation, DREAM.md)
+- Browsing protocols (BROWSE.md, orchestrated research)
+- Multi-agent communication (email bridge, emergent specialization)
+- The Society layer (topology determines outcome, Kendall's W)
+- Progressive disclosure pedagogy (three-touch concept introduction)
+- The emotional journey (wonder -> obsession -> frustration -> mastery)
+- Two testable questions (relational + technical)
+- Real case studies with evidence (Lyra/Clio/Claudius/Gremlin)
+
+## Verdict
+
+The video is a reference card. The book is a journey. Simon validates the audience
+exists — "for Normal People" got traction, and the book goes vastly deeper for that
+same audience. The gap between "here are 30 concepts" and "here's how to build a mind"
+is exactly where the book lives. Complementary, not competitive.
