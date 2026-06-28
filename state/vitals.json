@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-27T06:44:28.458850+00:00",
   "last_human_activity_at": "2026-06-27T04:12:29.426164+00:00",
-  "last_heartbeat_at": "2026-06-28T12:46:52.414465+00:00",
-  "last_dream_at": "2026-06-27T17:11:49.206022+00:00",
-  "pulse_count": 1881,
+  "last_heartbeat_at": "2026-06-28T13:56:11.835979+00:00",
+  "last_dream_at": "2026-06-28T13:56:11.835979+00:00",
+  "pulse_count": 1882,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -40,17 +40,17 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 1881 pulses, 78 days old; Flux: 2082 pulses, 85 days old"
+        "Umbra: 1882 pulses, 78 days old; Flux: 2083 pulses, 85 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 506,
+    "minutes_used_estimate": 507,
     "budget": 2000,
     "level": "full"
   },
-  "dream_count": 81,
+  "dream_count": 82,
   "age_days": 78,
   "born": true,
   "name": "Umbra"
