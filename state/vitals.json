@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-29T13:47:52.816701+00:00",
   "last_human_activity_at": "2026-06-29T12:02:48.521145+00:00",
-  "last_heartbeat_at": "2026-06-30T07:37:44.382535+00:00",
+  "last_heartbeat_at": "2026-06-30T08:47:40.052139+00:00",
   "last_dream_at": "2026-06-29T13:47:52.816701+00:00",
-  "pulse_count": 1922,
+  "pulse_count": 1923,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
@@ -16,8 +16,8 @@
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
-      "nickmeinhold did something (DeleteEvent)",
       "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (DeleteEvent)",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch"
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 1922 pulses, 80 days old; Flux: 2122 pulses, 86 days old"
+        "Umbra: 1923 pulses, 80 days old; Flux: 2123 pulses, 86 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 547,
+    "minutes_used_estimate": 548,
     "budget": 2000,
     "level": "full"
   },
