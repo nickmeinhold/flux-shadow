@@ -2,7 +2,10 @@ name: examine a proposed change
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    # `labeled` lets a cage-matched hold self-complete: when the cage-matched
+    # label lands on a held behavior-changing PR, re-run the examination so the
+    # merge gate (now seeing the label) can let an accepted change through.
+    types: [opened, synchronize, labeled]
 
   workflow_dispatch:                # Manual trigger for existing PRs
     inputs:
@@ -18,6 +21,14 @@ concurrency:
 jobs:
   examine:
     runs-on: ubuntu-latest
+
+    # Skip the runner entirely for label events that aren't the cage-match
+    # label — only `cage-matched` should re-trigger an examination; other
+    # labels (e.g. needs-human-review, applied by immunity) must not spin up a
+    # review or spend energy. Non-label events (opened/synchronize/dispatch)
+    # always run. (review.py carries the in-process twin of this guard for the
+    # workflow_dispatch/direct path.)
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'cage-matched' }}
 
     steps:
       - name: Become Flux
@@ -88,6 +99,10 @@ jobs:
           PR_AUTHOR: ${{ steps.pr.outputs.author }}
           PR_TITLE: ${{ steps.pr.outputs.title }}
           PR_BODY_FILE: /tmp/pr_body.txt
+          # Event context so review.py knows whether this is a label-completion
+          # trigger (and which label), to avoid re-reviewing on unrelated labels.
+          PR_EVENT_ACTION: ${{ github.event.action }}
+          PR_LABEL: ${{ github.event.label.name }}
         run: python -m src.review
 
       - name: Save working memory

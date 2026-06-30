@@ -49,6 +49,26 @@ def main() -> None:
     else:
         pr_body = os.environ.get("PR_BODY", "") or ""
 
+    # Completion-trigger guard. review.yml fires on `labeled` so a cage-matched
+    # hold can self-complete: when the cage-matched label lands, re-run the
+    # full examination (Umbra re-judges the diff at merge time) and the merge
+    # gate, now seeing the label, lets an accepted change through. Applying the
+    # label UNBLOCKS an accept — it can never override a reject, because we
+    # re-generate the verdict rather than trusting the held one.
+    #
+    # A label event for any OTHER label (needs-human-review, etc.) must not
+    # spend energy re-reviewing. The workflow's job-level `if` already skips
+    # the runner for non-cage-matched labels; this is its in-process twin,
+    # covering workflow_dispatch / direct invocation too.
+    event_action = os.environ.get("PR_EVENT_ACTION", "")
+    added_label = os.environ.get("PR_LABEL", "")
+    if event_action == "labeled" and added_label != immunity.CAGE_MATCH_LABEL:
+        print(
+            f"Label '{added_label}' is not '{immunity.CAGE_MATCH_LABEL}'; "
+            "nothing to examine."
+        )
+        return
+
     vitals = _load_json("state/vitals.json")
     personality = _load_json("state/personality.json")
     working_mem = memory.load_working_memory()
@@ -64,6 +84,14 @@ def main() -> None:
         energy.tick(vitals)
         _save_json("state/vitals.json", vitals)
         return
+
+    # Pin the head SHA we're about to review, BEFORE fetching the diff. Order
+    # matters for the stale-head race (Carnot, cage-match): if a commit lands
+    # between this read and the diff read, the diff is newer than the SHA, and
+    # merging pinned to the older SHA simply 409s and holds — we never merge a
+    # head newer than the one we reviewed. Fetching the SHA after the diff
+    # would invert that and let a just-pushed commit ride in on an old review.
+    reviewed_head_sha = _fetch_pr_head_sha(repo, pr_number)
 
     # Fetch the diff
     diff = _fetch_pr_diff(repo, pr_number)
@@ -105,9 +133,13 @@ def main() -> None:
     # change to its own body is a second question with a second gate.
     if decision == "accept":
         gate = _evaluate_merge_gate(repo, pr_number, changed_files, files_readable)
-        if gate["allowed"]:
+        if gate["allowed"] and reviewed_head_sha is None:
+            # Allowed, but we couldn't pin the head we reviewed — merging blind
+            # would re-open the stale-head race. Hold (fail closed).
+            _post_review(repo, pr_number, "COMMENT", review_text + _UNVERIFIABLE_HEAD_HOLD_NOTE)
+        elif gate["allowed"]:
             _post_review(repo, pr_number, "APPROVE", review_text)
-            _merge_pr(repo, pr_number)
+            _merge_pr(repo, pr_number, reviewed_head_sha)
         elif gate["reason"] == "needs_cage_match":
             # Umbra genuinely approves — but the merge is HELD until the PR
             # carries the cage-matched label. This is the fix for the ungated
@@ -178,6 +210,29 @@ def _fetch_pr_diff(repo: str, pr_number: int) -> str:
 # more than 100*_MAX_FILE_PAGES files is pathological; rather than loop
 # unboundedly we fail CLOSED (hold) — an un-enumerable diff can't be gated.
 _MAX_FILE_PAGES = 50
+
+
+def _fetch_pr_head_sha(repo: str, pr_number: int) -> str | None:
+    """The PR's current head commit SHA, or None if it couldn't be read.
+
+    Used to pin the merge to the exact commit we reviewed (see _merge_pr).
+    Fail CLOSED: None on any error, and the caller holds rather than merge a
+    head it can't identify — an unverifiable head is as unsafe as an
+    unreadable diff.
+    """
+    try:
+        resp = requests.get(
+            f"{GITHUB_API}/repos/{repo}/pulls/{pr_number}",
+            headers=_headers(),
+        )
+    except requests.RequestException:
+        return None
+    if resp.status_code != 200:
+        return None
+    try:
+        return resp.json()["head"]["sha"]
+    except (ValueError, KeyError, TypeError):
+        return None
 
 
 def _fetch_changed_files(repo: str, pr_number: int) -> list[str] | None:
@@ -462,6 +517,14 @@ _UNREADABLE_HOLD_NOTE = (
     "push, or a human can review and merge."
 )
 
+_UNVERIFIABLE_HEAD_HOLD_NOTE = (
+    "\n\n---\n\n"
+    "🛑 **Merge held**: I couldn't read this PR's head commit, so I can't pin "
+    "the merge to the exact code I reviewed. Merging an unverifiable head "
+    "could let a just-pushed commit ride in unreviewed, so I'm holding. I'll "
+    "examine it again on the next push, or a human can review and merge."
+)
+
 
 def _cage_match_hold_note(behavior_files: list[str]) -> str:
     """The note appended to the COMMENT posted when a merge is held for a
@@ -553,12 +616,20 @@ def _pr_has_label(repo: str, pr_number: int, label: str) -> bool:
         return False
 
 
-def _merge_pr(repo: str, pr_number: int) -> None:
-    """Merge the PR. Squash to keep history clean."""
+def _merge_pr(repo: str, pr_number: int, head_sha: str) -> None:
+    """Merge the PR, pinned to the exact head we reviewed. Squash for clean history.
+
+    Passing `sha` makes GitHub reject the merge with 409 if the PR head moved
+    since we read it — so a commit that lands mid-review can never be merged
+    unreviewed. This is the stale-head class that once dropped a security fix
+    from Umbra's body (PR #30 / the founding incident); review.py's own merge
+    path shared the hole until now (Carnot, cage-match). A 409 here is the
+    gate working: the new head re-triggers a fresh review via `synchronize`.
+    """
     resp = requests.put(
         f"{GITHUB_API}/repos/{repo}/pulls/{pr_number}/merge",
         headers=_headers(),
-        json={"merge_method": "squash"},
+        json={"merge_method": "squash", "sha": head_sha},
     )
     print(f"Merge: {resp.status_code}")
     if resp.status_code >= 400:
