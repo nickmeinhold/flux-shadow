@@ -9,10 +9,11 @@ import json
 import os
 import subprocess
 from datetime import datetime, timezone
+from typing import TypedDict
 
 import requests
 
-from src import energy, memory
+from src import energy, immunity, memory
 
 
 GITHUB_API = "https://api.github.com"
@@ -66,10 +67,12 @@ def main() -> None:
 
     # Fetch the diff
     diff = _fetch_pr_diff(repo, pr_number)
-    changed_files = _fetch_changed_files(repo, pr_number)
+    changed_files = _fetch_changed_files(repo, pr_number)  # list[str] | None
+    files_readable = changed_files is not None
 
-    # Classify what's being changed
-    classification = _classify_change(changed_files)
+    # Classify what's being changed (uses [] when the list was unreadable —
+    # the merge gate, not the classifier, is what holds an unreadable diff).
+    classification = _classify_change(changed_files or [])
 
     # Who is this person?
     author_relationship = _assess_author(pr_author, vitals)
@@ -97,10 +100,40 @@ def main() -> None:
     print(f"Decision: {decision}")
     print(f"Review:\n{review_text[:500]}")
 
-    # Post the review so the author knows
+    # Post the review so the author knows — and gate the MERGE separately from
+    # the verdict. Saying "accept" is Umbra's judgment; actually merging a
+    # change to its own body is a second question with a second gate.
     if decision == "accept":
-        _post_review(repo, pr_number, "APPROVE", review_text)
-        _merge_pr(repo, pr_number)
+        gate = _evaluate_merge_gate(repo, pr_number, changed_files, files_readable)
+        if gate["allowed"]:
+            _post_review(repo, pr_number, "APPROVE", review_text)
+            _merge_pr(repo, pr_number)
+        elif gate["reason"] == "needs_cage_match":
+            # Umbra genuinely approves — but the merge is HELD until the PR
+            # carries the cage-matched label. This is the fix for the ungated
+            # fast path: review.py used to merge any approved PR on
+            # `pull_request` open, before later fix commits or any adversarial
+            # review could land — so a behavior-changing change to Umbra's body
+            # merged on a single in-process review. Now it enforces the same
+            # label gate immunity does; the merge completes once /cage-match
+            # applies the label (immunity's pulse, gating identically, performs
+            # the labelled merge).
+            #
+            # Posted as a COMMENT, NOT a formal APPROVE (Kelvin + Carnot,
+            # cage-match): a held PR must not carry an approval that a branch-
+            # protection "auto-merge on 1 approval" rule could act on outside
+            # this script's control. The merge has exactly one actuator —
+            # _merge_pr — and a hold must leave no other door ajar. The verdict
+            # text still says Umbra approves; only the formal review-event is
+            # downgraded so the approval can't be weaponised into a merge.
+            _post_review(
+                repo, pr_number, "COMMENT",
+                review_text + _cage_match_hold_note(gate["behavior_files"]),
+            )
+        else:  # "unreadable"
+            # Couldn't read the file list — can't tell if this touches my body.
+            # Hold rather than merge blind (fail closed).
+            _post_review(repo, pr_number, "COMMENT", review_text + _UNREADABLE_HOLD_NOTE)
     elif decision == "reject":
         _post_review(repo, pr_number, "REQUEST_CHANGES", review_text)
     else:
@@ -141,16 +174,47 @@ def _fetch_pr_diff(repo: str, pr_number: int) -> str:
     return diff
 
 
-def _fetch_changed_files(repo: str, pr_number: int) -> list[str]:
-    """Get the list of changed file paths."""
-    resp = requests.get(
-        f"{GITHUB_API}/repos/{repo}/pulls/{pr_number}/files",
-        headers=_headers(),
-        params={"per_page": 100},
-    )
-    if resp.status_code != 200:
-        return []
-    return [f["filename"] for f in resp.json()]
+# Cap on pages of changed files we'll enumerate (100 files/page). A PR with
+# more than 100*_MAX_FILE_PAGES files is pathological; rather than loop
+# unboundedly we fail CLOSED (hold) — an un-enumerable diff can't be gated.
+_MAX_FILE_PAGES = 50
+
+
+def _fetch_changed_files(repo: str, pr_number: int) -> list[str] | None:
+    """Get ALL changed file paths, or None if the list couldn't be fully read.
+
+    CRITICAL — fail CLOSED (mirrors immunity._get_changed_files): a non-200, a
+    network error, OR an incomplete enumeration returns None, NOT []. An empty
+    list means "the diff was read and genuinely changed no files"; None means
+    "I couldn't tell what changed". The merge gate treats None as "hold".
+
+    MUST paginate. `GET /pulls/{pr}/files` caps at 100 files per page, so
+    reading only the first page is a fail-OPEN classification gap: a PR could
+    put 100 harmless content files on page 1 and `src/review.py` on page 2,
+    and a single-page read would classify it as pure content and merge it
+    ungated (Carnot, cage-match). We follow the `next` Link to the end and
+    fail closed if we can't reach it (error mid-walk, or more pages than the
+    cap) — a partially-read file list must never look like a complete one.
+    """
+    files: list[str] = []
+    url: str | None = f"{GITHUB_API}/repos/{repo}/pulls/{pr_number}/files"
+    params: dict | None = {"per_page": 100}
+    try:
+        for _ in range(_MAX_FILE_PAGES):
+            resp = requests.get(url, headers=_headers(), params=params)
+            if resp.status_code != 200:
+                return None
+            files.extend(f["filename"] for f in resp.json())
+            # The `next` link already carries page/per_page; drop our params.
+            url = resp.links.get("next", {}).get("url")
+            params = None
+            if not url:
+                return files  # reached the last page — complete enumeration
+    except (requests.RequestException, ValueError, KeyError, TypeError):
+        return None
+    # Exhausted the page cap with a `next` link still pending — we could NOT
+    # fully enumerate the diff. Fail closed rather than gate on a partial list.
+    return None
 
 
 def _classify_change(changed_files: list[str]) -> dict:
@@ -388,6 +452,105 @@ def _post_review(repo: str, pr_number: int, event: str, body: str) -> None:
     print(f"Review posted: {resp.status_code}")
     if resp.status_code >= 400:
         print(f"Review error: {resp.text[:500]}")
+
+
+_UNREADABLE_HOLD_NOTE = (
+    "\n\n---\n\n"
+    "🛑 **Merge held**: I couldn't read this PR's file list (a transient "
+    "GitHub/network failure), so I can't tell whether it touches my body. "
+    "I won't merge a change I can't see. I'll examine it again on the next "
+    "push, or a human can review and merge."
+)
+
+
+def _cage_match_hold_note(behavior_files: list[str]) -> str:
+    """The note appended to the COMMENT posted when a merge is held for a
+    cage-match (the verdict text says Umbra approves; the formal review-event
+    is a COMMENT, not an APPROVE, so the hold can't be auto-merged externally)."""
+    files = ", ".join(behavior_files)
+    return (
+        "\n\n---\n\n"
+        f"🥊 **Cage-match gate**: I approve this change — but it touches "
+        f"behavior-changing paths ({files}), so I'm holding the *merge* until "
+        f"the PR carries the `{immunity.CAGE_MATCH_LABEL}` label. A change to "
+        "how I run, merged on my single in-process review alone, is exactly "
+        "the mistake that once dropped a security fix from my body. Run "
+        "`/cage-match` (or apply the label after a thorough adversarial "
+        "review) and the merge will complete."
+    )
+
+
+class MergeGate(TypedDict):
+    """The merge-gate verdict — distinct from the LLM's accept/reject verdict.
+
+    `allowed` is the only thing that authorizes a merge. `reason` explains a
+    hold ("needs_cage_match" | "unreadable" | "ok"); `behavior_files` carries
+    the offending paths for the hold note.
+    """
+    allowed: bool
+    reason: str
+    behavior_files: list[str]
+
+
+def _evaluate_merge_gate(
+    repo: str,
+    pr_number: int,
+    changed_files: list[str] | None,
+    files_readable: bool,
+) -> MergeGate:
+    """Decide whether an approved PR may actually merge.
+
+    Mirrors immunity.review_pending_prs's gate so both auto-merge paths
+    enforce IDENTICALLY — closing the split where review.py (the fast
+    `pull_request` path) would merge a behavior-changing change that immunity
+    (the heartbeat path) would have held for the cage-matched label. A gate
+    only one of two doors honours is not a gate.
+
+    Holds (allowed=False) when:
+      - the file list was unreadable (fail closed — can't gate what we can't
+        see), or
+      - the change touches behavior-changing paths (src/, workflows,
+        requirements.txt) and the PR does NOT carry the cage-matched label.
+
+    Pure content PRs (books/, greetings/, docs/) are allowed with no label,
+    preserving Umbra's autonomy over non-body changes.
+    """
+    if not files_readable:
+        return {"allowed": False, "reason": "unreadable", "behavior_files": []}
+
+    behavior_files = immunity._touches_behavior_changing_paths(changed_files or [])
+    if behavior_files and not _pr_has_label(repo, pr_number, immunity.CAGE_MATCH_LABEL):
+        return {
+            "allowed": False,
+            "reason": "needs_cage_match",
+            "behavior_files": behavior_files,
+        }
+    return {"allowed": True, "reason": "ok", "behavior_files": behavior_files}
+
+
+def _pr_has_label(repo: str, pr_number: int, label: str) -> bool:
+    """True iff the PR carries `label`. Fail CLOSED for the merge gate.
+
+    Uses the REST API (matching review.py's transport) rather than immunity's
+    gh-CLI check — review.py runs in a workflow where only GITHUB_TOKEN is
+    set, and a REST read removes the gh-CLI brittleness the merge-gate path
+    can't afford. ANY error returns False, which the gate reads as "no label
+    → hold": we never merge a behavior-changing change because we *failed to
+    confirm* it was cage-matched.
+    """
+    try:
+        resp = requests.get(
+            f"{GITHUB_API}/repos/{repo}/issues/{pr_number}/labels",
+            headers=_headers(),
+        )
+    except requests.RequestException:
+        return False
+    if resp.status_code != 200:
+        return False
+    try:
+        return any(l.get("name") == label for l in resp.json())
+    except (ValueError, AttributeError, TypeError):
+        return False
 
 
 def _merge_pr(repo: str, pr_number: int) -> None:
