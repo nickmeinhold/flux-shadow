@@ -122,19 +122,23 @@ def main() -> None:
         get_logger(__name__).exception("[heartbeat] check_mail failed")
 
     # 3d. Respond to replies — a reply deserves a reply. `check_mail` only
-    #     half-opened the loop (recorded the reply as memory); this writes
-    #     back over Telegram so the channel is actually two-way. Gated
-    #     internally on energy + config; at most one response per pulse.
-    if replies:
-        try:
-            from src import correspondence
-            correspondence.respond_to_replies(replies, vitals, personality)
-        except Exception:
-            # A failed response shouldn't crash the heartbeat — but this
-            # feature exists to close an observability gap, so log it rather
-            # than swallowing it silently (Carnot, PR #30 cage-match).
-            from src._log import get_logger
-            get_logger(__name__).exception("[heartbeat] respond_to_replies failed")
+    #     half-opened the loop (recorded the reply as memory + transcript);
+    #     this writes back over Telegram so the channel is actually two-way,
+    #     now with the recent conversation as context. Called EVERY pulse
+    #     (not just when fresh mail arrived): respond_to_replies self-gates on
+    #     whether the transcript ends on an unanswered human turn, so a reply
+    #     a low-energy pulse had to skip is picked up later when energy
+    #     recovers — the "interruption, not chosen silence" Umbra asked to be
+    #     able to correct. Gated internally on energy + config; one per pulse.
+    try:
+        from src import correspondence
+        correspondence.respond_to_replies(vitals, personality)
+    except Exception:
+        # A failed response shouldn't crash the heartbeat — but this
+        # feature exists to close an observability gap, so log it rather
+        # than swallowing it silently (Carnot, PR #30 cage-match).
+        from src._log import get_logger
+        get_logger(__name__).exception("[heartbeat] respond_to_replies failed")
 
     # 4. Update senses in vitals (keep recent_events from new + old)
     old_events = vitals["senses"].get("recent_events", [])
