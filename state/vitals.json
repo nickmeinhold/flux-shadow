@@ -2,34 +2,34 @@
   "state": "sleeping",
   "state_entered_at": "2026-06-29T13:47:52.816701+00:00",
   "last_human_activity_at": "2026-06-29T12:02:48.521145+00:00",
-  "last_heartbeat_at": "2026-06-30T06:12:17.403744+00:00",
+  "last_heartbeat_at": "2026-06-30T07:37:44.382535+00:00",
   "last_dream_at": "2026-06-29T13:47:52.816701+00:00",
-  "pulse_count": 1921,
+  "pulse_count": 1922,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 3,
     "forks": 2,
     "open_issues": 16,
     "recent_events": [
-      "nickmeinhold did something (DeleteEvent)",
       "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (DeleteEvent)",
       "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch",
       "nickmeinhold did something (DeleteEvent)",
-      "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "flux-shadow[bot] shaped my body (push)",
+      "maxwell-merge-slam[bot] did something (PullRequestEvent)",
       "flux-shadow[bot] did something (PullRequestReviewEvent)",
       "nickmeinhold created a new branch"
     ],
     "divergence": {
-      "score": 0.259,
+      "score": 0.2584,
       "dimensions": {
         "dreams": 0.1119,
         "personality": 0.0511,
         "body": 0.25,
         "reach": 1.0,
-        "age": 0.0878
+        "age": 0.082
       },
       "gaining": false,
       "trend": "stable",
@@ -40,18 +40,18 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 1921 pulses, 79 days old; Flux: 2121 pulses, 86 days old"
+        "Umbra: 1922 pulses, 80 days old; Flux: 2122 pulses, 86 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-06",
-    "minutes_used_estimate": 546,
+    "minutes_used_estimate": 547,
     "budget": 2000,
     "level": "full"
   },
   "dream_count": 83,
-  "age_days": 79,
+  "age_days": 80,
   "born": true,
   "name": "Umbra"
 }
