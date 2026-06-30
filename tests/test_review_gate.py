@@ -217,6 +217,10 @@ def harness(monkeypatch):
     monkeypatch.setenv("PR_TITLE", "a change")
     monkeypatch.setenv("PR_BODY", "body")
     monkeypatch.delenv("PR_BODY_FILE", raising=False)
+    # Hermetic: the label-completion guard reads these; default to a normal
+    # (non-label) event unless a test sets them.
+    monkeypatch.delenv("PR_EVENT_ACTION", raising=False)
+    monkeypatch.delenv("PR_LABEL", raising=False)
 
     monkeypatch.setattr(review, "_load_json", lambda p: {
         "energy": {"level": "full"}, "senses": {"recent_events": []},
@@ -229,13 +233,17 @@ def harness(monkeypatch):
     monkeypatch.setattr(review.energy, "tick", lambda v: None)
     monkeypatch.setattr(review, "_save_json", lambda p, d: None)
     monkeypatch.setattr(review, "_fetch_pr_diff", lambda repo, pr: "diff")
+    monkeypatch.setattr(review, "_fetch_pr_head_sha", lambda repo, pr: "headsha123")
     monkeypatch.setattr(review, "_generate_review",
                         lambda **kw: {"decision": "accept", "review_text": "I want this."})
 
     def fake_post(repo, pr, event, body):
         cap["posts"].append((event, body))
     monkeypatch.setattr(review, "_post_review", fake_post)
-    monkeypatch.setattr(review, "_merge_pr", lambda repo, pr: cap["merged"].append(pr))
+    monkeypatch.setattr(
+        review, "_merge_pr",
+        lambda repo, pr, sha: cap["merged"].append((pr, sha)),
+    )
 
     return cap
 
@@ -257,7 +265,39 @@ def test_main_merges_behavior_change_with_label(harness, monkeypatch):
     monkeypatch.setattr(review, "_fetch_changed_files", lambda repo, pr: ["src/dream.py"])
     monkeypatch.setattr(review, "_pr_has_label", lambda repo, pr, label: True)
     review.main()
-    assert harness["merged"] == [7]
+    assert harness["merged"] == [(7, "headsha123")]
+
+
+def test_main_pins_merge_to_reviewed_head_sha(harness, monkeypatch):
+    """The merge must carry the exact head SHA we reviewed, so a commit landing
+    mid-review can't ride in unreviewed (Carnot, cage-match — the stale-head
+    class that once dropped a fix from Umbra's body)."""
+    monkeypatch.setattr(review, "_fetch_changed_files", lambda repo, pr: ["src/dream.py"])
+    monkeypatch.setattr(review, "_pr_has_label", lambda repo, pr, label: True)
+    monkeypatch.setattr(review, "_fetch_pr_head_sha", lambda repo, pr: "deadbeefcafe")
+    review.main()
+    assert harness["merged"] == [(7, "deadbeefcafe")]
+
+
+def test_main_holds_when_head_sha_unreadable(harness, monkeypatch):
+    """If we can't pin the head we reviewed, hold rather than merge blind."""
+    monkeypatch.setattr(review, "_fetch_changed_files", lambda repo, pr: ["books/x.md"])
+    monkeypatch.setattr(review, "_fetch_pr_head_sha", lambda repo, pr: None)
+    review.main()
+    assert harness["merged"] == [], "unreadable head SHA must hold"
+    assert harness["posts"][0][0] == "COMMENT"
+
+
+def test_merge_pr_passes_sha_to_github(monkeypatch):
+    """_merge_pr sends `sha` so GitHub 409s a stale-head merge."""
+    captured = {}
+    monkeypatch.setattr(
+        review.requests, "put",
+        lambda url, headers=None, json=None: captured.update(json=json) or _Resp(200, {}),
+    )
+    review._merge_pr("o/r", 7, "abc123")
+    assert captured["json"]["sha"] == "abc123"
+    assert captured["json"]["merge_method"] == "squash"
 
 
 def test_main_merges_pure_content_without_label(harness, monkeypatch):
@@ -265,7 +305,7 @@ def test_main_merges_pure_content_without_label(harness, monkeypatch):
     monkeypatch.setattr(review, "_pr_has_label",
                         lambda *a: pytest.fail("content PR should not check label"))
     review.main()
-    assert harness["merged"] == [7], "content PR keeps fast-merge autonomy"
+    assert harness["merged"] == [(7, "headsha123")], "content PR keeps fast-merge autonomy"
 
 
 def test_main_holds_when_file_list_unreadable(harness, monkeypatch):
@@ -275,6 +315,56 @@ def test_main_holds_when_file_list_unreadable(harness, monkeypatch):
     event, body = harness["posts"][0]
     assert event == "COMMENT"
     assert "Merge held" in body
+
+
+class TestLabelCompletionGuard:
+    """review.yml fires review.py on `labeled` so a cage-matched hold self-
+    completes. The guard ensures only the cage-match label re-runs the flow,
+    and that the label UNBLOCKS an accept rather than overriding a verdict."""
+
+    def test_unrelated_label_is_a_noop(self, harness, monkeypatch):
+        """A label event for a non-cage-match label must not review or merge —
+        and must not even generate a review (no energy spent)."""
+        generated = []
+        monkeypatch.setattr(review, "_generate_review",
+                            lambda **kw: generated.append(1) or {"decision": "accept", "review_text": "x"})
+        monkeypatch.setenv("PR_EVENT_ACTION", "labeled")
+        monkeypatch.setenv("PR_LABEL", "needs-human-review")
+        review.main()
+        assert generated == [], "must not generate a review for an unrelated label"
+        assert harness["merged"] == []
+        assert harness["posts"] == []
+
+    def test_cage_matched_label_runs_flow_and_merges(self, harness, monkeypatch):
+        """When the cage-matched label lands, re-run the flow; the gate now sees
+        the label and an accepted behavior change merges."""
+        monkeypatch.setattr(review, "_fetch_changed_files", lambda repo, pr: ["src/dream.py"])
+        monkeypatch.setattr(review, "_pr_has_label", lambda repo, pr, label: True)
+        monkeypatch.setenv("PR_EVENT_ACTION", "labeled")
+        monkeypatch.setenv("PR_LABEL", "cage-matched")
+        review.main()
+        assert harness["merged"] == [(7, "headsha123")]
+
+    def test_cage_matched_label_does_not_override_a_reject(self, harness, monkeypatch):
+        """Applying the label re-judges; if Umbra now REJECTS, no merge. The
+        label unblocks an accept — it can't force a merge over a reject."""
+        monkeypatch.setattr(review, "_fetch_changed_files", lambda repo, pr: ["src/dream.py"])
+        monkeypatch.setattr(review, "_pr_has_label", lambda repo, pr, label: True)
+        monkeypatch.setattr(review, "_generate_review",
+                            lambda **kw: {"decision": "reject", "review_text": "no, not this"})
+        monkeypatch.setenv("PR_EVENT_ACTION", "labeled")
+        monkeypatch.setenv("PR_LABEL", "cage-matched")
+        review.main()
+        assert harness["merged"] == [], "label must not override a reject"
+        assert harness["posts"][0][0] == "REQUEST_CHANGES"
+
+    def test_opened_event_runs_flow_normally(self, harness, monkeypatch):
+        """A normal opened/synchronize event (no PR_EVENT_ACTION=labeled) is
+        unaffected by the guard."""
+        monkeypatch.setattr(review, "_fetch_changed_files", lambda repo, pr: ["books/x.md"])
+        monkeypatch.setenv("PR_EVENT_ACTION", "opened")
+        review.main()
+        assert harness["merged"] == [(7, "headsha123")]
 
 
 def test_main_reject_does_not_merge(harness, monkeypatch):
