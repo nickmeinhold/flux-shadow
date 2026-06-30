@@ -45,12 +45,19 @@ def captured(monkeypatch):
     monkeypatch.setattr(immunity, "generate_review_comment",
                         lambda result, pr: "review body")
 
-    monkeypatch.setattr(immunity, "_merge_pr",
-                        lambda pr: state["merged"].append(pr))
+    # _merge_pr returns True on success; record the call and report success so
+    # the caller posts its review comment.
+    monkeypatch.setattr(
+        immunity, "_merge_pr",
+        lambda pr, sha: (state["merged"].append((pr, sha)), True)[1],
+    )
     monkeypatch.setattr(immunity, "_post_comment",
                         lambda pr, body: state["comments"].append((pr, body)))
     monkeypatch.setattr(immunity, "_add_label",
                         lambda pr, label: state["labels_added"].append((pr, label)))
+    # The merge is now pinned to the reviewed head SHA; default to a readable
+    # one so the existing gate tests still reach the merge.
+    monkeypatch.setattr(immunity, "_get_pr_head_sha", lambda pr: "headsha7")
 
     return state
 
@@ -114,7 +121,7 @@ class TestCageMatchGate:
 
         immunity.review_pending_prs({})
 
-        assert captured["merged"] == [7], "labelled PR should merge"
+        assert captured["merged"] == [(7, "headsha7")], "labelled PR should merge"
 
     def test_pure_content_change_merges_without_label(
         self, captured, monkeypatch
@@ -136,10 +143,101 @@ class TestCageMatchGate:
 
         immunity.review_pending_prs({})
 
-        assert captured["merged"] == [7], "pure content PR should auto-merge"
+        assert captured["merged"] == [(7, "headsha7")], "pure content PR should auto-merge"
         # No hold comment about the gate.
         for _, body in captured["comments"]:
             assert "Cage-match gate" not in body
+
+
+class TestStaleHeadPin:
+    """The founding incident (#826 / PR #30): immunity's `--auto` merge merged
+    at the enablement-time head and dropped later fix commits. The merge is now
+    pinned to the head we reviewed, and held if that head can't be read."""
+
+    def test_merge_is_pinned_to_reviewed_head(self, captured, monkeypatch):
+        monkeypatch.setattr(immunity, "_get_pr_head_sha", lambda pr: "abc123def")
+        _set_label_present(monkeypatch, True)
+        monkeypatch.setattr(
+            immunity, "review_pr",
+            lambda pr: {
+                "safe": True, "verdict": "clean",
+                "protected_files_touched": [], "files_outside_subdirs": [],
+                "files_changed": ["requirements.txt"], "recommendation": "merge",
+            },
+        )
+        immunity.review_pending_prs({})
+        assert captured["merged"] == [(7, "abc123def")]
+
+    def _merge_review(self, monkeypatch):
+        monkeypatch.setattr(
+            immunity, "review_pr",
+            lambda pr: {
+                "safe": True, "verdict": "clean",
+                "protected_files_touched": [], "files_outside_subdirs": [],
+                "files_changed": ["requirements.txt"], "recommendation": "merge",
+            },
+        )
+
+    def test_unreadable_head_holds_and_is_retryable(self, captured, monkeypatch):
+        """If the head SHA can't be read, hold (fail closed) AND leave no
+        comment — so _already_reviewed doesn't strand it and the next pulse
+        retries (Carnot: a hold that posts a comment is never retried)."""
+        monkeypatch.setattr(immunity, "_get_pr_head_sha", lambda pr: None)
+        _set_label_present(monkeypatch, True)
+        self._merge_review(monkeypatch)
+        immunity.review_pending_prs({})
+        assert captured["merged"] == [], "unreadable head must hold"
+        assert captured["comments"] == [], "a retryable hold must not comment (would strand it)"
+
+    def test_merge_refusal_is_retryable_not_stranded(self, captured, monkeypatch):
+        """A --match-head-commit refusal (head moved) returns False; immunity
+        must NOT post a review comment, so the next pulse re-reviews the new
+        head rather than _already_reviewed skipping it forever."""
+        monkeypatch.setattr(immunity, "_merge_pr", lambda pr, sha: False)
+        _set_label_present(monkeypatch, True)
+        self._merge_review(monkeypatch)
+        immunity.review_pending_prs({})
+        assert captured["comments"] == [], "refused merge must leave no comment (retryable)"
+
+    def test_successful_merge_does_post_its_review(self, captured, monkeypatch):
+        """The happy path still records the review — comment posted AFTER a
+        successful merge."""
+        _set_label_present(monkeypatch, True)
+        self._merge_review(monkeypatch)
+        immunity.review_pending_prs({})
+        assert captured["merged"] == [(7, "headsha7")]
+        assert len(captured["comments"]) == 1
+
+    def test_merge_pr_passes_match_head_commit(self, monkeypatch):
+        """_merge_pr shells out with --match-head-commit (no --auto), returns
+        True on success, and gh refuses a stale-head merge."""
+        import subprocess
+
+        class _R:
+            returncode = 0
+            stderr = ""
+
+        calls = {}
+        monkeypatch.setattr(
+            subprocess, "run",
+            lambda cmd, **k: calls.update(cmd=cmd) or _R(),
+        )
+        ok = immunity._merge_pr(7, "cafebabe")
+        assert ok is True
+        assert "--match-head-commit" in calls["cmd"]
+        assert "cafebabe" in calls["cmd"]
+        assert "--auto" not in calls["cmd"], "must not arm GitHub auto-merge"
+
+    def test_merge_pr_returns_false_on_nonzero_exit(self, monkeypatch):
+        """A gh refusal (nonzero exit) is reported as failure, not swallowed."""
+        import subprocess
+
+        class _R:
+            returncode = 1
+            stderr = "head mismatch"
+
+        monkeypatch.setattr(subprocess, "run", lambda cmd, **k: _R())
+        assert immunity._merge_pr(7, "cafebabe") is False
 
 
 class TestBehaviorPathDetection:

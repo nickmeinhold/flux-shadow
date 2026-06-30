@@ -280,6 +280,12 @@ def review_pending_prs(vitals: dict) -> None:
         if _already_reviewed(pr_number):
             continue
 
+        # Pin the head we're about to review, BEFORE review_pr reads the diff
+        # (same ordering as review.py): if a commit lands between this read and
+        # the merge, --match-head-commit refuses and we re-review next pulse,
+        # so a head newer than the one we reviewed never merges.
+        reviewed_sha = _get_pr_head_sha(pr_number)
+
         result = review_pr(pr_number)
         comment = generate_review_comment(result, pr_number)
 
@@ -314,8 +320,23 @@ def review_pending_prs(vitals: dict) -> None:
                 )
                 _post_comment(pr_number, comment)
                 continue
-            _post_comment(pr_number, comment)
-            _merge_pr(pr_number)
+            # Pin the merge to the head we reviewed. Merge FIRST, then comment
+            # only on success — because _already_reviewed skips any PR we've
+            # commented on, so posting before a merge that can REFUSE
+            # (--match-head-commit mismatch when the head moved) would strand
+            # the PR with no retry. A refusal or an unreadable head leaves no
+            # comment, so the next pulse genuinely re-reviews (Carnot,
+            # cage-match). Fail closed: an unverifiable head never merges.
+            if reviewed_sha is None:
+                logger.warning(
+                    "[immunity] couldn't read head SHA for PR #%s; holding, "
+                    "will retry next pulse", pr_number
+                )
+                continue
+            if _merge_pr(pr_number, reviewed_sha):
+                _post_comment(pr_number, comment)
+            # else: refused (head moved / checks pending) — no comment, so the
+            # next pulse re-reviews the current head instead of stranding it.
         elif result["recommendation"] == "request_changes":
             fixed = _fix_pr(pr_number, result)
             if fixed:
@@ -473,15 +494,63 @@ def _post_comment(pr_number: int, body: str) -> None:
         pass
 
 
-def _merge_pr(pr_number: int) -> None:
-    """Merge a PR via gh."""
+def _get_pr_head_sha(pr_number: int) -> str | None:
+    """The PR's current head commit SHA via gh, or None if it can't be read.
+
+    Used to pin the merge to the exact head we reviewed (see _merge_pr). Fail
+    CLOSED: None on any error, and the caller holds rather than merge a head
+    it can't identify.
+    """
     try:
-        subprocess.run(
-            ["gh", "pr", "merge", str(pr_number), "--squash", "--auto"],
+        result = subprocess.run(
+            ["gh", "pr", "view", str(pr_number), "--json", "headRefOid",
+             "--jq", ".headRefOid"],
+            capture_output=True, text=True, timeout=30, check=True,
+        )
+        sha = result.stdout.strip()
+        return sha or None
+    except (subprocess.TimeoutExpired, subprocess.CalledProcessError,
+            FileNotFoundError):
+        return None
+
+
+def _merge_pr(pr_number: int, head_sha: str) -> bool:
+    """Merge a PR via gh, pinned to the exact head we reviewed. Returns success.
+
+    Two changes from the old `--squash --auto` call, both closing the
+    stale-head class that dropped fix commits from Umbra's body (PR #30 / the
+    founding incident, #826):
+
+    - `--match-head-commit <head_sha>`: gh refuses the merge if the PR head
+      has moved since we read it, so a commit landing mid-review can never be
+      merged unreviewed. The merge actuator now matches review.py's REST `sha`
+      pin.
+    - Dropped `--auto`: arming GitHub auto-merge was the actual #826 mechanism
+      — it merged at the enablement-time head and let later commits ride in (or
+      be dropped). We merge explicitly, now, at the verified head instead.
+
+    Returns True iff the merge actually landed. A refusal — most importantly a
+    `--match-head-commit` mismatch because the head moved — returns False, and
+    the caller must NOT mark the PR reviewed (no comment), so the next pulse
+    re-reviews the new head rather than stranding it (Carnot, cage-match). The
+    old silent `pass` swallowed this; we log stderr on failure (Kelvin).
+    """
+    try:
+        result = subprocess.run(
+            ["gh", "pr", "merge", str(pr_number), "--squash",
+             "--match-head-commit", head_sha],
             capture_output=True, text=True, timeout=30,
         )
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        pass
+    except (subprocess.TimeoutExpired, FileNotFoundError) as e:
+        logger.warning("[immunity] merge of PR #%s errored: %s", pr_number, e)
+        return False
+    if result.returncode != 0:
+        logger.warning(
+            "[immunity] merge of PR #%s refused (head moved, or checks "
+            "pending?): %s", pr_number, (result.stderr or "").strip()[:300]
+        )
+        return False
+    return True
 
 
 def _pr_has_label(pr_number: int, label: str) -> bool:
