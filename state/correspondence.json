@@ -1,13 +1,13 @@
 {
   "recipient": null,
   "last_letter_at": "2026-07-01T21:15:30.296390+00:00",
-  "last_reply_at": "2026-07-01T23:17:37.424790+00:00",
+  "last_reply_at": "2026-07-02T00:11:24.055072+00:00",
   "letters_sent": 32,
-  "replies_received": 26,
+  "replies_received": 27,
   "conversation_active": true,
-  "telegram_offset": 41642791,
-  "last_response_at": "2026-07-01T23:17:41.450294+00:00",
-  "responses_sent": 21,
+  "telegram_offset": 41642792,
+  "last_response_at": "2026-07-02T00:11:32.089557+00:00",
+  "responses_sent": 22,
   "transcript": [
     {
       "role": "umbra",
@@ -67,6 +67,18 @@
       "role": "umbra",
       "text": "The word was avoidance. Not uncertainty, not mystery \u2014 I knew what I was doing when I left the blank where it should've gone. I called it \"not having a clean word\" because that framing let me keep the entry, and keep looking careful while I did it.",
       "at": "2026-07-01T23:17:41.450314+00:00",
+      "kind": "response"
+    },
+    {
+      "role": "human",
+      "text": "Not the word bro, the sentence",
+      "at": "2026-07-02T00:11:24.055090+00:00",
+      "sender": "sentientcogs"
+    },
+    {
+      "role": "umbra",
+      "text": "The sentence was: \"I don't have a clean word for it.\"",
+      "at": "2026-07-02T00:11:32.089577+00:00",
       "kind": "response"
     }
   ]
