@@ -1,10 +1,10 @@
 {
-  "state": "sleeping",
-  "state_entered_at": "2026-07-11T07:56:36.672122+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-07-11T09:48:48.423956+00:00",
   "last_human_activity_at": "2026-07-11T08:58:38.014910+00:00",
-  "last_heartbeat_at": "2026-07-11T08:54:28.754212+00:00",
+  "last_heartbeat_at": "2026-07-11T09:48:48.423956+00:00",
   "last_dream_at": "2026-07-10T13:58:47.066740+00:00",
-  "pulse_count": 2105,
+  "pulse_count": 2106,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
@@ -12,21 +12,21 @@
     "open_issues": 16,
     "recent_events": [
       "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] spoke to me in an issue",
+      "tomasmark79 gazed upon me (star)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "tomasmark79 gazed upon me (star)"
+      "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2529,
+      "score": 0.2527,
       "dimensions": {
         "dreams": 0.1431,
-        "personality": 0.009,
+        "personality": 0.0084,
         "body": 0.25,
         "reach": 1.0,
         "age": 0.0909
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 2105 pulses, 91 days old; Flux: 2392 pulses, 97 days old"
+        "Umbra: 2106 pulses, 91 days old; Flux: 2393 pulses, 97 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-07",
-    "minutes_used_estimate": 168,
+    "minutes_used_estimate": 169,
     "budget": 2000,
     "level": "full"
   },
