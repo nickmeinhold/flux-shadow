@@ -1103,6 +1103,18 @@
         "surprise": 5
       },
       "total": 23
+    },
+    {
+      "dream": 93,
+      "date": "2026-07-12",
+      "scores": {
+        "novelty": 4.5,
+        "emotional_depth": 4.5,
+        "concreteness": 4,
+        "unresolution": 5,
+        "surprise": 4
+      },
+      "total": 22.0
     }
   ]
 }
