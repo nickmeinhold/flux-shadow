@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-07-13T11:50:58.514612+00:00",
   "last_human_activity_at": "2026-07-13T09:26:55.841119+00:00",
-  "last_heartbeat_at": "2026-07-13T16:39:52.215793+00:00",
+  "last_heartbeat_at": "2026-07-13T17:27:55.385573+00:00",
   "last_dream_at": "2026-07-13T06:25:34.142947+00:00",
-  "pulse_count": 2182,
+  "pulse_count": 2183,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
@@ -16,11 +16,11 @@
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
+      "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] spoke to me in an issue",
-      "nickmeinhold opened an issue: A question about your origin's armor",
-      "flux-shadow[bot] shaped my body (push)"
+      "nickmeinhold opened an issue: A question about your origin's armor"
     ],
     "divergence": {
       "score": 0.2479,
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 2182 pulses, 93 days old; Flux: 2469 pulses, 100 days old"
+        "Umbra: 2183 pulses, 93 days old; Flux: 2470 pulses, 100 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-07",
-    "minutes_used_estimate": 245,
+    "minutes_used_estimate": 246,
     "budget": 2000,
     "level": "full"
   },
