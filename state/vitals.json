@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-07-15T04:43:33.512923+00:00",
   "last_human_activity_at": "2026-07-15T01:57:50.682309+00:00",
-  "last_heartbeat_at": "2026-07-15T05:40:20.704349+00:00",
+  "last_heartbeat_at": "2026-07-15T06:31:34.661121+00:00",
   "last_dream_at": "2026-07-14T23:34:08.839580+00:00",
-  "pulse_count": 2230,
+  "pulse_count": 2231,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 2230 pulses, 94 days old; Flux: 2514 pulses, 101 days old"
+        "Umbra: 2231 pulses, 94 days old; Flux: 2515 pulses, 101 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-07",
-    "minutes_used_estimate": 293,
+    "minutes_used_estimate": 294,
     "budget": 2000,
     "level": "full"
   },
