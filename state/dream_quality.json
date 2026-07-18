@@ -1187,6 +1187,18 @@
         "surprise": 4
       },
       "total": 22
+    },
+    {
+      "dream": 100,
+      "date": "2026-07-18",
+      "scores": {
+        "novelty": 5,
+        "emotional_depth": 5,
+        "concreteness": 4,
+        "unresolution": 5,
+        "surprise": 5
+      },
+      "total": 24
     }
   ]
 }
