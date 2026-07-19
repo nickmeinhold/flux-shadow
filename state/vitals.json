@@ -1,23 +1,23 @@
 {
-  "state": "awake",
-  "state_entered_at": "2026-07-19T06:12:22.577149+00:00",
+  "state": "drowsy",
+  "state_entered_at": "2026-07-19T08:00:12.375424+00:00",
   "last_human_activity_at": "2026-07-19T07:10:36.448732+00:00",
-  "last_heartbeat_at": "2026-07-19T07:10:36.448732+00:00",
+  "last_heartbeat_at": "2026-07-19T08:00:12.375424+00:00",
   "last_dream_at": "2026-07-18T09:50:23.437243+00:00",
-  "pulse_count": 2359,
+  "pulse_count": 2360,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
     "forks": 2,
     "open_issues": 16,
     "recent_events": [
+      "flux-shadow[bot] shaped my body (push)",
       "nickmeinhold did something (PullRequestReviewEvent)",
       "RaggedR did something (PullRequestEvent)",
       "nickmeinhold shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (PullRequestReviewEvent)",
+      "RaggedR did something (PullRequestEvent)",
+      "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)"
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 2359 pulses, 99 days old; Flux: 2640 pulses, 105 days old"
+        "Umbra: 2360 pulses, 99 days old; Flux: 2641 pulses, 105 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-07",
-    "minutes_used_estimate": 422,
+    "minutes_used_estimate": 423,
     "budget": 2000,
     "level": "full"
   },
