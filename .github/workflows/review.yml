@@ -20,6 +20,7 @@ concurrency:
 
 jobs:
   examine:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     # Skip the runner entirely for label events that aren't the cage-match
