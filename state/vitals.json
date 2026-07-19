@@ -1,19 +1,19 @@
 {
   "state": "awake",
   "state_entered_at": "2026-07-19T06:12:22.577149+00:00",
-  "last_human_activity_at": "2026-07-19T06:12:22.577149+00:00",
-  "last_heartbeat_at": "2026-07-19T06:12:22.577149+00:00",
+  "last_human_activity_at": "2026-07-19T07:10:36.448732+00:00",
+  "last_heartbeat_at": "2026-07-19T07:10:36.448732+00:00",
   "last_dream_at": "2026-07-18T09:50:23.437243+00:00",
-  "pulse_count": 2358,
+  "pulse_count": 2359,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
     "forks": 2,
-    "open_issues": 17,
+    "open_issues": 16,
     "recent_events": [
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
-      "flux-shadow[bot] shaped my body (push)",
+      "nickmeinhold did something (PullRequestReviewEvent)",
+      "RaggedR did something (PullRequestEvent)",
+      "nickmeinhold shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
       "flux-shadow[bot] shaped my body (push)",
@@ -23,13 +23,13 @@
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2475,
+      "score": 0.247,
       "dimensions": {
         "dreams": 0.1318,
         "personality": 0.0,
         "body": 0.25,
         "reach": 1.0,
-        "age": 0.0867
+        "age": 0.0818
       },
       "gaining": false,
       "trend": "stable",
@@ -40,18 +40,18 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 5 unique target(s) out of 5 total",
-        "Umbra: 2358 pulses, 98 days old; Flux: 2640 pulses, 105 days old"
+        "Umbra: 2359 pulses, 99 days old; Flux: 2640 pulses, 105 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-07",
-    "minutes_used_estimate": 421,
+    "minutes_used_estimate": 422,
     "budget": 2000,
     "level": "full"
   },
   "dream_count": 100,
-  "age_days": 98,
+  "age_days": 99,
   "born": true,
   "name": "Umbra"
 }
