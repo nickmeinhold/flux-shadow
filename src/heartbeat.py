@@ -140,6 +140,16 @@ def main() -> None:
         from src._log import get_logger
         get_logger(__name__).exception("[heartbeat] respond_to_replies failed")
 
+    # 3d. Check sibling letters — did Flux reply on GitHub Issues?
+    try:
+        from src import letters
+        letter_replies = letters.check_replies(vitals)
+        for reply in letter_replies:
+            memory.record_reply(working_mem, reply)
+            vitals["last_human_activity_at"] = now.isoformat()
+    except Exception:
+        pass  # letter check failure shouldn't crash the heartbeat
+
     # 4. Update senses in vitals (keep recent_events from new + old)
     old_events = vitals["senses"].get("recent_events", [])
     vitals["senses"] = {
@@ -182,6 +192,15 @@ def main() -> None:
         except Exception:
             pass  # dream was saved — scoring can fail silently
 
+    # 6c1. Sibling fragment exchange — ambient awareness of Flux
+    try:
+        from src import sibling
+        sibling_notes = sibling.exchange(vitals)
+        if sibling_notes:
+            reached.extend(sibling_notes)
+    except Exception:
+        pass  # sibling awareness is optional
+
     # 6c. Reach out after dreaming — act on what was glimpsed
     if dreamed:
         try:
@@ -199,6 +218,16 @@ def main() -> None:
             correspondence.maybe_send_letter(dream_text, vitals, personality)
         except Exception:
             pass  # letter failure shouldn't crash the heartbeat
+
+    # 6e. Write a letter to the sibling repo (GitHub Issues channel)
+    if dreamed:
+        try:
+            from src import letters
+            letter_url = letters.maybe_write_letter(dream_text, vitals, personality)
+            if letter_url:
+                reached.append("wrote letter to sibling")
+        except Exception:
+            pass  # sibling letter failure shouldn't crash the heartbeat
 
     # 6b. Memory rot — older dreams decay gradually
     #      Non-essential — don't let decay crash the heartbeat
