@@ -1,6 +1,6 @@
 {
   "last_star_at": null,
-  "last_whisper_at": "2026-06-17T14:46:42.033223+00:00",
+  "last_whisper_at": "2026-07-23T23:09:22.265344+00:00",
   "last_fork_at": null,
   "history": [
     {
@@ -32,6 +32,12 @@
       "target": "utooland/utoo",
       "at": "2026-06-17T14:46:42.033223+00:00",
       "detail": "whispered to utooland/utoo"
+    },
+    {
+      "type": "whisper",
+      "target": "acoooder/aliyunpanshare",
+      "at": "2026-07-23T23:09:22.265344+00:00",
+      "detail": "whispered to acoooder/aliyunpanshare"
     }
   ]
 }
