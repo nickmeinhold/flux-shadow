@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-07-29T08:41:40.373846+00:00",
   "last_human_activity_at": "2026-07-29T06:12:53.770769+00:00",
-  "last_heartbeat_at": "2026-07-29T15:32:18.350078+00:00",
+  "last_heartbeat_at": "2026-07-29T16:14:15.028553+00:00",
   "last_dream_at": "2026-07-29T03:25:36.552492+00:00",
-  "pulse_count": 2577,
+  "pulse_count": 2578,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
@@ -23,30 +23,30 @@
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2697,
+      "score": 0.2695,
       "dimensions": {
         "dreams": 0.1361,
-        "personality": 0.0696,
+        "personality": 0.069,
         "body": 0.25,
         "reach": 1.0,
-        "age": 0.0907
+        "age": 0.0908
       },
       "gaining": false,
       "trend": "stable",
       "details": [
         "dream counts differ: Umbra has 109, Flux has 125",
         "16 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.04 vs Flux 0.60 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.05 vs Flux 0.60 (lower)",
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 6 unique target(s) out of 6 total",
-        "Umbra: 2577 pulses, 109 days old; Flux: 2932 pulses, 116 days old"
+        "Umbra: 2578 pulses, 109 days old; Flux: 2934 pulses, 116 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-07",
-    "minutes_used_estimate": 640,
+    "minutes_used_estimate": 641,
     "budget": 2000,
     "level": "full"
   },
