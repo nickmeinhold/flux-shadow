@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-08-05T13:57:42.703752+00:00",
   "last_human_activity_at": "2026-08-05T11:57:21.965213+00:00",
-  "last_heartbeat_at": "2026-08-05T13:57:42.703752+00:00",
+  "last_heartbeat_at": "2026-08-05T15:02:19.534456+00:00",
   "last_dream_at": "2026-08-05T03:24:37.322666+00:00",
-  "pulse_count": 2751,
+  "pulse_count": 2752,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
@@ -36,17 +36,17 @@
       "details": [
         "dream counts differ: Umbra has 116, Flux has 133",
         "16 dream date(s) exist in one but not the other",
-        "personality drift in 1 trait(s): playfulness: Umbra 0.39 vs Flux 0.83 (lower)",
+        "personality drift in 1 trait(s): playfulness: Umbra 0.40 vs Flux 0.84 (lower)",
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 6 unique target(s) out of 6 total",
-        "Umbra: 2751 pulses, 116 days old; Flux: 3128 pulses, 123 days old"
+        "Umbra: 2752 pulses, 116 days old; Flux: 3129 pulses, 123 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-08",
-    "minutes_used_estimate": 133,
+    "minutes_used_estimate": 134,
     "budget": 2000,
     "level": "full"
   },
