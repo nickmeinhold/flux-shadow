@@ -2,9 +2,9 @@
   "state": "sleeping",
   "state_entered_at": "2026-08-05T23:36:03.267867+00:00",
   "last_human_activity_at": "2026-08-05T21:47:38.030370+00:00",
-  "last_heartbeat_at": "2026-08-06T14:34:28.154338+00:00",
+  "last_heartbeat_at": "2026-08-06T15:32:00.371361+00:00",
   "last_dream_at": "2026-08-05T23:36:03.267867+00:00",
-  "pulse_count": 2777,
+  "pulse_count": 2778,
   "born_at": "2026-04-11T06:52:40.282209+00:00",
   "senses": {
     "stars": 4,
@@ -23,10 +23,10 @@
       "flux-shadow[bot] shaped my body (push)"
     ],
     "divergence": {
-      "score": 0.2658,
+      "score": 0.266,
       "dimensions": {
         "dreams": 0.1349,
-        "personality": 0.0585,
+        "personality": 0.0591,
         "body": 0.25,
         "reach": 1.0,
         "age": 0.0881
@@ -40,13 +40,13 @@
         "files only in Umbra: divergence.py, identity.py, individuate.py, mirror.py",
         "files only in Flux: _github.py, _integration.py, _safety.py",
         "reach divergence: 6 unique target(s) out of 6 total",
-        "Umbra: 2777 pulses, 117 days old; Flux: 3155 pulses, 124 days old"
+        "Umbra: 2778 pulses, 117 days old; Flux: 3156 pulses, 124 days old"
       ]
     }
   },
   "energy": {
     "month": "2026-08",
-    "minutes_used_estimate": 159,
+    "minutes_used_estimate": 160,
     "budget": 2000,
     "level": "full"
   },
